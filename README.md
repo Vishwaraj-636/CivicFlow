@@ -42,7 +42,7 @@ The core of the application is its data structure, defined using Mongoose schema
 
 ### `User`
 - **Purpose:** Manages user accounts and authentication.
-- **Key Fields:** `name`, `email` (unique), `password`, `role`.
+- **Key Fields:** `username`, `email` (unique), `password`, `role`.
 - **Security:**
   - Passwords are automatically hashed using `bcrypt` before being saved to the database.
   - A `comparePassword` method is provided for secure login verification.
@@ -93,9 +93,14 @@ To run the server locally, follow these steps:
     ```
     MONGO_URI=<your_mongodb_connection_string>
     PORT=8000
+    ADMIN_REGISTRATION_CODE=<secure_admin_invite_code>
     ```
 
-4.  **Start the Server:**
+  4.  **Department Codes:** Store a short memorable code for each department, such as `23BCE1000`, in the department record. Officials register with that code, and the backend uses it to assign the `official` role automatically.
+
+5.  **Registration Flow:** Citizens register with username, email, phone, and password only. Officials add the department access code on the same form. Admin accounts should be created with the protected admin invite code rather than exposing a role selector on the public form.
+
+  6.  **Start the Server:**
     ```bash
     npm start
     ```
