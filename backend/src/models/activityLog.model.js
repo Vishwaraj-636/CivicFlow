@@ -12,7 +12,7 @@ const activityLogSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    action: {
+    actionType: {
       type: String,
       required: true,
       trim: true,
@@ -33,6 +33,6 @@ const activityLogSchema = new mongoose.Schema(
   }
 )
 
-const ActivityLog = mongoose.model('ActivityLog', activityLogSchema)
+const activityLogModel = mongoose.model('ActivityLog', activityLogSchema)
 
-export default ActivityLog
+export default activityLogModel

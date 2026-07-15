@@ -12,17 +12,21 @@ const mediaSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    type: {
+    publicId: { 
+      type: String,
+      required: true, 
+    },
+    type: { 
       type: String,
       required: true,
       trim: true,
     },
   },
   {
-    timestamps: false,
+    timestamps: true, 
   }
 )
 
-const Media = mongoose.model('Media', mediaSchema)
+const mediaModel = mongoose.model('Media', mediaSchema)
 
-export default Media
+export default mediaModel

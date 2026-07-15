@@ -1,5 +1,6 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
+import authRouter from './routes/auth.router.js'
 
 const app = express()
 
@@ -11,6 +12,6 @@ app.get("/",(req,res)=>{
   res.json({message:"server is running"});
 })
 
-// app.use("api/auth",authRouter)
+app.use("/api/auth",authRouter)
 
 export default app

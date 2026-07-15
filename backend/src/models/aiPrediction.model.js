@@ -22,17 +22,13 @@ const aiPredictionSchema = new mongoose.Schema(
       required: true,
       min: 0,
       max: 1,
-    },
-    feedbackCorrect: {
-      type: Boolean,
-      default: null,
-    },
+    }
   },
   {
     timestamps: { createdAt: 'createdAt', updatedAt: false },
   }
 )
 
-const AiPrediction = mongoose.model('AiPrediction', aiPredictionSchema)
+const aiPredictionModel = mongoose.model('AiPrediction', aiPredictionSchema)
 
-export default AiPrediction
+export default aiPredictionModel

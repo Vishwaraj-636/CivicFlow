@@ -7,6 +7,11 @@ const complaintSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    description: { // NEW: Crucial for context
+      type: String,
+      required: true,
+      trim: true,
+    },
     category: {
       type: String,
       required: true,
@@ -40,11 +45,6 @@ const complaintSchema = new mongoose.Schema(
         default: undefined,
       },
     },
-    voteCount: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -55,14 +55,20 @@ const complaintSchema = new mongoose.Schema(
       ref: 'Department',
       default: null,
     },
+    resolvedAt: { // NEW: Useful for performance metrics
+      type: Date,
+      default: null,
+    }
   },
   {
-    timestamps: { createdAt: 'createdAt', updatedAt: false },
+    timestamps: true, // UPDATED: Kept updatedAt for tracking modifications
   }
 )
 
 complaintSchema.index({ location: '2dsphere' })
+// NEW: Index for faster sorting by status and creation date
+complaintSchema.index({ status: 1, createdAt: -1 })
 
-const Complaint = mongoose.model('Complaint', complaintSchema)
+const complaintModel = mongoose.model('Complaint', complaintSchema)
 
-export default Complaint
+export default complaintModel

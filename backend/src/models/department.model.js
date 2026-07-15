@@ -2,16 +2,23 @@ import mongoose from 'mongoose'
 
 const departmentSchema = new mongoose.Schema(
   {
+    code: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      uppercase: true,
+    },
     name: {
       type: String,
       required: true,
       trim: true,
     },
-    category: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    // category: {
+    //   type: String,
+    //   required: true,
+    //   trim: true,
+    // },
     contactEmail: {
       type: String,
       required: true,
@@ -24,6 +31,6 @@ const departmentSchema = new mongoose.Schema(
   }
 )
 
-const Department = mongoose.model('Department', departmentSchema)
+const departmentModel = mongoose.model('Department', departmentSchema)
 
-export default Department
+export default departmentModel

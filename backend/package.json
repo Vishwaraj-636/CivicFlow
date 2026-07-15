@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx nodemon --exec \"cls && node server.js\""
+    "dev": "npx nodemon --exec \"cls && node server.js\"",
+    "seed": "node src/seed/department.seed.js",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -23,5 +25,6 @@
     "morgan": "^1.11.0",
     "nodemailer": "^9.0.3",
     "nodemon": "^3.1.14"
-  }
+  },
+  "description": ""
 }

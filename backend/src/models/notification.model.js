@@ -7,7 +7,7 @@ const notificationSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    type: {
+    type: { 
       type: String,
       required: true,
       trim: true,
@@ -17,16 +17,24 @@ const notificationSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    referenceId: { 
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Complaint',
+      default: null,
+    },
     isRead: {
       type: Boolean,
       default: false,
     },
   },
   {
-    timestamps: { createdAt: 'createdAt', updatedAt: false },
+    timestamps: { createdAt: true, updatedAt: false }, 
   }
 )
 
-const Notification = mongoose.model('Notification', notificationSchema)
 
-export default Notification
+notificationSchema.index({ createdAt: 1 }, { expireAfterSeconds: 2592000 })
+
+const notificationModel = mongoose.model('Notification', notificationSchema)
+
+export default notificationModel

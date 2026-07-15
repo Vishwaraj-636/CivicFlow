@@ -12,7 +12,7 @@ const commentSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    message: {
+    content: {
       type: String,
       required: true,
       trim: true,
@@ -23,6 +23,6 @@ const commentSchema = new mongoose.Schema(
   }
 )
 
-const Comment = mongoose.model('Comment', commentSchema)
+const commentModel = mongoose.model('Comment', commentSchema)
 
-export default Comment
+export default commentModel
