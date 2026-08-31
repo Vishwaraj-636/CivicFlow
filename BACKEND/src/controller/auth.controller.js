@@ -7,7 +7,7 @@ async function sendTokenResponse(user, res) {
    const token = jwt.sign({
       id: user._id,
    }, config.JWT_SECRET, {
-      expiresIn: '7d'
+      expiresIn: '1d'
    })
 
    res.status(200).json({
@@ -23,7 +23,7 @@ async function sendTokenResponse(user, res) {
 }
 
 export const register = async (req, res) => {
-   const { email, contact, password, fullname, isCitizen } = req.body;
+   const { email, contact, password, fullname } = req.body;
    try {
       const existingUser = await userModel.findOne({
          $or: [
@@ -41,11 +41,11 @@ export const register = async (req, res) => {
          email,
          password,
          contact,
-         role: isCitizen || 'citizen'
+         role: req.body.role || 'citizen'
       })
 
       await user.save();
-      await sendTokenResponse(user, res, "user registered successfully");
+      await sendTokenResponse(user, res);
 
    }
    catch (err) {
@@ -77,8 +77,32 @@ export const login = async (req, res) => {
    }
 }
 
-
 export const googleCallback = async (req, res) => {
-   console.log(req.user)
+   const { id, displayName, emails, photos } = req.user;
+
+   const email = emails[0].value;
+   const profilePic = photos[0].value;
+
+
+   let user = await userModel.findOne({
+      email
+   });
+
+   if (!user) {
+      user = await userModel.create({
+         email,
+         googleId: id,
+         fullname: displayName,
+      })
+   }
+
+   const token = jwt.sign({
+      id: user._id,
+   }, config.JWT_SECRET, {
+      expiresIn: '1d'
+   })
+
+   res.cookie('token', token)
+
    res.redirect("http://localhost:5173/")
 }

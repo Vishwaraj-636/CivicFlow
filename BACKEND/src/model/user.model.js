@@ -10,11 +10,13 @@ const userSchema = new mongoose.Schema(
       },
       contact: {
          type: String,
-         required: true
+         required: false
       },
       password: {
          type: String,
-         required: true
+         required: function () {
+            return !this.googleId; // Password is required only if googleId is not present
+         }
       },
       fullname: {
          type: String,
@@ -25,6 +27,9 @@ const userSchema = new mongoose.Schema(
          enum: ['citizen', 'admin', 'department_staff'],
          default: 'citizen',
       },
+      googleId: {
+         type: String,
+      }
 
 
       //future use cases for user management and session handling

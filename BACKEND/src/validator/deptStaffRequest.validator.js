@@ -8,7 +8,7 @@ function validateRequest(req, res, next) {
    next();
 }
 
-export const validateRegister = [
+export const validateDeptStaffRequest = [
    body("email")
       .isEmail().withMessage("Please provide a valid email address"),
    body("contact")
@@ -19,14 +19,23 @@ export const validateRegister = [
    body("fullname")
       .notEmpty().withMessage("Full name is required")
       .isLength({ min: 3 }).withMessage("Full name must be at least 3 characters long"),
+   body("department")
+      .notEmpty().withMessage("Department is required")
+      .isLength({ min: 2 }).withMessage("Department name must be at least 2 characters long"),
    validateRequest
 ]
 
-
-export const validateLogin = [
-   body("email")
-      .isEmail().withMessage("Please provide a valid email address"),
-   body("password")
-      .notEmpty().withMessage("Password is required"),
+export const validateDeptStaffApproval = [
+   body("requestId")
+      .notEmpty().withMessage("Request ID is required"),
+   body("approve")
+      .isBoolean().withMessage("approve must be a boolean value"),
+   body("rejectionReason")
+      .custom((value, { req }) => {
+         if (req.body.approve === false && !value) {
+            throw new Error("Rejection reason is required when rejecting a request");
+         }
+         return true;
+      }),
    validateRequest
 ]

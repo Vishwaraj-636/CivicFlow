@@ -1,18 +1,19 @@
 @import "tailwindcss";
 
 @theme {
-   --font-sans: 'Public Sans', system-ui, -apple-system, sans-serif;
-   --color-background: #111210;
-   --color-surface: #1A1B18;
-   --color-surface-secondary: #22231F;
-   --color-primary-text: #F4F2EC;
-   --color-secondary-text: #AAA99F;
-   --color-muted-text: #77786F;
-   --color-border: #30312C;
+   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+   --color-background: #0D0D0D;
+   --color-surface: #1B1B1B;
+   --color-surface-secondary: #151515;
+   --color-surface-elevated: #222222;
+   --color-primary-text: #F2F0EB;
+   --color-secondary-text: #A7A39B;
+   --color-muted-text: #6F6B64;
+   --color-border: #2D2D2A;
    --color-primary-accent: #B58A5A;
-   --color-accent-hover: #C49A68;
-   --color-success: #76977F;
+   --color-accent-hover: #C69B6B;
+   --color-success: #7E9F82;
    --color-warning: #C49A61;
-   --color-danger: #C87971;
+   --color-danger: #B96B68;
    --color-info: #7895A0;
 }
