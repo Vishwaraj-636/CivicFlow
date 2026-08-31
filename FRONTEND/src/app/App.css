@@ -1,1 +1,18 @@
 @import "tailwindcss";
+
+@theme {
+   --font-sans: 'Public Sans', system-ui, -apple-system, sans-serif;
+   --color-background: #111210;
+   --color-surface: #1A1B18;
+   --color-surface-secondary: #22231F;
+   --color-primary-text: #F4F2EC;
+   --color-secondary-text: #AAA99F;
+   --color-muted-text: #77786F;
+   --color-border: #30312C;
+   --color-primary-accent: #B58A5A;
+   --color-accent-hover: #C49A68;
+   --color-success: #76977F;
+   --color-warning: #C49A61;
+   --color-danger: #C87971;
+   --color-info: #7895A0;
+}
