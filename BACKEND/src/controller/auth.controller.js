@@ -116,7 +116,7 @@ export const googleCallback = async (req, res) => {
          email,
          googleId: id,
          fullname: displayName,
-         role: 'incomplete',
+         role: 'citizen',
          authProvider: 'google',
          profileCompleted: false,
          departmentId: null
@@ -165,7 +165,7 @@ export const completeGoogleProfile = async (req, res) => {
          return res.status(403).json({ message: "Account is inactive" });
       }
 
-      if (user.role !== 'incomplete') {
+      if (user.profileCompleted) {
          return res.status(400).json({ message: "Profile already complete" });
       }
 
@@ -196,7 +196,7 @@ export const completeGoogleProfile = async (req, res) => {
             return res.status(400).json({ message: "You already have a pending staff request." });
          }
 
-         // Create staff request, do not change user role yet (remains 'incomplete')
+         // Create staff request without changing the user's role before approval.
          const request = await deptStaffRequestModel.create({
             email: user.email,
             contact: user.contact || contact || 'N/A',

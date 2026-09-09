@@ -6,7 +6,7 @@ const authApiInstance = axios.create({
 })
 
 const requestApiInstance = axios.create({
-   baseURL: "http://localhost:3000/api/request",
+   baseURL: "http://localhost:3000/api",
    withCredentials: true,
 })
 
@@ -39,7 +39,7 @@ export async function login({ email, password }) {
 }
 
 export async function requestDeptStaff({ email, contact, password, fullname, departmentId }) {
-   const response = await requestApiInstance.post("/dept-staff", {
+   const response = await requestApiInstance.post("/requests/staff", {
       email,
       contact,
       password,

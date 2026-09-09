@@ -1,4 +1,6 @@
-import { body, validationResult } from 'express-validator';
+import { body, param, validationResult } from 'express-validator';
+import Department from '../model/department.model.js';
+import deptStaffRequestModel from '../model/deptStaffRequest.model.js';
 
 function validateRequest(req, res, next) {
    const errors = validationResult(req);
@@ -9,32 +11,48 @@ function validateRequest(req, res, next) {
 }
 
 export const validateDeptStaffRequest = [
-   body("email")
-      .isEmail().withMessage("Please provide a valid email address"),
-   body("contact")
-      .notEmpty().withMessage("Contact number is required")
-      .matches(/^[0-9]{10}$/).withMessage("Contact number must be 10 digits long"),
-   body("password")
-      .isLength({ min: 6 }).withMessage("Password must be at least 6 characters long"),
-   body("fullname")
-      .notEmpty().withMessage("Full name is required")
-      .isLength({ min: 3 }).withMessage("Full name must be at least 3 characters long"),
    body("departmentId")
-      .isMongoId().withMessage("A valid department is required"),
-   validateRequest
-]
-
-export const validateDeptStaffApproval = [
-   body("requestId")
-      .notEmpty().withMessage("Request ID is required"),
-   body("approve")
-      .isBoolean().withMessage("approve must be a boolean value"),
-   body("rejectionReason")
-      .custom((value, { req }) => {
-         if (req.body.approve === false && !value) {
-            throw new Error("Rejection reason is required when rejecting a request");
+      .isMongoId().withMessage("A valid department is required")
+      .bail()
+      .custom(async (departmentId) => {
+         const department = await Department.findOne({ _id: departmentId, isActive: true });
+         if (!department) {
+            throw new Error("An active department is required");
          }
          return true;
       }),
    validateRequest
 ]
+
+export const validateDeptStaffApproval = [
+   param("id")
+      .isMongoId().withMessage("A valid request ID is required")
+      .bail()
+      .custom(async (requestId) => {
+         const request = await deptStaffRequestModel.findOne({ _id: requestId, status: "pending" });
+         if (!request) {
+            throw new Error("A pending request is required");
+         }
+         return true;
+      }),
+   validateRequest
+]
+
+
+export const validateDeptStaffRejection = [
+   param("id")
+      .isMongoId().withMessage("A valid request ID is required")
+      .bail()
+      .custom(async (requestId) => {
+         const request = await deptStaffRequestModel.findOne({ _id: requestId, status: "pending" });
+         if (!request) {
+            throw new Error("A pending request is required");
+         }
+         return true;
+      }),
+   body("rejectionReason")
+      .trim()
+      .notEmpty().withMessage("Rejection reason is required"),
+   validateRequest
+]
+

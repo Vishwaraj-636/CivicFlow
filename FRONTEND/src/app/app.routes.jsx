@@ -4,9 +4,12 @@ import Login from "../features/auth/pages/Login";
 import DeptStaffRequest from "../features/auth/pages/DeptStaffRequest";
 import RootLayout from "../components/layout/RootLayout";
 import AuthRedirect from "../components/auth/AuthRedirect";
+import ProtectedRoute from "../components/auth/ProtectedRoute";
 import CompleteGoogleProfile from "../features/auth/pages/CompleteGoogleProfile";
 import RoleRoute from "../components/auth/RoleRoute";
 import Unauthorized from "../features/auth/pages/Unauthorized";
+import StaffRequests from "../features/admin/pages/StaffRequests";
+
 
 // Placeholder Dashboards
 const CitizenDashboard = () => <div className="p-8 text-center"><h1 className="text-3xl font-light">Citizen Dashboard</h1></div>;
@@ -36,7 +39,11 @@ export const routes = createBrowserRouter([
          },
          {
             path: "request-dept-staff",
-            element: <DeptStaffRequest />
+            element: (
+               <ProtectedRoute>
+                  <DeptStaffRequest />
+               </ProtectedRoute>
+            )
          },
          {
             path: "complete-profile",
@@ -68,7 +75,13 @@ export const routes = createBrowserRouter([
                <RoleRoute allowedRoles="admin">
                   <AdminDashboard />
                </RoleRoute>
-            )
+            ),
+            children: [
+               {
+                  path: "staff-requests",
+                  element: <StaffRequests />
+               }
+            ]
          }
       ]
    }

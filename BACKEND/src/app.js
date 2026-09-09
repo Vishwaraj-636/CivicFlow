@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/auth', authRouter);
-app.use('/api/request', requestRouter);
+app.use('/api', requestRouter);
 app.use('/api', departmentRouter);
 
 export default app;
