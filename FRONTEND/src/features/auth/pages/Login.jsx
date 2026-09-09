@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import ContinueWithGoogle from '../../../components/googleAuth/ContinueWithGoogle';
 import { useAuth } from '../hook/useAuth';
 
 const Login = () => {
-   const { handleLogin } = useAuth();
+   const { handleLogin, isAuthenticated, initialized } = useAuth();
    const navigate = useNavigate();
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
    const [error, setError] = useState('');
+
+   // Redirect already-authenticated users away from the login page
+   if (initialized && isAuthenticated) {
+      return <Navigate to="/dashboard" replace />;
+   }
 
    const handleSubmit = async (e) => {
       e.preventDefault();

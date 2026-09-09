@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ContinueWithGoogle from '../../../components/googleAuth/ContinueWithGoogle';
 import { useAuth } from '../hook/useAuth';
 
 const DeptStaffRequest = () => {
-   const { handleDeptStaffRequest, loading } = useAuth();
+   const { handleDeptStaffRequest, getDepartments, loading } = useAuth();
    const navigate = useNavigate();
    const [formData, setFormData] = useState({
       fullname: '',
@@ -12,23 +12,15 @@ const DeptStaffRequest = () => {
       contact: '',
       password: '',
       confirmPassword: '',
-      department: ''
+      departmentId: ''
    });
+   const [departments, setDepartments] = useState([]);
    const [error, setError] = useState('');
    const [success, setSuccess] = useState('');
 
-   const departments = [
-      'Public Health',
-      'Transportation',
-      'Education',
-      'Parks & Recreation',
-      'Public Safety',
-      'Urban Planning',
-      'Social Services',
-      'Environmental Services',
-      'Housing & Community Development',
-      'Other'
-   ];
+   useEffect(() => {
+      getDepartments().then(setDepartments).catch(() => setError('Unable to load departments'));
+   }, []);
 
    const handleChange = (e) => {
       const { name, value } = e.target;
@@ -51,7 +43,7 @@ const DeptStaffRequest = () => {
             email: formData.email,
             contact: formData.contact,
             password: formData.password,
-            department: formData.department
+            departmentId: formData.departmentId
          });
 
          setSuccess('Staff request submitted successfully. You will be contacted once admin reviews your request.');
@@ -62,7 +54,7 @@ const DeptStaffRequest = () => {
             contact: '',
             password: '',
             confirmPassword: '',
-            department: ''
+            departmentId: ''
          });
 
          // No automatic authentication here.
@@ -141,18 +133,18 @@ const DeptStaffRequest = () => {
                   </div>
 
                   <div className="space-y-1">
-                     <label className="text-[11px] uppercase tracking-wider font-semibold text-muted-text ml-1" htmlFor="department">Department</label>
+                     <label className="text-[11px] uppercase tracking-wider font-semibold text-muted-text ml-1" htmlFor="departmentId">Department</label>
                      <select
-                        id="department"
-                        name="department"
-                        value={formData.department}
+                        id="departmentId"
+                        name="departmentId"
+                        value={formData.departmentId}
                         onChange={handleChange}
                         className="w-full bg-surface-secondary/50 border border-border/60 rounded-xl px-5 py-3.5 text-primary-text text-sm focus:outline-none focus:ring-1 focus:ring-primary-accent focus:border-primary-accent focus:bg-surface-secondary transition-all duration-300 shadow-sm"
                         required
                      >
                         <option value="">Select a department</option>
                         {departments.map((dept) => (
-                           <option key={dept} value={dept}>{dept}</option>
+                           <option key={dept._id} value={dept._id}>{dept.fullname}</option>
                         ))}
                      </select>
                   </div>

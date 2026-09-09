@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import ContinueWithGoogle from '../../../components/googleAuth/ContinueWithGoogle';
 import { useAuth } from '../hook/useAuth';
 
 const Register = () => {
-   const { handleRegister, loading } = useAuth();
+   const { handleRegister, loading, isAuthenticated, initialized } = useAuth();
    const navigate = useNavigate();
    const [formData, setFormData] = useState({
       fullname: '',
@@ -14,6 +14,11 @@ const Register = () => {
       confirmPassword: ''
    });
    const [error, setError] = useState('');
+
+   // Redirect already-authenticated users away from the register page
+   if (initialized && isAuthenticated) {
+      return <Navigate to="/dashboard" replace />;
+   }
 
    const handleChange = (e) => {
       const { name, value } = e.target;

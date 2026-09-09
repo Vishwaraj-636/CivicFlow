@@ -1,5 +1,6 @@
 import deptStaffRequestModel from '../model/deptStaffRequest.model.js';
 import userModel from '../model/user.model.js';
+import Department from '../model/department.model.js';
 import bcrypt from 'bcryptjs';
 
 /**
@@ -8,9 +9,15 @@ import bcrypt from 'bcryptjs';
  * @access Public
  */
 export const requestDeptStaff = async (req, res) => {
-   const { email, contact, password, fullname, department } = req.body;
+   const { email, contact, password, fullname, departmentId } = req.body;
 
    try {
+      const department = await Department.findById(departmentId);
+
+      if (!department) {
+         return res.status(400).json({ message: "Department not found" });
+      }
+
       // Check if email already exists in users
       const existingUser = await userModel.findOne({
          $or: [{ email }, { contact }]
@@ -44,7 +51,7 @@ export const requestDeptStaff = async (req, res) => {
                contact,
                fullname,
                password,
-               department,
+               departmentId: department._id,
                status: 'pending',
                userId: existingUser._id
             },
@@ -58,7 +65,7 @@ export const requestDeptStaff = async (req, res) => {
             contact,
             password: hashedPassword,
             fullname,
-            department
+            departmentId: department._id
          });
       }
 
@@ -68,7 +75,7 @@ export const requestDeptStaff = async (req, res) => {
             id: request._id,
             email: request.email,
             fullname: request.fullname,
-            department: request.department,
+            departmentId: request.departmentId,
             status: request.status,
             createdAt: request.createdAt
          }
@@ -86,7 +93,9 @@ export const requestDeptStaff = async (req, res) => {
  */
 export const getAllDeptStaffRequests = async (req, res) => {
    try {
-      const requests = await deptStaffRequestModel.find().sort({ createdAt: -1 });
+      const requests = await deptStaffRequestModel.find()
+         .populate('departmentId', 'fullname code categories')
+         .sort({ createdAt: -1 });
       res.status(200).json({ requests });
    } catch (err) {
       console.log(err);
@@ -101,7 +110,8 @@ export const getAllDeptStaffRequests = async (req, res) => {
  */
 export const getDeptStaffRequestById = async (req, res) => {
    try {
-      const request = await deptStaffRequestModel.findById(req.params.id);
+      const request = await deptStaffRequestModel.findById(req.params.id)
+         .populate('departmentId', 'fullname code categories');
 
       if (!request) {
          return res.status(404).json({ message: "Request not found" });
@@ -138,6 +148,12 @@ export const approveDeptStaffRequest = async (req, res) => {
 
       if (approve) {
          // Approve request
+         const department = await Department.findById(request.departmentId);
+
+         if (!department) {
+            return res.status(400).json({ message: "Requested department not found" });
+         }
+
          let user = await userModel.findOne({ email: request.email });
 
          if (!user) {
@@ -150,24 +166,25 @@ export const approveDeptStaffRequest = async (req, res) => {
                role: 'dept_staff',
                authProvider: 'local',
                profileCompleted: true,
-               departmentId: request.department,
+               departmentId: department._id,
                isActive: true
             });
          } else if (user.role === 'citizen' || user.role === 'incomplete') {
             // Update existing citizen to department staff
             user.role = 'dept_staff';
-            user.departmentId = request.department;
+            user.departmentId = department._id;
             user.profileCompleted = true;
             user.isActive = true;
             await user.save();
          } else if (user.role === 'dept_staff') {
-            user.departmentId = request.department;
+            user.departmentId = department._id;
             await user.save();
          }
 
          request.status = 'approved';
          request.userId = user._id;
-         request.approvedBy = adminId;
+         request.reviewedBy = adminId;
+         request.reviewedAt = new Date();
          await request.save();
 
          res.status(200).json({
@@ -178,7 +195,8 @@ export const approveDeptStaffRequest = async (req, res) => {
          // Reject request
          request.status = 'rejected';
          request.rejectionReason = rejectionReason;
-         request.approvedBy = adminId;
+         request.reviewedBy = adminId;
+         request.reviewedAt = new Date();
          await request.save();
 
          res.status(200).json({

@@ -1,12 +1,16 @@
 import express from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import authRouter from './routes/auth.routes.js';
-import requestRouter from './routes/request.routes.js';
 import cors from 'cors';
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+
+
 import { config } from './config/config.js';
+import authRouter from './routes/auth.routes.js';
+import requestRouter from './routes/request.routes.js';
+import departmentRouter from "./routes/department.routes.js"
+
 
 
 const app = express();
@@ -18,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
    origin: 'http://localhost:5173',
-   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
    credentials: true
 }))
 
@@ -39,6 +43,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRouter);
 app.use('/api/request', requestRouter);
+app.use('/api', departmentRouter);
 
 export default app;
 

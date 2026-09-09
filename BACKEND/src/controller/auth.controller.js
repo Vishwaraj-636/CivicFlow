@@ -1,5 +1,6 @@
 import userModel from '../model/user.model.js';
 import deptStaffRequestModel from '../model/deptStaffRequest.model.js';
+import Department from '../model/department.model.js';
 import jwt from 'jsonwebtoken';
 import { config } from '../config/config.js';
 
@@ -145,7 +146,7 @@ export const googleCallback = async (req, res) => {
 
 
 export const completeGoogleProfile = async (req, res) => {
-   const { role, contact, department } = req.body;
+   const { role, contact, departmentId } = req.body;
 
    try {
       const token = req.cookies?.token || req.headers.authorization?.split(' ')[1];
@@ -176,15 +177,31 @@ export const completeGoogleProfile = async (req, res) => {
          await user.save();
          return await sendTokenResponse(user, res);
       } else if (role === 'dept_staff') {
+         const department = await Department.findById(departmentId);
+
+         if (!department) {
+            return res.status(400).json({ message: "Department not found" });
+         }
+
          if (contact) user.contact = contact;
          await user.save();
+
+         // Guard: prevent duplicate pending requests for the same user
+         const existingRequest = await deptStaffRequestModel.findOne({
+            userId: user._id,
+            status: 'pending'
+         });
+
+         if (existingRequest) {
+            return res.status(400).json({ message: "You already have a pending staff request." });
+         }
 
          // Create staff request, do not change user role yet (remains 'incomplete')
          const request = await deptStaffRequestModel.create({
             email: user.email,
             contact: user.contact || contact || 'N/A',
             fullname: user.fullname,
-            department,
+            departmentId: department._id,
             status: 'pending',
             userId: user._id
          });

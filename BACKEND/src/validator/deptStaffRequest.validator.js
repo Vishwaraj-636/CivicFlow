@@ -19,9 +19,8 @@ export const validateDeptStaffRequest = [
    body("fullname")
       .notEmpty().withMessage("Full name is required")
       .isLength({ min: 3 }).withMessage("Full name must be at least 3 characters long"),
-   body("department")
-      .notEmpty().withMessage("Department is required")
-      .isLength({ min: 2 }).withMessage("Department name must be at least 2 characters long"),
+   body("departmentId")
+      .isMongoId().withMessage("A valid department is required"),
    validateRequest
 ]
 

@@ -35,7 +35,8 @@ const userSchema = new mongoose.Schema(
          default: 'local'
       },
       departmentId: {
-         type: String,
+         type: mongoose.Schema.Types.ObjectId,
+         ref: 'Department',
          default: null
       },
       profileCompleted: {

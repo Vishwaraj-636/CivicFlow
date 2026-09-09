@@ -1,7 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../features/auth/hook/useAuth';
 
 const Navbar = () => {
+   const { isAuthenticated, user, handleLogout } = useAuth();
+   const navigate = useNavigate();
+
+   const onLogout = async () => {
+      await handleLogout();
+      navigate('/login');
+   };
+
    return (
       <nav className="w-full bg-surface border-b border-border sticky top-0 z-50">
          <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -15,18 +24,34 @@ const Navbar = () => {
             </Link>
 
             <div className="flex items-center gap-4">
-               <Link
-                  to="/login"
-                  className="text-sm font-medium text-secondary-text hover:text-primary-text transition-colors"
-               >
-                  Sign In
-               </Link>
-               <Link
-                  to="/register"
-                  className="text-sm font-semibold bg-primary-accent hover:opacity-90 text-surface px-4 py-2 rounded-lg transition-opacity duration-200"
-               >
-                  Register
-               </Link>
+               {isAuthenticated ? (
+                  <>
+                     <span className="text-sm font-medium text-secondary-text">
+                        {user?.fullname || user?.email}
+                     </span>
+                     <button
+                        onClick={onLogout}
+                        className="text-sm font-semibold bg-primary-accent hover:opacity-90 text-surface px-4 py-2 rounded-lg transition-opacity duration-200 cursor-pointer"
+                     >
+                        Logout
+                     </button>
+                  </>
+               ) : (
+                  <>
+                     <Link
+                        to="/login"
+                        className="text-sm font-medium text-secondary-text hover:text-primary-text transition-colors"
+                     >
+                        Sign In
+                     </Link>
+                     <Link
+                        to="/register"
+                        className="text-sm font-semibold bg-primary-accent hover:opacity-90 text-surface px-4 py-2 rounded-lg transition-opacity duration-200"
+                     >
+                        Register
+                     </Link>
+                  </>
+               )}
             </div>
          </div>
       </nav>
@@ -34,4 +59,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

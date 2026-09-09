@@ -38,6 +38,9 @@ export const validateGoogleProfileCompletion = [
    body("role")
       .notEmpty().withMessage("Role is required")
       .isIn(['citizen', 'dept_staff']).withMessage("Invalid role selected"),
+   body("departmentId")
+      .if(body("role").equals('dept_staff'))
+      .isMongoId().withMessage("A valid department is required"),
    validateRequest
 ]
 

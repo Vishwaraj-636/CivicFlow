@@ -10,6 +10,7 @@ import {
    requestDeptStaff,
    getGoogleAuthUrl,
    completeGoogleProfile,
+   getDepartments,
    logout,
    getCurrentUser
 } from "../services/auth.api";
@@ -62,7 +63,7 @@ export const useAuth = () => {
       }
    }
 
-   async function handleDeptStaffRequest({ email, contact, password, fullname, department }) {
+   async function handleDeptStaffRequest({ email, contact, password, fullname, departmentId }) {
       try {
          dispatch(setLoading(true));
          const data = await requestDeptStaff({
@@ -70,7 +71,7 @@ export const useAuth = () => {
             contact,
             password,
             fullname,
-            department
+            departmentId
          });
          dispatch(setError(null));
          return data;
@@ -96,10 +97,10 @@ export const useAuth = () => {
       }
    }
 
-   async function handleCompleteProfile({ role, contact, department }) {
+   async function handleCompleteProfile({ role, contact, departmentId }) {
       try {
          dispatch(setLoading(true));
-         const data = await completeGoogleProfile({ role, contact, department });
+         const data = await completeGoogleProfile({ role, contact, departmentId });
          dispatch(setUser(data.user));
          dispatch(setError(null));
          return data;
@@ -154,6 +155,7 @@ export const useAuth = () => {
       handleDeptStaffRequest,
       handleGoogleAuth,
       handleCompleteProfile,
+      getDepartments,
       handleLogout,
       handleGetCurrentUser
    }

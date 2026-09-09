@@ -2,7 +2,8 @@ import express from 'express';
 
 import {
    validateRegister,
-   validateLogin
+   validateLogin,
+   validateGoogleProfileCompletion
 } from '../validator/auth.validator.js';
 
 import {
@@ -17,7 +18,6 @@ import {
 import passport from 'passport';
 import { config } from '../config/config.js';
 import { authenticate } from '../middleware/auth.middleware.js';
-import { validateGoogleProfileCompletion } from '../validator/auth.validator.js';
 
 
 const router = express.Router();

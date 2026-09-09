@@ -20,8 +20,9 @@ const deptStaffRequestSchema = new mongoose.Schema(
             return !this.userId; // Required if not linked to an existing user
          },
       },
-      department: {
-         type: String,
+      departmentId: {
+         type: mongoose.Schema.Types.ObjectId,
+         ref: 'Department',
          required: true,
       },
       status: {
@@ -34,9 +35,17 @@ const deptStaffRequestSchema = new mongoose.Schema(
          ref: 'User',
          default: null,
       },
-      approvedBy: {
+      reviewedBy: {
          type: mongoose.Schema.Types.ObjectId,
          ref: 'User',
+         default: null,
+      },
+      reviewedAt: {
+         type: Date,
+         default: null,
+      },
+      rejectionReason: {
+         type: String,
          default: null,
       },
    },

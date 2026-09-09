@@ -1,31 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hook/useAuth';
 
 const CompleteGoogleProfile = () => {
-   const { handleCompleteProfile, loading } = useAuth();
+   const { handleCompleteProfile, getDepartments, loading } = useAuth();
    const navigate = useNavigate();
 
    const [role, setRole] = useState('citizen');
    const [formData, setFormData] = useState({
       contact: '',
-      department: ''
+      departmentId: ''
    });
+   const [departments, setDepartments] = useState([]);
    const [error, setError] = useState('');
    const [success, setSuccess] = useState('');
 
-   const departments = [
-      'Public Health',
-      'Transportation',
-      'Education',
-      'Parks & Recreation',
-      'Public Safety',
-      'Urban Planning',
-      'Social Services',
-      'Environmental Services',
-      'Housing & Community Development',
-      'Other'
-   ];
+   useEffect(() => {
+      getDepartments().then(setDepartments).catch(() => setError('Unable to load departments'));
+   }, []);
 
    const handleChange = (e) => {
       const { name, value } = e.target;
@@ -47,7 +39,7 @@ const CompleteGoogleProfile = () => {
             await handleCompleteProfile({
                role: 'dept_staff',
                contact: formData.contact,
-               department: formData.department
+               departmentId: formData.departmentId
             });
             setSuccess('Staff request submitted successfully. You will be contacted once admin reviews your request.');
             setTimeout(() => {
@@ -117,18 +109,18 @@ const CompleteGoogleProfile = () => {
 
                   {role === 'dept_staff' && (
                      <div className="space-y-1">
-                        <label className="text-[11px] uppercase tracking-wider font-semibold text-muted-text ml-1" htmlFor="department">Department</label>
+                        <label className="text-[11px] uppercase tracking-wider font-semibold text-muted-text ml-1" htmlFor="departmentId">Department</label>
                         <select
-                           id="department"
-                           name="department"
-                           value={formData.department}
+                           id="departmentId"
+                           name="departmentId"
+                           value={formData.departmentId}
                            onChange={handleChange}
                            className="w-full bg-surface-secondary/50 border border-border/60 rounded-xl px-5 py-3.5 text-primary-text text-sm focus:outline-none focus:ring-1 focus:ring-primary-accent focus:border-primary-accent focus:bg-surface-secondary transition-all duration-300 shadow-sm"
                            required={role === 'dept_staff'}
                         >
                            <option value="">Select a department</option>
                            {departments.map((dept) => (
-                              <option key={dept} value={dept}>{dept}</option>
+                              <option key={dept._id} value={dept._id}>{dept.fullname}</option>
                            ))}
                         </select>
                         <p className="text-[11px] text-muted-text mt-2 ml-1">Staff requests require admin approval before full access is granted.</p>
