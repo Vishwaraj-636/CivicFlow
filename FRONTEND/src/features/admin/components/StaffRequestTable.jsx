@@ -52,8 +52,8 @@ const StaffRequestTable = ({ onApprove, onReject, refreshKey }) => {
                   key={tab.key}
                   onClick={() => handleTabChange(tab.key)}
                   className={`relative py-4 px-1 mr-6 text-sm font-medium transition-colors cursor-pointer ${activeTab === tab.key
-                        ? 'text-primary-text'
-                        : 'text-muted-text hover:text-secondary-text'
+                     ? 'text-primary-text'
+                     : 'text-muted-text hover:text-secondary-text'
                      }`}
                >
                   {tab.label}
@@ -111,8 +111,10 @@ const StaffRequestTable = ({ onApprove, onReject, refreshKey }) => {
                   </thead>
                   <tbody className="divide-y divide-border/50">
                      {requests.map((req) => {
-                        const initials = req.applicant?.fullname
-                           ? req.applicant.fullname.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase()
+                        const applicant = req.userId ?? { fullname: req.fullname, email: req.email };
+                        const department = req.departmentId;
+                        const initials = applicant?.fullname
+                           ? applicant.fullname.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase()
                            : '?';
                         const formattedDate = req.createdAt
                            ? new Date(req.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -128,8 +130,8 @@ const StaffRequestTable = ({ onApprove, onReject, refreshKey }) => {
                                        <span className="text-primary-accent text-[11px] font-bold">{initials}</span>
                                     </div>
                                     <div>
-                                       <p className="text-sm font-medium text-primary-text">{req.applicant?.fullname ?? '—'}</p>
-                                       <p className="text-xs text-muted-text">{req.applicant?.email ?? ''}</p>
+                                       <p className="text-sm font-medium text-primary-text">{applicant?.fullname ?? '—'}</p>
+                                       <p className="text-xs text-muted-text">{applicant?.email ?? ''}</p>
                                     </div>
                                  </div>
                               </td>
@@ -137,7 +139,7 @@ const StaffRequestTable = ({ onApprove, onReject, refreshKey }) => {
                               {/* Department */}
                               <td className="px-6 py-4">
                                  <span className="text-sm text-secondary-text">
-                                    {req.department?.name ?? req.department?.fullname ?? '—'}
+                                    {department?.name ?? department?.fullname ?? '—'}
                                  </span>
                               </td>
 

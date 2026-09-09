@@ -10,11 +10,8 @@ export async function getDepartments() {
    return response.data;
 }
 
-export async function createStaffRequest({ departmentId, supportingInfo }) {
-   const response = await staffRequestApiInstance.post("/requests/staff", {
-      departmentId,
-      ...(supportingInfo ? { supportingInfo } : {}),
-   });
+export async function createStaffRequest({ departmentId }) {
+   const response = await staffRequestApiInstance.post("/requests/staff", { departmentId });
    return response.data;
 }
 

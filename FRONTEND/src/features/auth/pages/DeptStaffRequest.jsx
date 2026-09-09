@@ -8,7 +8,6 @@ const DeptStaffRequest = () => {
    const navigate = useNavigate();
    const [departments, setDepartments] = useState([]);
    const [departmentId, setDepartmentId] = useState('');
-   const [supportingInfo, setSupportingInfo] = useState('');
    const [loading, setLoading] = useState(false);
    const [loadingDepts, setLoadingDepts] = useState(true);
    const [error, setError] = useState('');
@@ -35,10 +34,9 @@ const DeptStaffRequest = () => {
       setError('');
       setLoading(true);
       try {
-         await createStaffRequest({ departmentId, supportingInfo: supportingInfo.trim() || undefined });
+         await createStaffRequest({ departmentId });
          setSuccess('Your request has been submitted. You will be notified once an administrator reviews it.');
          setDepartmentId('');
-         setSupportingInfo('');
          setTimeout(() => navigate('/dashboard'), 3500);
       } catch (err) {
          setError(err.response?.data?.message || 'Failed to submit request. Please try again.');
@@ -113,27 +111,6 @@ const DeptStaffRequest = () => {
                            ))}
                         </select>
                      )}
-                  </div>
-
-                  {/* Supporting Information */}
-                  <div className="space-y-1.5">
-                     <label className="text-[11px] uppercase tracking-wider font-semibold text-muted-text ml-1" htmlFor="supportingInfo">
-                        Supporting Information <span className="text-muted-text/50 font-normal normal-case tracking-normal">(optional)</span>
-                     </label>
-                     <textarea
-                        id="supportingInfo"
-                        name="supportingInfo"
-                        value={supportingInfo}
-                        onChange={(e) => setSupportingInfo(e.target.value)}
-                        rows={4}
-                        maxLength={500}
-                        className="w-full bg-surface-secondary/50 border border-border/60 rounded-xl px-5 py-3.5 text-primary-text text-sm placeholder-muted-text/50 focus:outline-none focus:ring-1 focus:ring-primary-accent focus:border-primary-accent focus:bg-surface-secondary transition-all duration-300 shadow-sm resize-none"
-                        placeholder="Briefly describe why you're applying for this department…"
-                     />
-                     <div className="flex justify-between items-center px-1">
-                        <p className="text-xs text-muted-text/70">This information helps administrators review your request.</p>
-                        <span className="text-xs text-muted-text/50">{supportingInfo.length}/500</span>
-                     </div>
                   </div>
 
                   {/* Info Banner */}

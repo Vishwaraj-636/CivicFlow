@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Outlet } from "react-router";
 import Register from "../features/auth/pages/register";
 import Login from "../features/auth/pages/Login";
 import DeptStaffRequest from "../features/auth/pages/DeptStaffRequest";
@@ -14,7 +14,12 @@ import StaffRequests from "../features/admin/pages/StaffRequests";
 // Placeholder Dashboards
 const CitizenDashboard = () => <div className="p-8 text-center"><h1 className="text-3xl font-light">Citizen Dashboard</h1></div>;
 const StaffDashboard = () => <div className="p-8 text-center"><h1 className="text-3xl font-light">Staff Dashboard</h1></div>;
-const AdminDashboard = () => <div className="p-8 text-center"><h1 className="text-3xl font-light">Admin Dashboard</h1></div>;
+const AdminDashboard = () => (
+   <div className="p-8 text-center">
+      <h1 className="text-3xl font-light">Admin Dashboard</h1>
+      <Outlet />
+   </div>
+);
 
 export const routes = createBrowserRouter([
    {

@@ -48,7 +48,7 @@ export const createDepartment = async (req, res) => {
 
 export const getDepartments = async (req, res) => {
    try {
-      const departments = await Department.find();
+      const departments = await Department.find({ isActive: true });
       res.status(200).json(departments);
    } catch (error) {
       console.error("Error fetching departments:", error);

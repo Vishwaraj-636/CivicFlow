@@ -126,58 +126,67 @@ export const getStaffRequestById = async (req, res) => {
 
 export const approveStaffRequest = async (req, res) => {
    const adminId = req.user._id;
+   const session = await mongoose.startSession();
 
    try {
-      const request = await deptStaffRequestModel.findById(req.params.id);
+      let approvedRequest;
 
-      if (!request) {
-         return res.status(404).json({ message: "Request not found" });
-      }
+      await session.withTransaction(async () => {
+         const request = await deptStaffRequestModel.findById(req.params.id).session(session);
 
-      if (request.status !== 'pending') {
-         return res.status(400).json({
-            message: `Cannot modify request with status: ${request.status}`
-         });
-      }
+         if (!request) {
+            throw Object.assign(new Error("Request not found"), { statusCode: 404 });
+         }
 
-      const department = await Department.findById(request.departmentId);
+         if (request.status !== 'pending') {
+            throw Object.assign(
+               new Error(`Cannot modify request with status: ${request.status}`),
+               { statusCode: 400 }
+            );
+         }
 
-      if (!department) {
-         return res.status(400).json({ message: "Requested department not found" });
-      }
+         const department = await Department.findById(request.departmentId).session(session);
 
-      const user = await userModel.findById(request.userId);
+         if (!department) {
+            throw Object.assign(new Error("Requested department not found"), { statusCode: 400 });
+         }
 
-      if (!user) {
-         return res.status(404).json({ message: "Applicant not found" });
-      }
+         const user = await userModel.findById(request.userId).session(session);
 
-      user.role = 'dept_staff';
-      user.departmentId = department._id;
-      user.profileCompleted = true;
-      user.isActive = true;
-      await user.save();
+         if (!user) {
+            throw Object.assign(new Error("Applicant not found"), { statusCode: 404 });
+         }
 
-      request.status = 'approved';
-      request.userId = user._id;
-      request.reviewedBy = adminId;
-      request.reviewedAt = new Date();
-      await request.save();
+         user.role = 'dept_staff';
+         user.departmentId = department._id;
+         user.profileCompleted = true;
+         user.isActive = true;
+         await user.save({ session });
+
+         request.status = 'approved';
+         request.userId = user._id;
+         request.reviewedBy = adminId;
+         request.reviewedAt = new Date();
+         await request.save({ session });
+         approvedRequest = request;
+      });
 
       res.status(200).json({
          message: "Request approved successfully",
          request: {
-            id: request._id,
-            userId: request.userId,
-            departmentId: request.departmentId,
-            status: request.status,
-            reviewedBy: request.reviewedBy,
-            reviewedAt: request.reviewedAt
+            id: approvedRequest._id,
+            userId: approvedRequest.userId,
+            departmentId: approvedRequest.departmentId,
+            status: approvedRequest.status,
+            reviewedBy: approvedRequest.reviewedBy,
+            reviewedAt: approvedRequest.reviewedAt
          }
       });
    } catch (err) {
       console.log(err);
-      res.status(500).json({ message: "Internal server error" });
+      res.status(err.statusCode || 500).json({ message: err.statusCode ? err.message : "Internal server error" });
+   } finally {
+      await session.endSession();
    }
 };
 
@@ -193,6 +202,9 @@ export const rejectStaffRequest = async (req, res) => {
 
       if (!request) {
          return res.status(404).json({ message: "Pending request not found" });
+      }
+      if (request.userId) {
+         await userModel.findByIdAndDelete(request.userId);
       }
 
       request.status = 'rejected';
