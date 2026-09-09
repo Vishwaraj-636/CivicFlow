@@ -16,7 +16,9 @@ const deptStaffRequestSchema = new mongoose.Schema(
       },
       password: {
          type: String,
-         required: true,
+         required: function () {
+            return !this.userId; // Required if not linked to an existing user
+         },
       },
       department: {
          type: String,
@@ -35,10 +37,6 @@ const deptStaffRequestSchema = new mongoose.Schema(
       approvedBy: {
          type: mongoose.Schema.Types.ObjectId,
          ref: 'User',
-         default: null,
-      },
-      rejectionReason: {
-         type: String,
          default: null,
       },
    },

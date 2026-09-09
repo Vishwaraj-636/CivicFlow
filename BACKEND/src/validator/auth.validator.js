@@ -30,3 +30,14 @@ export const validateLogin = [
       .notEmpty().withMessage("Password is required"),
    validateRequest
 ]
+
+export const validateGoogleProfileCompletion = [
+   body("contact")
+      .notEmpty().withMessage("Contact number is required")
+      .matches(/^[0-9]{10}$/).withMessage("Contact number must be 10 digits long"),
+   body("role")
+      .notEmpty().withMessage("Role is required")
+      .isIn(['citizen', 'dept_staff']).withMessage("Invalid role selected"),
+   validateRequest
+]
+

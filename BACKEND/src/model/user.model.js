@@ -6,13 +6,15 @@ const userSchema = new mongoose.Schema(
       email: {
          type: String,
          required: true,
-         unique: true
+         unique: true,
+         lowercase: true,
+         trim: true
       },
       contact: {
          type: String,
          required: false
       },
-      password: {
+      passwordHash: {
          type: String,
          required: function () {
             return !this.googleId; // Password is required only if googleId is not present
@@ -24,20 +26,33 @@ const userSchema = new mongoose.Schema(
       },
       role: {
          type: String,
-         enum: ['citizen', 'admin', 'department_staff'],
+         enum: ['citizen', 'admin', 'dept_staff', 'incomplete'],
          default: 'citizen',
+      },
+      authProvider: {
+         type: String,
+         enum: ['local', 'google'],
+         default: 'local'
+      },
+      departmentId: {
+         type: String,
+         default: null
+      },
+      profileCompleted: {
+         type: Boolean,
+         default: true
       },
       googleId: {
          type: String,
-      }
+      },
 
 
       //future use cases for user management and session handling
 
-      //  isActive: {
-      //    type: Boolean,
-      //    default: true, // Used by admin to enable/disable user accounts
-      //  },
+      isActive: {
+         type: Boolean,
+         default: true, // Used by admin to enable/disable user accounts
+      },
       //  refreshToken: {
       //    type: String, // For Session Management & Refresh Token handling
       //  },
@@ -48,16 +63,15 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.pre('save', async function () {
-   if (!this.isModified('password')) {
+   if (!this.isModified('passwordHash') || !this.passwordHash) {
       return
    }
 
-   const hash = await bcrypt.hash(this.password, 10);
-   this.password = hash;
+   this.passwordHash = await bcrypt.hash(this.passwordHash, 10);
 });
 
 userSchema.methods.comparePassword = async function (password) {
-   return await bcrypt.compare(password, this.password);
+   return this.passwordHash ? bcrypt.compare(password, this.passwordHash) : false;
 };
 
 const User = mongoose.model('User', userSchema);

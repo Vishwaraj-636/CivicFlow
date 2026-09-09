@@ -10,13 +10,12 @@ const requestApiInstance = axios.create({
    withCredentials: true,
 })
 
-export async function register({ email, contact, password, fullname, role }) {
+export async function register({ email, contact, password, fullname }) {
    const response = await authApiInstance.post("/register", {
       email,
       contact,
       password,
-      fullname,
-      role
+      fullname
    })
    return response.data;
 }
@@ -37,5 +36,29 @@ export async function requestDeptStaff({ email, contact, password, fullname, dep
       fullname,
       department
    })
+   return response.data;
+}
+
+export async function getGoogleAuthUrl() {
+   const response = await authApiInstance.get("/google/url");
+   return response.data;
+}
+
+export async function completeGoogleProfile({ role, contact, department }) {
+   const response = await authApiInstance.post("/complete-profile", {
+      role,
+      contact,
+      department
+   })
+   return response.data;
+}
+
+export async function logout() {
+   const response = await authApiInstance.post("/logout");
+   return response.data;
+}
+
+export async function getCurrentUser() {
+   const response = await authApiInstance.get("/me");
    return response.data;
 }

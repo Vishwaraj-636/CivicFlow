@@ -4,7 +4,7 @@ import ContinueWithGoogle from '../../../components/googleAuth/ContinueWithGoogl
 import { useAuth } from '../hook/useAuth';
 
 const DeptStaffRequest = () => {
-   const { handleDeptStaffRequest } = useAuth();
+   const { handleDeptStaffRequest, loading } = useAuth();
    const navigate = useNavigate();
    const [formData, setFormData] = useState({
       fullname: '',
@@ -54,10 +54,21 @@ const DeptStaffRequest = () => {
             department: formData.department
          });
 
-         setSuccess('Request submitted successfully! You will be contacted once admin reviews your request.');
+         setSuccess('Staff request submitted successfully. You will be contacted once admin reviews your request.');
+         // Clear form
+         setFormData({
+            fullname: '',
+            email: '',
+            contact: '',
+            password: '',
+            confirmPassword: '',
+            department: ''
+         });
+
+         // No automatic authentication here.
          setTimeout(() => {
             navigate('/login');
-         }, 2000);
+         }, 3000);
       } catch (err) {
          setError(err.response?.data?.message || 'Request failed');
       }
@@ -68,7 +79,7 @@ const DeptStaffRequest = () => {
          <div className="w-full max-w-2xl relative z-10 my-8">
             <div className="bg-surface p-10 sm:p-12 rounded-2xl border border-border shadow-md">
                <div className="mb-10 text-center">
-                  <h1 className="text-3xl font-light tracking-tight text-primary-text mb-3">Request Department Staff Role</h1>
+                  <h1 className="text-3xl font-light tracking-tight text-primary-text mb-3">Department Staff Request</h1>
                   <p className="text-secondary-text text-sm font-medium tracking-wide">Apply to become a department staff member. Your request will be reviewed by administrators.</p>
                </div>
 
@@ -184,9 +195,10 @@ const DeptStaffRequest = () => {
 
                   <button
                      type="submit"
-                     className="w-full bg-primary-accent hover:opacity-90 text-surface font-semibold text-sm rounded-lg py-3 mt-8 transition-opacity duration-200 cursor-pointer"
+                     disabled={loading}
+                     className="w-full bg-primary-accent hover:opacity-90 disabled:opacity-50 text-surface font-semibold text-sm rounded-lg py-3 mt-8 transition-opacity duration-200 cursor-pointer"
                   >
-                     Submit Request
+                     {loading ? 'Submitting...' : 'Submit Request'}
                   </button>
                </form>
 

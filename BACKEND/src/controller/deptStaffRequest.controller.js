@@ -145,13 +145,23 @@ export const approveDeptStaffRequest = async (req, res) => {
             user = await userModel.create({
                email: request.email,
                contact: request.contact,
-               password: request.password,
+               passwordHash: request.password,
                fullname: request.fullname,
-               role: 'department_staff' // This won't work with current schema, need to update
+               role: 'dept_staff',
+               authProvider: 'local',
+               profileCompleted: true,
+               departmentId: request.department,
+               isActive: true
             });
-         } else if (user.role === 'citizen') {
+         } else if (user.role === 'citizen' || user.role === 'incomplete') {
             // Update existing citizen to department staff
-            user.role = 'department_staff'; // This won't work with current schema
+            user.role = 'dept_staff';
+            user.departmentId = request.department;
+            user.profileCompleted = true;
+            user.isActive = true;
+            await user.save();
+         } else if (user.role === 'dept_staff') {
+            user.departmentId = request.department;
             await user.save();
          }
 

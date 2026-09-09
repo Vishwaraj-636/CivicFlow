@@ -6,6 +6,8 @@ import {
    getDeptStaffRequestById,
    approveDeptStaffRequest
 } from '../controller/deptStaffRequest.controller.js';
+import { authenticate } from '../middleware/auth.middleware.js';
+import { requireRole } from '../middleware/role.middleware.js';
 
 const router = express.Router();
 
@@ -21,20 +23,20 @@ router.post('/dept-staff', validateDeptStaffRequest, requestDeptStaff);
  * @desc Get all department staff requests (admin only)
  * @access Admin only
  */
-router.get('/dept-staff', getAllDeptStaffRequests);
+router.get('/dept-staff', authenticate, requireRole('admin'), getAllDeptStaffRequests);
 
 /**
  * @route GET /api/request/dept-staff/:id
  * @desc Get specific department staff request (admin only)
  * @access Admin only
  */
-router.get('/dept-staff/:id', getDeptStaffRequestById);
+router.get('/dept-staff/:id', authenticate, requireRole('admin'), getDeptStaffRequestById);
 
 /**
  * @route POST /api/request/dept-staff/approve/:id
  * @desc Admin approve or reject department staff request
  * @access Admin only
  */
-router.post('/dept-staff/approve/:id', validateDeptStaffApproval, approveDeptStaffRequest);
+router.post('/dept-staff/approve/:id', authenticate, requireRole('admin'), validateDeptStaffApproval, approveDeptStaffRequest);
 
 export default router;

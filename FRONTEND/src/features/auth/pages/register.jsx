@@ -4,15 +4,14 @@ import ContinueWithGoogle from '../../../components/googleAuth/ContinueWithGoogl
 import { useAuth } from '../hook/useAuth';
 
 const Register = () => {
-   const { handleRegister } = useAuth();
+   const { handleRegister, loading } = useAuth();
    const navigate = useNavigate();
    const [formData, setFormData] = useState({
       fullname: '',
       email: '',
       contact: '',
       password: '',
-      confirmPassword: '',
-      role: 'citizen'
+      confirmPassword: ''
    });
    const [error, setError] = useState('');
 
@@ -36,10 +35,9 @@ const Register = () => {
             fullname: formData.fullname,
             email: formData.email,
             contact: formData.contact,
-            password: formData.password,
-            role: formData.role
+            password: formData.password
          });
-         navigate('/login');
+         navigate('/citizen');
       } catch (err) {
          setError(err.response?.data?.message || 'Registration failed');
       }
@@ -133,26 +131,12 @@ const Register = () => {
                      />
                   </div>
 
-                  <div className="space-y-1">
-                     <label className="text-[11px] uppercase tracking-wider font-semibold text-muted-text ml-1" htmlFor="role">Role</label>
-                     <select
-                        id="role"
-                        name="role"
-                        value={formData.role}
-                        onChange={handleChange}
-                        className="w-full bg-surface-secondary/50 border border-border/60 rounded-xl px-5 py-3.5 text-primary-text text-sm focus:outline-none focus:ring-1 focus:ring-primary-accent focus:border-primary-accent focus:bg-surface-secondary transition-all duration-300 shadow-sm"
-                     >
-                        <option value="citizen">Citizen</option>
-                        <option value="admin">Admin</option>
-                        <option value="department_staff">Department Staff</option>
-                     </select>
-                  </div>
-
                   <button
                      type="submit"
-                     className="w-full bg-primary-accent hover:opacity-90 text-surface font-semibold text-sm rounded-lg py-3 mt-8 transition-opacity duration-200 cursor-pointer"
+                     disabled={loading}
+                     className="w-full bg-primary-accent hover:opacity-90 disabled:opacity-50 text-surface font-semibold text-sm rounded-lg py-3 mt-8 transition-opacity duration-200 cursor-pointer"
                   >
-                     Create Account
+                     {loading ? 'Creating Account...' : 'Create Account'}
                   </button>
 
                   <div className="relative flex items-center py-2">

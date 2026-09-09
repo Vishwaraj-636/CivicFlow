@@ -3,7 +3,7 @@ import React from 'react';
 const ContinueWithGoogle = () => {
    return (
       <a
-         href="/api/auth/google"
+         href="http://localhost:3000/api/auth/google"
          className="flex items-center w-full h-[48px] bg-white dark:bg-[#131314] border border-[#747775] dark:border-[#8e918f] rounded-lg px-3 hover:bg-[#f8fafd] dark:hover:bg-[#1f1f1f] transition-all duration-200 mb-4"
       >
          <svg
