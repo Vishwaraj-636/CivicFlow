@@ -6,10 +6,13 @@ import passport from 'passport';
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
 
+
 import { config } from './config/config.js';
 import authRouter from './routes/auth.routes.js';
 import requestRouter from './routes/request.routes.js';
 import departmentRouter from "./routes/department.routes.js"
+import complaintRouter from "./routes/complaint.routes.js";
+import complaintTimelineRouter from "./routes/complaintTimeline.routes.js";
 
 
 
@@ -44,6 +47,8 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRouter);
 app.use('/api', requestRouter);
 app.use('/api', departmentRouter);
+app.use('/api', complaintRouter);
+app.use('/api', complaintTimelineRouter);
 
 export default app;
 

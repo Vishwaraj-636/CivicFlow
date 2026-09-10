@@ -9,10 +9,14 @@ import CompleteGoogleProfile from "../features/auth/pages/CompleteGoogleProfile"
 import RoleRoute from "../components/auth/RoleRoute";
 import Unauthorized from "../features/auth/pages/Unauthorized";
 import StaffRequests from "../features/admin/pages/StaffRequests";
+import CitizenDashboard from "../features/citizen/pages/CitizenDashboard";
+import MyComplaints from "../features/citizen/pages/MyComplaints";
+import ComplaintReport from "../features/citizen/pages/ComplaintReport";
+import ComplaintDetails from "../features/citizen/pages/ComplaintDetails";
+import TrackComplaint from "../features/citizen/pages/TrackComplaint";
+import Profile from "../features/citizen/pages/Profile";
 
 
-// Placeholder Dashboards
-const CitizenDashboard = () => <div className="p-8 text-center"><h1 className="text-3xl font-light">Citizen Dashboard</h1></div>;
 const StaffDashboard = () => <div className="p-8 text-center"><h1 className="text-3xl font-light">Staff Dashboard</h1></div>;
 const AdminDashboard = () => (
    <div className="p-8 text-center">
@@ -28,7 +32,7 @@ export const routes = createBrowserRouter([
       children: [
          {
             index: true,
-            element: <div className="p-8 text-center"><h1 className="text-3xl font-light">Welcome to CivicFlow</h1><p className="text-secondary-text mt-2">Manage your complaints seamlessly.</p></div>
+            element: <AuthRedirect />
          },
          {
             path: "dashboard",
@@ -60,11 +64,33 @@ export const routes = createBrowserRouter([
          },
          {
             path: "citizen",
-            element: (
-               <RoleRoute allowedRoles="citizen">
-                  <CitizenDashboard />
-               </RoleRoute>
-            )
+            element: <RoleRoute allowedRoles="citizen" />,
+            children: [
+               {
+                  index: true,
+                  element: <CitizenDashboard />
+               },
+               {
+                  path: "complaints",
+                  element: <MyComplaints />
+               },
+               {
+                  path: "complaints/report",
+                  element: <ComplaintReport />
+               },
+               {
+                  path: "complaints/:id",
+                  element: <ComplaintDetails />
+               },
+               {
+                  path: "complaints/:id/track",
+                  element: <TrackComplaint />
+               },
+               {
+                  path: "profile",
+                  element: <Profile />
+               }
+            ]
          },
          {
             path: "staff",

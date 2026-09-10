@@ -1,0 +1,1130 @@
+================================================================================
+                        CIVICFLOW - COMPLETE CODEBASE EXPLANATION
+                          Feature-wise (Backend + Frontend Together)
+================================================================================
+
+CivicFlow is a civic complaint management platform. Citizens report local issues
+(potholes, garbage, water leaks, etc.), and department staff / admins review,
+assign, and resolve those complaints.
+
+TECH STACK
+----------
+  Backend  : Node.js, Express.js, MongoDB (Mongoose), Passport.js (Google OAuth),
+             JWT (jsonwebtoken), bcryptjs, express-validator, ImageKit
+  Frontend : React (Vite), React Router v7, Redux Toolkit, Axios, Leaflet (maps),
+             Tailwind CSS
+
+PROJECT STRUCTURE OVERVIEW
+--------------------------
+  CivicFlow/
+  BACKEND/
+    server.js                          Entry point
+    src/
+      app.js                         Express app setup
+      config/
+        config.js                  Env-variable validation and exports
+        database.js                MongoDB connection + seed trigger
+        seed.js                    Department seeder
+      model/
+        user.model.js
+        complaint.model.js
+        complaintTimeline.model.js
+        department.model.js
+        deptStaffRequest.model.js
+        location.schema.js
+      controller/
+        auth.controller.js
+        complaint.controller.js
+        complaintTimeline.controller.js
+        department.controller.js
+        deptStaffRequest.controller.js
+      routes/
+        auth.routes.js
+        complaint.routes.js
+        complaintTimeline.routes.js
+        department.routes.js
+        request.routes.js
+      middleware/
+        auth.middleware.js
+        role.middleware.js
+      validator/
+        auth.validator.js
+        complaint.validator.js
+        department.validator.js
+        deptStaffRequest.validator.js
+      service/
+        complaintSimilarity.service.js
+        imagekit.service.js
+  FRONTEND/
+    src/
+      main.jsx
+      app/
+        App.jsx
+        app.routes.jsx
+        app.store.js
+      features/
+        auth/
+          hook/useAuth.js
+          state/auth.slice.js
+          services/auth.api.js
+          services/staffRequest.api.js
+          pages/ (Login, register, CompleteGoogleProfile, DeptStaffRequest, Unauthorized)
+        citizen/
+          pages/ (CitizenDashboard, ComplaintReport, MyComplaints,
+                  ComplaintDetails, TrackComplaint, Profile)
+          services/complaint.api.js
+        admin/
+          pages/StaffRequests.jsx
+          components/ (StaffRequestTable, StaffRequestReviewModal, StaffRequestCard)
+          services/staffRequest.api.js
+      components/
+        auth/ (AuthRedirect, ProtectedRoute, RoleRoute)
+        complaint/ (ComplaintCard, ComplaintStatus, ComplaintTimeline,
+                    GroupedReportsSummary)
+        googleAuth/ (ContinueWithGoogle)
+        layout/ (Navbar, RootLayout)
+        maps/ (LocationPicker, ComplaintMap, MapMarker)
+        media/ (MediaUploader, MediaPreview)
+
+
+================================================================================
+FEATURE 1 - APPLICATION BOOTSTRAP AND GLOBAL INFRASTRUCTURE
+================================================================================
+
+PURPOSE: Foundation every feature depends on.
+
+--- BACKEND ---
+
+server.js:
+  - Loads dotenv. Calls connectDB(). On failure, process exits.
+  - After DB connected, app.listen() starts HTTP server on PORT.
+
+config/config.js:
+  - Validates all required env keys on startup:
+      MONGO_URI, JWT_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
+      NODE_ENV, IMAGE_KIT_PRIVATE_KEY
+  - Throws and crashes if any are missing.
+  - Exports a single config object used everywhere in the backend.
+
+config/database.js:
+  - Calls mongoose.connect(config.MONGO_URI).
+  - After connection, calls seedDepartments() to ensure five initial
+    departments always exist.
+
+config/seed.js:
+  - Defines five departments the system bootstraps with:
+      Public Works   -> categories: Pothole, Road Damage
+      Sanitation     -> categories: Garbage
+      Water Supply   -> categories: Water Leakage
+      Electrical     -> categories: Streetlight
+      Drainage       -> categories: Drainage
+  - Uses MongoDB upsert with $setOnInsert. Idempotent - safe to run every restart.
+
+src/app.js:
+  - morgan('dev') - HTTP request logging.
+  - express.json() + express.urlencoded() - body parsing.
+  - cookieParser() - reads JWT token cookie.
+  - cors({ origin: http://localhost:5173, credentials: true })
+  - passport.initialize() - boots Passport for Google OAuth.
+  - GoogleStrategy configured with clientID, clientSecret, callbackURL.
+    Verify callback just passes Google profile through to the controller.
+  - Route mounting:
+      /api/auth -> authRouter
+      /api      -> requestRouter (staff request management)
+      /api      -> departmentRouter
+      /api      -> complaintRouter
+      /api      -> complaintTimelineRouter
+
+--- FRONTEND ---
+
+main.jsx:
+  - Creates React root with createRoot.
+  - Wraps App in Redux Provider store.
+  - Imports leaflet CSS globally.
+
+app/app.store.js:
+  - configureStore from Redux Toolkit with one slice: auth.
+
+app/App.jsx:
+  - On mount: calls handleGetCurrentUser() from useAuth hook.
+  - Fires GET /api/auth/me to check JWT cookie. If valid, user is
+    rehydrated into Redux state.
+  - Renders RouterProvider.
+
+
+================================================================================
+FEATURE 2 - AUTHENTICATION (LOCAL - EMAIL + PASSWORD)
+================================================================================
+
+PURPOSE: Allow users to create accounts and log in. JWT issued as HttpOnly cookie.
+
+--- DATA MODEL: user.model.js ---
+  email           : String, unique, required, lowercased
+  contact         : String, optional
+  passwordHash    : String - required unless googleId is set
+  fullname        : String, required
+  role            : Enum [citizen, dept_staff, admin], default citizen
+  authProvider    : Enum [local, google], default local
+  departmentId    : ObjectId ref Department, null by default
+  profileCompleted: Boolean, default true
+  googleId        : String, optional
+  isActive        : Boolean, default true (admin can disable accounts)
+  timestamps      : createdAt, updatedAt
+
+  Pre-save hook:
+    When passwordHash is modified and not empty, bcrypt-hashes it with
+    10 salt rounds. Controllers set passwordHash = plaintext; model hashes it.
+
+  comparePassword(password) instance method:
+    Returns bcrypt.compare(password, this.passwordHash).
+    Returns false if no passwordHash (Google-only accounts).
+
+--- VALIDATION: auth.validator.js ---
+  Uses express-validator body() chains.
+
+  validateRegister:
+    email    -> must be valid email
+    contact  -> required, must be 10 digits
+    password -> min length 6
+    fullname -> required, min length 3
+
+  validateLogin:
+    email    -> must be valid email
+    password -> must not be empty
+
+  validateGoogleProfileCompletion:
+    contact      -> required, 10 digits
+    role         -> required, must be citizen or dept_staff
+    departmentId -> required as MongoId only when role is dept_staff
+
+  All validators include a final validateRequest middleware that returns 400
+  with errors array if validation fails.
+
+--- BACKEND LOGIC: auth.controller.js ---
+
+REGISTER (POST /api/auth/register):
+  1. Checks if user exists with same email OR contact. Returns 400 if found.
+  2. Creates new User with role=citizen, authProvider=local, profileCompleted=true.
+     Sets passwordHash = plaintext; pre-save hook hashes it automatically.
+  3. Saves user, calls sendTokenResponse(user, res).
+
+LOGIN (POST /api/auth/login):
+  1. Finds user by email. Returns 400 if not found.
+  2. Checks user.isActive - returns 403 if inactive.
+  3. Calls user.comparePassword(password). Returns 400 if no match.
+  4. Calls sendTokenResponse(user, res).
+
+LOGOUT (POST /api/auth/logout):
+  Calls res.clearCookie('token'), returns 200.
+
+GET CURRENT USER (GET /api/auth/me):
+  Protected by authenticate middleware. Returns sanitized user object.
+
+sendTokenResponse (internal helper):
+  Signs JWT: { id: user._id }, expiresIn: 1d.
+  Sets HttpOnly cookie: sameSite=lax, secure in production, maxAge=24h.
+  Returns 200 JSON with user: { id, email, fullname, contact, role,
+    departmentId, profileCompleted, authProvider }.
+
+--- ROUTES: auth.routes.js ---
+  POST /api/auth/register -> validateRegister, register
+  POST /api/auth/login    -> validateLogin, login
+  GET  /api/auth/me       -> authenticate, getCurrentUser
+  POST /api/auth/logout   -> logout
+
+--- MIDDLEWARE ---
+
+authenticate (auth.middleware.js):
+  1. Reads token from cookies or Authorization header (Bearer scheme).
+  2. Returns 401 if no token.
+  3. Verifies JWT with jwt.verify(). Returns 401 if invalid.
+  4. Fetches user from DB by decoded.id. Returns 401 if not found.
+  5. Checks user.isActive. Returns 401 if disabled.
+  6. Attaches full user document to req.user, calls next().
+
+requireRole(...allowedRoles) (role.middleware.js):
+  Returns middleware checking req.user.role against allowedRoles.
+  Returns 401 if req.user missing, 403 if role not in the list.
+
+--- FRONTEND ---
+
+auth.slice.js (features/auth/state/):
+  Redux slice with: user, loading, error, initialized.
+  Actions: setUser, setLoading, setError, setInitialized.
+
+useAuth HOOK (features/auth/hook/useAuth.js):
+  Central hook used by every component needing auth state.
+  Wraps all API calls with try/catch, dispatches to Redux.
+
+  handleRegister({ email, contact, password, fullname })
+    -> calls register() from auth.api.js
+    -> on success: dispatch setUser(data.user)
+    -> on failure: dispatch setError(message)
+
+  handleLogin({ email, password })
+    -> calls login() -> dispatch setUser on success
+
+  handleLogout()
+    -> calls logout() -> dispatch setUser(null) on success
+
+  handleGetCurrentUser()
+    -> calls getCurrentUser() -> dispatch setUser on success
+    -> on 401 failure: dispatch setUser(null)
+    -> always: dispatch setInitialized(true), setLoading(false)
+    -> Called ONCE on App mount to rehydrate session.
+
+  isAuthenticated: Boolean(user) - derived state
+
+auth.api.js (features/auth/services/):
+  Multiple axios instances (authApiInstance, requestApiInstance,
+  departmentApiInstance) all with withCredentials: true.
+  Exports: register, login, logout, getCurrentUser, getDepartments,
+           getGoogleAuthUrl, completeGoogleProfile, requestDeptStaff.
+
+Register Page (features/auth/pages/register.jsx):
+  - If already authenticated and initialized: redirect to /dashboard.
+  - On submit: validates passwords match locally, calls handleRegister(),
+    navigate('/citizen').
+  - Renders ContinueWithGoogle button below the form.
+
+Login Page (features/auth/pages/Login.jsx):
+  - If already authenticated: redirect to /dashboard.
+  - On submit: calls handleLogin(), navigate('/dashboard').
+  - Renders ContinueWithGoogle button.
+
+--- ROUTE GUARDS (components/auth/) ---
+
+AuthRedirect.jsx (at /dashboard):
+  - Waits for initialized. Shows loading spinner if not.
+  - Not authenticated -> /login.
+  - profileCompleted=false -> /complete-profile.
+  - citizen -> /citizen, dept_staff -> /staff, admin -> /admin.
+  - dept_staff without departmentId -> /unauthorized.
+
+ProtectedRoute.jsx:
+  - Not initialized -> loading spinner.
+  - Not authenticated -> /login.
+  - profileCompleted=false -> /complete-profile.
+  - Otherwise renders children or Outlet.
+
+RoleRoute.jsx:
+  - Same auth/profile checks as ProtectedRoute.
+  - Additionally checks allowedRoles (string or array) against user.role.
+  - Wrong role -> /unauthorized.
+
+
+================================================================================
+FEATURE 3 - GOOGLE OAUTH AUTHENTICATION
+================================================================================
+
+PURPOSE: Allow users to sign in with Google. New Google users must complete
+their profile (choose citizen or dept_staff) before accessing the platform.
+
+--- BACKEND ---
+
+Strategy setup (app.js):
+  PassportJS GoogleStrategy with clientID, clientSecret, callbackURL.
+  Verify callback: done(null, profile) - no DB work here.
+
+Routes (auth.routes.js):
+  GET /api/auth/google
+    -> passport.authenticate('google', { scope: ['profile', 'email'] })
+    -> Redirects user to Google consent screen.
+
+  GET /api/auth/google/callback
+    -> passport.authenticate('google', { session: false })
+    -> On success: calls googleCallback controller.
+
+  GET /api/auth/google/url
+    -> Returns JSON { url: 'http://localhost:3000/api/auth/google' }
+
+googleCallback controller (auth.controller.js):
+  1. Extracts { id, displayName, emails } from req.user (set by Passport).
+  2. Looks up user by googleId.
+  3. If no user by googleId but email used by local account:
+     redirect to /login?error=google-account-already-used.
+  4. If no user: creates one with role=citizen, authProvider=google,
+     profileCompleted=false, no passwordHash.
+  5. If user.isActive=false: redirect to /login?error=account-inactive.
+  6. Signs JWT, sets HttpOnly cookie.
+  7. profileCompleted=true -> redirect to http://localhost:5173/dashboard.
+     profileCompleted=false -> redirect to http://localhost:5173/complete-profile.
+
+completeGoogleProfile (POST /api/auth/complete-profile):
+  Reads token manually from cookie/header (no authenticate middleware - user
+  may not have a completed profile yet).
+  Verifies JWT, finds user.
+  Guards: not found (404), inactive (403), already complete (400).
+  If role=citizen:
+    Sets role=citizen, profileCompleted=true, saves, sendTokenResponse.
+  If role=dept_staff:
+    Finds department. Checks for existing pending request (prevents duplicates).
+    Creates DeptStaffRequest with status=pending, userId=user._id.
+    Returns 200 JSON { message, request }.
+    User role NOT updated yet - remains citizen until admin approves.
+
+--- FRONTEND ---
+
+ContinueWithGoogle.jsx (components/googleAuth/):
+  Simple <a href="http://localhost:3000/api/auth/google"> button.
+  Full browser redirect starts the OAuth flow. No JavaScript fetch needed.
+  Displayed on both Login and Register pages.
+
+CompleteGoogleProfile.jsx (features/auth/pages/):
+  Shown when profileCompleted=false after Google login.
+  Fetches available departments on mount (getDepartments from useAuth).
+  Role toggle: Citizen | Department Staff (two buttons).
+  Always shows contact number field.
+  If dept_staff: shows department dropdown.
+  On submit (citizen): handleCompleteProfile -> navigate('/citizen').
+  On submit (dept_staff): handleCompleteProfile -> success message
+    -> navigate('/login') after 3 seconds. User waits for admin approval.
+
+DeptStaffRequest.jsx (features/auth/pages/):
+  For already-authenticated citizens requesting a staff role.
+  Uses features/auth/services/staffRequest.api.js.
+  Fetches active departments from /api/departments.
+  Submits POST /api/requests/staff with { departmentId }.
+  On success: shows message, redirects to /dashboard after 3.5s.
+
+
+================================================================================
+FEATURE 4 - DEPARTMENT MANAGEMENT
+================================================================================
+
+PURPOSE: Admins manage departments. Public routes let forms fetch department lists.
+
+--- DATA MODEL: department.model.js ---
+  fullname   : String, required
+  code       : String, required, unique (e.g. PUBLIC_WORKS)
+  description: String, optional
+  isActive   : Boolean, default true
+  categories : [String] - complaint categories this dept handles
+  timestamps : createdAt, updatedAt
+
+--- VALIDATION: department.validator.js ---
+  validateDepartmentCreation: fullname required, code required, both at least 3/2
+    chars; description optional string; categories optional array of strings;
+    isActive optional boolean.
+  validateDepartmentUpdate: all same fields but all optional.
+
+--- BACKEND LOGIC: department.controller.js ---
+
+createDepartment (POST /api/departments - admin only):
+  Trims and validates fullname and code. Normalizes categories (filter, trim).
+  Checks for duplicate code (409 if taken). Creates, returns 201.
+
+getDepartments (GET /api/departments - public, no auth):
+  Returns all departments where isActive=true.
+  Used by registration and complaint-report forms for dropdowns.
+
+getDepartmentById (GET /api/departments/:id - public):
+  Finds by _id. Returns 404 if not found, 400 if ID invalid.
+
+updateDepartment (PATCH /api/departments/:id - admin only):
+  Partial update - builds updates object only from defined body fields.
+  Checks for code conflict if code is being changed.
+  Uses findByIdAndUpdate with { new: true, runValidators: true }.
+
+deleteDepartment (DELETE /api/departments/:id - admin only):
+  Hard-deletes with findByIdAndDelete.
+
+--- ROUTES: department.routes.js ---
+  POST   /api/departments     -> authenticate, admin, validate, create
+  GET    /api/departments     -> public, getDepartments
+  GET    /api/departments/:id -> public, getDepartmentById
+  PATCH  /api/departments/:id -> authenticate, admin, validate, update
+  DELETE /api/departments/:id -> authenticate, admin, delete
+
+(No dedicated department management UI in the frontend yet.)
+
+
+================================================================================
+FEATURE 5 - DEPARTMENT STAFF REQUEST MANAGEMENT
+================================================================================
+
+PURPOSE: Citizens apply for dept staff role. Admins approve or reject.
+On approval, user role is atomically upgraded via MongoDB transaction.
+
+--- DATA MODEL: deptStaffRequest.model.js ---
+  email          : String, required
+  contact        : String, required
+  fullname       : String, required
+  password       : String - required if no userId
+  departmentId   : ObjectId ref Department, required
+  status         : Enum [pending, approved, rejected], default pending
+  userId         : ObjectId ref User, null (linked to existing user account)
+  reviewedBy     : ObjectId ref User, null
+  reviewedAt     : Date, null
+  rejectionReason: String, null
+  timestamps     : createdAt, updatedAt
+
+--- VALIDATION: deptStaffRequest.validator.js ---
+
+validateDeptStaffRequest:
+  departmentId -> valid MongoId, must exist as isActive=true in DB.
+  (async custom validator queries Department model directly)
+
+validateDeptStaffApproval:
+  Param id -> valid MongoId, must be a pending request in DB.
+
+validateDeptStaffRejection:
+  Same param validation as approval.
+  body.rejectionReason -> required, non-empty string.
+
+--- BACKEND LOGIC: deptStaffRequest.controller.js ---
+
+createStaffRequest (POST /api/requests/staff):
+  1. Validates department exists and is active.
+  2. Checks for existing pending request for this user (prevents duplicates).
+  3. Blocks admin users from requesting staff role.
+  4. Creates DeptStaffRequest with status=pending, userId=req.user._id.
+  5. Returns 201 with request details.
+
+getMyStaffRequest (GET /api/requests/staff/me):
+  Finds most recent request for current user, populates departmentId.
+  Returns 404 if none found.
+
+getStaffRequests (GET /api/admin/requests/staff - admin only):
+  Query params: status (default: pending), departmentId (optional).
+  Populates: userId, departmentId, reviewedBy.
+  Excludes password and __v. Sorted newest first.
+
+getStaffRequestById (GET /api/admin/requests/staff/:id - admin only):
+  Returns single request with full population.
+
+approveStaffRequest (PATCH /api/admin/requests/staff/:id/approve - admin only):
+  USES A MONGODB TRANSACTION (session.withTransaction):
+  1. Finds request by ID. Verifies still pending.
+  2. Finds department (throws 400 if not found).
+  3. Finds user (throws 404 if not found).
+  4. Atomically:
+       user.role = dept_staff
+       user.departmentId = department._id
+       user.profileCompleted = true
+       user.isActive = true
+       user.save({ session })
+
+       request.status = approved
+       request.reviewedBy = adminId
+       request.reviewedAt = new Date()
+       request.save({ session })
+  5. Returns 200.
+  The transaction ensures partial writes cannot happen.
+
+rejectStaffRequest (PATCH /api/admin/requests/staff/:id/reject - admin only):
+  1. Finds pending request.
+  2. If request has userId, deletes that user account (cleanup for Google users
+     who were never approved).
+  3. Sets status=rejected, rejectionReason, reviewedBy, reviewedAt.
+  4. Returns 200.
+
+--- ROUTES: request.routes.js ---
+  POST   /api/requests/staff                   -> authenticate, validate, create
+  GET    /api/requests/staff/me                -> authenticate, getMyRequest
+  GET    /api/admin/requests/staff             -> authenticate, admin, list
+  GET    /api/admin/requests/staff/:id         -> authenticate, admin, getById
+  PATCH  /api/admin/requests/staff/:id/approve -> authenticate, admin, validate, approve
+  PATCH  /api/admin/requests/staff/:id/reject  -> authenticate, admin, validate, reject
+
+--- FRONTEND: Admin Staff Request Management ---
+
+StaffRequests.jsx (features/admin/pages/):
+  Admin landing page for reviewing staff requests.
+  State: modal { mode: approve|reject|null, request }, toast, refreshKey.
+  Handlers:
+    handleApprove(req) -> opens modal in approve mode
+    handleReject(req)  -> opens modal in reject mode
+    handleSuccess(msg) -> closes modal, shows toast, increments refreshKey
+  Renders StaffRequestTable and StaffRequestReviewModal.
+
+StaffRequestTable.jsx (features/admin/components/):
+  Tabbed view: Pending / Approved / Rejected.
+  Fetches getStaffRequests({ status }) on activeTab or refreshKey change.
+  Pending tab shows yellow badge with count.
+  Table columns:
+    Applicant (avatar initials, name, email)
+    Department (name)
+    Date Submitted (formatted)
+    Status (colored badge)
+    Actions (Approve/Reject buttons - pending tab only)
+    Reason (rejection reason - rejected tab only)
+
+StaffRequestReviewModal.jsx (features/admin/components/):
+  Wrapper modal for approve/reject.
+  Backdrop click and Escape key close the modal.
+
+  ApproveModal (internal):
+    Shows applicant name, department name, note about role upgrade to dept_staff.
+    On confirm: calls approveStaffRequest(request._id).
+    On success: calls onSuccess('Request approved successfully.').
+
+  RejectModal (internal):
+    Shows applicant name, textarea for rejection reason (max 300 chars).
+    Auto-focuses textarea on render.
+    On confirm: calls rejectStaffRequest(request._id, rejectionReason).
+    On success: calls onSuccess('Request rejected successfully.').
+
+Admin API (features/admin/services/staffRequest.api.js):
+  All calls use withCredentials: true.
+  getStaffRequests({ status, departmentId }) -> GET /admin/requests/staff
+  getStaffRequestById(requestId)             -> GET /admin/requests/staff/:id
+  approveStaffRequest(requestId)             -> PATCH .../approve
+  rejectStaffRequest(requestId, reason)      -> PATCH .../reject { rejectionReason }
+
+
+================================================================================
+FEATURE 6 - COMPLAINT MANAGEMENT (CITIZEN SIDE)
+================================================================================
+
+PURPOSE: Citizens report local civic issues with title, description, category,
+address, map location, and optional media. They can view, detail, and delete complaints.
+
+--- DATA MODELS ---
+
+location.schema.js (sub-schema, no _id):
+  type: String, enum [Point], default Point
+  coordinates: [Number] - must be [longitude, latitude]
+  Custom validator: length=2, longitude in [-180,180], latitude in [-90,90].
+
+complaint.model.js:
+  complaintId       : String, unique - generated as CF-{uuid}
+  citizenId         : ObjectId ref User, required
+  title             : String, required
+  description       : String, required
+  category          : String, required
+  media             : Array of { fileId, url, type }
+  location          : locationSchema (GeoJSON Point), required
+  address           : String, required (human-readable)
+  status            : Enum [submitted, in_review, assigned, resolved,
+                            rejected, closed, deleted], default submitted
+  priority          : Enum [low, medium, high, urgent], default medium
+  assignedDepartment: ObjectId ref Department, null
+  assignedStaff     : ObjectId ref User, null
+  groupId           : ObjectId, null (for complaint grouping)
+  duplicateOf       : ObjectId ref Complaint, null
+  similarityScore   : Number [0,1], null
+  resolutionDescription: String, null
+  resolutionMedia   : Array of { fileId, url, type }
+  timestamps        : createdAt, updatedAt
+  Index: 2dsphere on location field for geospatial queries.
+
+--- VALIDATION: complaint.validator.js ---
+
+Protected fields (cannot be set by client in create/update):
+  citizenId, status, assignedDepartment, assignedStaff, similarityScore,
+  groupId, duplicateOf, resolutionDescription, resolutionMedia.
+  Custom validator rejects any request body containing these keys.
+
+validateCreateComplaint:
+  No protected fields; title, description, category, address required;
+  location must be GeoJSON Point with valid coordinates;
+  media optional array of { fileId, url, type } with supported MIME types
+  (image/jpeg|png|webp or video/mp4|webm).
+
+validateUpdateComplaint:
+  All fields optional but at least one editable field must be present.
+
+validateUpdateComplaintStatus:
+  status must be in [submitted, in_review, assigned, resolved, rejected, closed].
+
+validateComplaintAssignment:
+  assignedDepartment -> required MongoId; assignedStaff -> optional MongoId.
+
+--- BACKEND LOGIC: complaint.controller.js ---
+
+createComplaint (POST /api/complaints - citizen only):
+  1. Creates complaint with complaintId=CF-{randomUUID()}, citizenId=req.user._id
+     (never from body).
+  2. Calls findSimilarComplaints(complaint) from similarity service.
+  3. If similar complaints found:
+       Stores highest similarity score on complaint.
+       If classification=duplicate: sets complaint.duplicateOf = that _id.
+       Saves updated complaint.
+  4. Records timeline: action=created, newStatus=submitted.
+  5. Returns 201 with full complaint object.
+
+getComplaintById (GET /api/complaints/:id - citizen only):
+  Finds by _id AND citizenId=req.user._id AND status!=deleted (ownership enforced).
+  Returns 404 if not found.
+
+getMyComplaints (GET /api/complaints/my - citizen only):
+  Returns all complaints for req.user._id, newest first, excluding deleted.
+
+updateComplaint (PATCH /api/complaints/:id - citizen only):
+  Only allows editing: title, description, category, location, address, media.
+  Guards: only submitted complaints can be edited (returns 409 otherwise).
+  Updates with $set and { new: true, runValidators: true }.
+  Records updated timeline entry.
+
+deleteComplaint (DELETE /api/complaints/:id - citizen only):
+  Soft-deletes: sets status=deleted (data preserved for audit trail).
+  Records deleted timeline entry.
+
+listComplaintsForStaff (GET /api/staff/complaints - admin + dept_staff):
+  Admin: returns ALL non-deleted complaints.
+  dept_staff: filters by assignedDepartment=req.user.departmentId.
+  Sorted newest first.
+
+updateComplaintStatus (PATCH /api/staff/complaints/:id/status):
+  Verifies dept_staff can only update complaints assigned to their department.
+  Updates status and optional resolutionDescription.
+  Records status_changed timeline entry with previous and new status.
+
+assignComplaint (PATCH /api/staff/complaints/:id/assign - admin only):
+  Updates assignedDepartment and optional assignedStaff.
+  Sets status=assigned. Records assigned timeline entry.
+
+--- ROUTES: complaint.routes.js ---
+  POST   /api/complaints                  -> citizen, validate, create
+  GET    /api/complaints/my               -> citizen, getMyComplaints
+  GET    /api/complaints/:id              -> citizen, getById
+  PATCH  /api/complaints/:id              -> citizen, validate, update
+  DELETE /api/complaints/:id              -> citizen, delete
+  GET    /api/staff/complaints            -> admin+staff, list
+  PATCH  /api/staff/complaints/:id/status -> admin+staff, validate, updateStatus
+  PATCH  /api/staff/complaints/:id/assign -> admin only, validate, assign
+
+--- FRONTEND: Complaint Submission and Listing ---
+
+Citizen API (features/citizen/services/complaint.api.js):
+  Uses axios instance with base http://localhost:3000/api + withCredentials.
+
+  normalizeComplaintData(data):
+    Converts { location: { lat, lng } } to
+    { location: { type: "Point", coordinates: [lng, lat] } }
+    Bridges Leaflet format to backend GeoJSON format.
+
+  Exported functions:
+    createComplaint(data)           -> POST /complaints
+    getMyComplaints()               -> GET /complaints/my
+    getComplaintById(id)            -> GET /complaints/:id
+    updateComplaint(id, data)       -> PATCH /complaints/:id (with normalizer)
+    deleteComplaint(id)             -> DELETE /complaints/:id
+    getStaffComplaints()            -> GET /staff/complaints
+    updateComplaintStatus(id, stat) -> PATCH /staff/complaints/:id/status
+    assignComplaint(id, dept, staff, remark) -> PATCH /staff/complaints/:id/assign
+    getComplaintTimeline(id)        -> GET /complaints/:id/timeline
+
+CitizenDashboard.jsx:
+  Simple landing page with two navigation cards:
+    Report an issue -> /citizen/complaints/report
+    My complaints   -> /citizen/complaints
+
+ComplaintReport.jsx:
+  Form for submitting a new complaint.
+  State: form { title, description, category, address, location }, error, saving.
+  Renders input fields for title, category, address; textarea for description.
+  Renders LocationPicker for map-based location picking.
+  On submit:
+    Validates form.location exists (returns error if not).
+    Calls createComplaint({ ...form, media: [] }) — media empty for now.
+    On success: navigate to /citizen/complaints/{complaint._id}.
+    On error: shows error message from API.
+
+MyComplaints.jsx:
+  On mount: calls getMyComplaints(), saves to state.
+  Renders grid of ComplaintCard components (2 columns on md+).
+  Each card is clickable -> navigate to /citizen/complaints/{id}.
+  Report issue button in header links to /citizen/complaints/report.
+
+ComplaintDetails.jsx:
+  Uses useParams() to get complaint ID.
+  On mount: calls getComplaintById(id).
+  Renders: complaintId, title, description, address, status badge, map.
+  Track status button -> /citizen/complaints/{id}/track.
+  Delete button (only if status=submitted):
+    window.confirm, then deleteComplaint(id), navigate to /citizen/complaints.
+
+--- REUSABLE COMPLAINT UI COMPONENTS ---
+
+ComplaintCard.jsx (components/complaint/):
+  Props: complaint, onClick.
+  Displays: short ID (last 6 chars of _id, uppercase), ComplaintStatus badge,
+  title, category chip, submission date, address.
+  Entire card is a <button> for keyboard accessibility.
+
+ComplaintStatus.jsx (components/complaint/):
+  Reusable pill badge for any complaint status.
+  STATUS_CONFIG maps each status key to { label, dot color, pill CSS classes }.
+  Statuses: submitted, in_review, assigned, resolved, closed, rejected, in_progress.
+  Accepts size=sm|md to adjust text size and padding.
+
+GroupedReportsSummary.jsx (components/complaint/):
+  UI strip showing related nearby complaints from similarity service detection.
+  Takes: count, reports (array of { id, title, category, distanceM }), onViewAll.
+  Built and ready but not yet wired to live data in ComplaintDetails.
+
+
+================================================================================
+FEATURE 7 - MAP / LOCATION PICKING
+================================================================================
+
+PURPOSE: Allow citizens to pick a precise location on an interactive map
+when filing a complaint, and display it when viewing the complaint.
+
+--- BACKEND ---
+  location.schema.js defines GeoJSON Point sub-schema.
+  Coordinates stored as [longitude, latitude] (GeoJSON standard).
+  2dsphere index on complaint.location enables $near and $geoWithin queries.
+
+--- FRONTEND: Map Components ---
+
+LocationPicker.jsx (components/maps/):
+  Built on react-leaflet.
+  Props: value ({ lat, lng } or null), onChange, defaultCenter, defaultZoom.
+
+  MapClickHandler (inner component):
+    Uses useMapEvents. When correcting=true, calls onLocationChange with
+    clicked { lat, lng }. After click, correcting resets to false.
+
+  States: correcting (bool), gpsLoading, gpsError.
+
+  Use my location button:
+    Calls navigator.geolocation.getCurrentPosition().
+    On success: calls onChange({ lat, lng }) with real GPS coords.
+    On failure: shows gpsError message.
+
+  Correct Location toggle:
+    Enables correcting mode. User clicks the map to reposition the pin.
+
+  Uses dark CartoCDN tile layer.
+  Renders MapMarker if a position is selected.
+  Shows lat/lng in monospace text below the map.
+
+MapMarker.jsx (components/maps/):
+  Creates a custom Leaflet DivIcon using inline SVG pin shape.
+  Two variants:
+    primary   -> gold/amber color (#B58A5A), 36px
+    secondary -> gray (#6F6B64), 28px
+  SVG shape: circle with a dot center and a stem line below.
+  Supports optional tooltip label (on hover) and popup content (children).
+  Pre-built as constants PRIMARY_ICON and SECONDARY_ICON.
+
+ComplaintMap.jsx (components/maps/):
+  Props: complaint, relatedComplaints[], zoom, className.
+  Reads coordinates from complaint.location.coordinates ([lng, lat]),
+  reverses to [lat, lng] for Leaflet.
+  Renders primary complaint as gold MapMarker.
+  Renders relatedComplaints as gray secondary MapMarkers with popups.
+  Has a legend overlay (bottom-left) showing color meanings.
+  Used in ComplaintDetails page to show where the issue is located.
+
+
+================================================================================
+FEATURE 8 - COMPLAINT SIMILARITY / DUPLICATE DETECTION
+================================================================================
+
+PURPOSE: When a complaint is filed, system checks for similar nearby complaints.
+Marks them as related or duplicate to prevent redundant reports.
+
+--- BACKEND: complaintSimilarity.service.js ---
+
+tokenize(value):
+  Lowercases text, replaces non-alphanumeric chars with spaces, splits into words,
+  filters words shorter than 3 chars. Returns a Set of tokens.
+
+jaccardSimilarity(source, target):
+  Computes |intersection| / |union| of two token Sets.
+  Returns 0 (no overlap) to 1 (identical).
+
+distanceInMeters(first, second):
+  Haversine formula between two [lng, lat] pairs.
+  Earth radius = 6,371,000 meters.
+
+findNearbyComplaints({ location, category, radiusInMeters=1000, excludeId, limit=20 }):
+  Uses MongoDB $near geospatial query with $maxDistance.
+  Filters by same category, excludes deleted and closed complaints.
+  Returns up to 20 nearby complaints of same category.
+
+calculateTextSimilarity(sourceText, targetText):
+  Tokenizes both strings, returns their Jaccard similarity.
+
+calculateSimilarityScore({ categoryScore, locationScore, textScore }):
+  Weighted formula:
+    category  x 0.35  (same type of issue)
+    location  x 0.25
+    text      x 0.40  (specific wording comparison)
+  Clamped to [0, 1].
+
+classifySimilarity(score):
+  score >= 0.8 -> duplicate
+  score >= 0.5 -> related
+  score <  0.5 -> independent
+
+findSimilarComplaints(complaint, options) - main exported function:
+  1. Calls findNearbyComplaints to get candidate list.
+  2. For each candidate:
+       locationScore = max(0, 1 - distance / radius)
+       textScore = Jaccard of combined title+description text
+       categoryScore = 1.0 (always, since filtered by category)
+       Calculates final similarityScore using calculateSimilarityScore.
+  3. Filters out pairs with score < 0.5 (independent).
+  4. Sorts by score descending.
+  5. Returns ranked list of { complaint, similarityScore, classification }.
+
+How it is used in createComplaint:
+  After saving the new complaint, findSimilarComplaints is called.
+  If top match is duplicate: complaint.duplicateOf = that _id.
+  similarityScore stored on complaint regardless of classification.
+  Admins can use this data to group related issues.
+
+
+================================================================================
+FEATURE 9 - COMPLAINT TIMELINE / AUDIT LOG
+================================================================================
+
+PURPOSE: Every state change on a complaint is recorded. Citizens view full history.
+
+--- DATA MODEL: complaintTimeline.model.js ---
+  complaintId   : ObjectId ref Complaint, required, indexed
+  action        : Enum [created, updated, status_changed, assigned,
+                        resolved, rejected, closed, deleted]
+  performedBy   : ObjectId ref User, required
+  previousStatus: Enum of complaint statuses, null
+  newStatus     : Enum of complaint statuses, null
+  remark        : String, optional note
+  timestamp     : Date, default Date.now
+
+  Compound index on { complaintId: 1, timestamp: 1 } for efficient
+  chronological retrieval per complaint.
+
+--- BACKEND LOGIC: complaintTimeline.controller.js ---
+
+recordComplaintTimeline({ complaintId, action, performedBy, prev, new, remark }):
+  Internal helper (not a route). Called after every complaint mutation.
+  Silently returns null on error (non-blocking - timeline failures don't break ops).
+
+getComplaintTimeline (GET /api/complaints/:id/timeline - citizen only):
+  1. Verifies complaint belongs to requesting citizen (ownership enforced).
+  2. Fetches all timeline events for that complaint.
+  3. Populates performedBy with { fullname, role }.
+  4. Sorted by timestamp ascending (chronological).
+  5. Returns timeline array.
+
+--- ROUTE: complaintTimeline.routes.js ---
+  GET /api/complaints/:id/timeline -> authenticate, citizen, getTimeline
+
+--- FRONTEND ---
+
+TrackComplaint.jsx (features/citizen/pages/):
+  On mount: fetches getComplaintById(id) AND getComplaintTimeline(id) in
+  parallel with Promise.all.
+  Renders:
+    Page title + complaint title.
+    ComplaintTimeline with currentStatus={complaint.status}.
+    Activity log: each event as "action . timestamp (locale string)".
+
+ComplaintTimeline.jsx (components/complaint/):
+  Visual stepper showing the complaint lifecycle.
+  STEPS array (ordered): submitted, in_review, assigned, resolved, closed.
+
+  getStepState(stepKey, currentStatus):
+    Finds index of each step and current status.
+    Returns done (past steps), active (current step), or pending (future steps).
+
+  Each step renders:
+    Circle node: green checkmark (done), pulsing dot (active), gray dot (pending).
+    Vertical connector line: solid green (done), dashed gray (pending).
+    Label: green (done), primary-accent + Active badge (active), muted (pending).
+
+  Rejected and deleted statuses are NOT in STEPS.
+  The raw activity log below shows those events.
+
+
+================================================================================
+FEATURE 10 - MEDIA UPLOAD (IMAGE KIT)
+================================================================================
+
+PURPOSE: Complaints can have images/videos attached. Files uploaded to ImageKit CDN.
+Backend stores { fileId, url, type } references only - not the files themselves.
+
+--- BACKEND: imagekit.service.js ---
+  Initializes @imagekit/nodejs client with IMAGE_KIT_PRIVATE_KEY from config.
+
+  uploadMedia({ buffer, fileName, type, folder='CivicFlow' }):
+    Calls storage.service.js uploadFile.
+    Returns { fileId, url, type }.
+
+  deleteMedia(fileId):
+    Calls client.files.delete(fileId).
+
+  getMediaUrl(media):
+    Returns media.url if object, or media itself if already a URL string.
+
+--- FRONTEND: Media Components ---
+
+MediaUploader.jsx (components/media/):
+  Handles file selection and uploading to ImageKit via frontend SDK.
+  Supports image (jpeg, png, webp) and video (mp4, webm).
+  Shows upload progress and error states.
+  On success: calls onChange with { fileId, url, type }.
+
+MediaPreview.jsx (components/media/):
+  Displays uploaded media items.
+  Images shown as thumbnails, videos as HTML5 video players.
+  Allows removing items from the list.
+
+Note: Media components are fully built but not yet wired into ComplaintReport.
+The current form passes media: [] (empty array).
+
+
+================================================================================
+FEATURE 11 - ROUTING AND NAVIGATION
+================================================================================
+
+PURPOSE: React Router v7 manages client-side navigation with role-based protection.
+
+--- ROUTE STRUCTURE: app.routes.jsx ---
+  /                               Landing page (Welcome to CivicFlow)
+  /dashboard                      AuthRedirect (redirects by role)
+  /register                       Register
+  /login                          Login
+  /request-dept-staff             ProtectedRoute > DeptStaffRequest
+  /complete-profile               CompleteGoogleProfile
+  /unauthorized                   Unauthorized
+
+  /citizen                        RoleRoute(citizen) > CitizenDashboard
+    /citizen/complaints               MyComplaints
+    /citizen/complaints/report        ComplaintReport
+    /citizen/complaints/:id           ComplaintDetails
+    /citizen/complaints/:id/track     TrackComplaint
+    /citizen/profile                  Profile
+
+  /staff                          RoleRoute(dept_staff) > StaffDashboard (placeholder)
+
+  /admin                          RoleRoute(admin) > AdminDashboard
+    /admin/staff-requests             StaffRequests
+
+How route guards work:
+  1. App.jsx mounts -> calls handleGetCurrentUser() -> dispatches setInitialized(true).
+  2. Guards check initialized first. Not initialized -> loading spinner.
+     (Avoids redirect flash before auth state is known.)
+  3. Once initialized:
+     ProtectedRoute checks isAuthenticated.
+     RoleRoute checks isAuthenticated AND role match.
+     AuthRedirect does role-based redirect.
+  4. profileCompleted=false always redirects to /complete-profile first.
+     This catches new Google users who haven't chosen a role yet.
+
+RootLayout.jsx (components/layout/):
+  Simple wrapper: renders Navbar above Outlet.
+  Every page under the "/" route gets the Navbar.
+
+Navbar.jsx (components/layout/):
+  Reads isAuthenticated, user, handleLogout from useAuth hook.
+  Authenticated: shows user fullname + Logout button.
+  Not authenticated: shows Sign In + Register links.
+  CivicFlow logo (CF initials in amber box) links to /.
+  Sticky top-0, z-50 (always visible over content).
+  On logout: calls handleLogout() then navigate('/login').
+
+
+================================================================================
+CROSS-CUTTING CONCERNS
+================================================================================
+
+JWT AND SESSION MANAGEMENT
+  Tokens stored in HttpOnly cookies - not accessible to JavaScript.
+  Token lifetime: 24 hours.
+  Axios sends cookies automatically (withCredentials: true on all instances).
+  No refresh token yet (commented out in user.model.js for future use).
+  Session rehydrated on every app load via GET /api/auth/me.
+
+ERROR HANDLING PATTERN
+  Backend controllers use try/catch blocks:
+    Mongoose CastError   -> 400 Invalid ID
+    Mongoose ValidationError -> 400 with error message
+    Business logic errors -> 400/403/404 with descriptive messages
+    Unexpected errors    -> 500 Internal server error
+
+  Frontend hooks catch axios errors and extract:
+    error.response?.data?.message
+    OR error.response?.data?.errors?.[0]?.msg (from express-validator)
+
+ROLE SYSTEM
+  citizen    - default for all new users. Can submit/view/delete their complaints.
+  dept_staff - assigned by admin via request approval flow.
+               Can see and update status of complaints in their assigned department.
+  admin      - full access. Manages departments, staff requests, all complaints.
+
+SOFT DELETE FOR COMPLAINTS
+  Complaints are never hard-deleted from the database.
+  status=deleted is the soft-delete marker.
+  All queries filter with { status: { $ne: deleted } }.
+  Preserves audit trails and prevents data loss.
+
+GEOSPATIAL STORAGE
+  MongoDB GeoJSON Point type with 2dsphere index enables $near queries.
+  Frontend coordinates: { lat, lng } (Leaflet convention).
+  Backend coordinates: [longitude, latitude] (GeoJSON convention - reversed).
+  normalizeComplaintData() in complaint.api.js handles this conversion.
+
+VALIDATION LAYERING
+  express-validator chains run BEFORE the controller (middleware layer).
+  Backend protects against protected fields being set from the client body.
+  Mongoose schema validators provide a second layer at the DB layer.
+  Frontend does basic UI validation (passwords match, location selected, etc.).
+
+DATA FLOW - KEY PATTERNS
+  All API calls use withCredentials: true (cookie-based auth).
+  Redux is the single source of truth for user state.
+  useAuth hook is the ONLY way components interact with auth state.
+  Complaint data is fetched on component mount (no global caching yet).
+  refreshKey pattern used in admin tables to force refetch after mutations.
+
+
+================================================================================
+DATA FLOW SUMMARY (END-TO-END)
+================================================================================
+
+SUBMITTING A COMPLAINT:
+  1. Citizen fills ComplaintReport form, picks location on Leaflet map.
+  2. createComplaint() -> POST /api/complaints with normalized GeoJSON.
+  3. authenticate middleware validates JWT from HttpOnly cookie.
+  4. requireRole(citizen) verifies the role.
+  5. validateCreateComplaint runs all express-validator checks.
+  6. createComplaint controller:
+       Creates complaint in MongoDB with auto-generated CF-{uuid} ID.
+       Calls findSimilarComplaints -> compares against nearby complaints.
+       If duplicate found, sets complaint.duplicateOf.
+       Records created timeline event.
+       Returns 201 with full complaint object.
+  7. Frontend navigates to /citizen/complaints/{complaint._id}.
+
+ADMIN APPROVING A STAFF REQUEST:
+  1. Admin opens /admin/staff-requests.
+  2. StaffRequestTable fetches GET /api/admin/requests/staff?status=pending.
+  3. Admin clicks Approve -> ApproveModal opens showing applicant details.
+  4. Admin confirms -> PATCH /api/admin/requests/staff/:id/approve.
+  5. Backend starts MongoDB transaction:
+       user.role -> dept_staff, user.departmentId set, profileCompleted -> true.
+       request.status -> approved, reviewedBy/reviewedAt set.
+       Both documents saved atomically. Cannot partially succeed.
+  6. Frontend shows green toast notification, StaffRequestTable refetches (refreshKey++).
+
+TRACKING A COMPLAINT:
+  1. Citizen opens /citizen/complaints/{id}/track.
+  2. Promise.all fetches complaint AND timeline simultaneously.
+  3. ComplaintTimeline renders a stepper (submitted->in_review->assigned->resolved->closed).
+  4. Activity list renders each timeline event with action + localized timestamp.
+
+GOOGLE SIGN-IN FLOW:
+  1. User clicks Continue with Google.
+     Browser navigates to http://localhost:3000/api/auth/google.
+  2. Passport redirects to Google consent screen.
+  3. User consents. Google redirects back to /api/auth/google/callback.
+  4. googleCallback controller:
+       Creates or finds the user.
+       Signs JWT, sets HttpOnly cookie.
+       Redirects to /dashboard or /complete-profile based on profileCompleted.
+  5. Browser loads the React app.
+  6. App.jsx mounts, calls handleGetCurrentUser() -> GET /api/auth/me.
+     User data rehydrated into Redux state. setInitialized(true) dispatched.
+  7. AuthRedirect at /dashboard routes user to correct section based on role.
+     New Google user who hasn't completed profile -> /complete-profile first.
+
+
+================================================================================
+                             END OF EXPLANATION
+================================================================================
