@@ -16,6 +16,9 @@ import ComplaintDetails from "../features/citizen/pages/ComplaintDetails";
 import TrackComplaint from "../features/citizen/pages/TrackComplaint";
 import Profile from "../features/citizen/pages/Profile";
 import StaffDashboard from "../features/staff/pages/StaffDashboard";
+import AssignedComplaints from "../features/staff/pages/AssignedComplaints";
+import ComplaintQueue from "../features/staff/pages/ComplaintQueue";
+import StaffComplaintDetails from "../features/staff/pages/ComplaintDetails";
 import AdminDashboard from "../features/admin/pages/AdminDashboard";
 
 export const routes = createBrowserRouter([
@@ -87,11 +90,14 @@ export const routes = createBrowserRouter([
          },
          {
             path: "staff",
-            element: (
-               <RoleRoute allowedRoles="dept_staff">
-                  <StaffDashboard />
-               </RoleRoute>
-            )
+            element: <RoleRoute allowedRoles="dept_staff" />,
+            children: [
+               { index: true, element: <StaffDashboard /> },
+               { path: "complaints", element: <ComplaintQueue /> },
+               { path: "complaints/queue", element: <ComplaintQueue /> },
+               { path: "complaints/assigned", element: <AssignedComplaints /> },
+               { path: "complaints/:id", element: <StaffComplaintDetails /> },
+            ],
          },
          {
             path: "admin",

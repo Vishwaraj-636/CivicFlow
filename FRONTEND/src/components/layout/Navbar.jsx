@@ -27,7 +27,7 @@ const Navbar = () => {
                {isAuthenticated ? (
                   <>
                      {user?.role === "citizen" && (
-                        <div className="flex items-center gap-6 mr-4 border-r border-border pr-6 hidden md:flex">
+                        <div className="max-md:hidden md:flex items-center gap-6 mr-4 border-r border-border pr-6">
                            <Link to="/citizen" className="text-sm font-medium text-secondary-text hover:text-primary-text">
                               Dashboard
                            </Link>
@@ -39,6 +39,19 @@ const Navbar = () => {
                            </Link>
                            <Link to="/citizen/profile" className="text-sm font-medium text-secondary-text hover:text-primary-text">
                               Profile
+                           </Link>
+                        </div>
+                     )}
+                     {user?.role === "dept_staff" && (
+                        <div className="max-md:hidden md:flex items-center gap-6 mr-4 border-r border-border pr-6">
+                           <Link to="/staff" className="text-sm font-medium text-secondary-text hover:text-primary-text">
+                              Dashboard
+                           </Link>
+                           <Link to="/staff/complaints" className="text-sm font-medium text-secondary-text hover:text-primary-text">
+                              Complaint Queue
+                           </Link>
+                           <Link to="/staff/complaints/assigned" className="text-sm font-medium text-secondary-text hover:text-primary-text">
+                              Assigned Complaints
                            </Link>
                         </div>
                      )}

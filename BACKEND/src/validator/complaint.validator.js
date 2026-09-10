@@ -127,9 +127,31 @@ export const validateUpdateComplaint = [
 ];
 
 export const validateUpdateComplaintStatus = [
-   body("status")
-      .isIn(["submitted", "in_review", "assigned", "resolved", "rejected", "closed"])
+   body("newStatus")
+      .isIn(["submitted", "in_review", "in_progress", "assigned", "resolved", "rejected", "closed"])
       .withMessage("Invalid complaint status"),
+   body("remark").optional().isString().trim(),
+   validateRequest,
+];
+
+export const validateComplaintRejection = [
+   body("reason")
+      .isIn([
+         "Wrong department",
+         "Insufficient information",
+         "Invalid complaint",
+         "Duplicate complaint",
+         "Not actionable",
+      ])
+      .withMessage("A valid rejection reason is required"),
+   validateRequest,
+];
+
+export const validateComplaintResolution = [
+   body("resolutionDescription")
+      .isString().withMessage("Resolution description is required")
+      .trim().notEmpty().withMessage("Resolution description is required"),
+   body("resolutionMedia").optional().isArray().withMessage("Resolution media must be an array"),
    validateRequest,
 ];
 

@@ -1,7 +1,7 @@
 import express from "express";
 import multer from "multer";
 import { authenticate } from "../middleware/auth.middleware.js";
-import { requireRole } from "../middleware/role.middleware.js";
+import { requireDeptStaff, requireRole } from "../middleware/role.middleware.js";
 import {
    createComplaint,
    getComplaintById,
@@ -9,15 +9,23 @@ import {
    updateComplaint,
    deleteComplaint,
    listComplaintsForStaff,
+   getComplaintByIdForStaff,
    updateComplaintStatus,
    assignComplaint,
    uploadComplaintMedia,
+   getStaffComplaints,
+   getAssignedComplaints,
+   acceptComplaint,
+   rejectComplaint,
+   resolveComplaint,
 } from "../controller/complaint.controller.js";
 import {
    validateCreateComplaint,
    validateUpdateComplaint,
    validateUpdateComplaintStatus,
    validateComplaintAssignment,
+   validateComplaintRejection,
+   validateComplaintResolution,
 } from "../validator/complaint.validator.js";
 
 const router = express.Router();
@@ -50,16 +58,53 @@ router.post(
 router.get(
    "/staff/complaints",
    authenticate,
+   requireDeptStaff,
+   getStaffComplaints
+);
+
+router.get(
+   "/staff/complaints/assigned",
+   authenticate,
+   requireDeptStaff,
+   getAssignedComplaints
+);
+
+router.patch(
+   "/staff/complaints/:id/accept",
+   authenticate,
+   requireDeptStaff,
+   acceptComplaint
+);
+
+router.patch(
+   "/staff/complaints/:id/reject",
+   authenticate,
+   requireDeptStaff,
+   validateComplaintRejection,
+   rejectComplaint
+);
+
+router.get(
+   "/staff/complaints/:id",
+   authenticate,
    requireRole("admin", "dept_staff"),
-   listComplaintsForStaff
+   getComplaintByIdForStaff
 );
 
 router.patch(
    "/staff/complaints/:id/status",
    authenticate,
-   requireRole("admin", "dept_staff"),
+   requireDeptStaff,
    validateUpdateComplaintStatus,
    updateComplaintStatus
+);
+
+router.patch(
+   "/staff/complaints/:id/resolve",
+   authenticate,
+   requireDeptStaff,
+   validateComplaintResolution,
+   resolveComplaint
 );
 
 router.patch(

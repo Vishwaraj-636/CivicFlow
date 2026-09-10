@@ -8,7 +8,7 @@ const router = express.Router();
 router.get(
    "/complaints/:id/timeline",
    authenticate,
-   requireRole("citizen"),
+   requireRole("citizen", "dept_staff"),
    getComplaintTimeline
 );
 

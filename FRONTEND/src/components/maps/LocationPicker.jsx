@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
 import MapMarker from './MapMarker';
+import { JAWG_ATTRIBUTION, JAWG_TILE_URL } from './mapTiles';
 
 /**
  * Inner component: captures map click events to allow location correction.
@@ -91,11 +92,7 @@ const LocationPicker = ({
                className="z-0"
                attributionControl={false}
             >
-               {/* Dark tile layer using Jawg Maps */}
-               <TileLayer
-                  url={`https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=${import.meta.env.VITE_JAWG_ACCESS_TOKEN || 'YOUR_JAWG_ACCESS_TOKEN'}`}
-                  attribution='<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-               />
+               <TileLayer url={JAWG_TILE_URL} attribution={JAWG_ATTRIBUTION} />
 
                <MapClickHandler
                   onLocationChange={handleLocationChange}

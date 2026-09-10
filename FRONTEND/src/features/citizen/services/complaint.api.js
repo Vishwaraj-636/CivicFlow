@@ -57,10 +57,38 @@ export async function getStaffComplaints() {
    return response.data;
 }
 
+export async function getAssignedComplaints() {
+   const response = await complaintApiInstance.get("/staff/complaints/assigned");
+   return response.data;
+}
+
+export async function getStaffComplaintById(complaintId) {
+   const response = await complaintApiInstance.get(`/staff/complaints/${complaintId}`);
+   return response.data;
+}
+
 export async function updateComplaintStatus(complaintId, status, options = {}) {
    const response = await complaintApiInstance.patch(`/staff/complaints/${complaintId}/status`, {
-      status,
+      newStatus: status,
       ...options,
+   });
+   return response.data;
+}
+
+export async function acceptComplaint(complaintId) {
+   const response = await complaintApiInstance.patch(`/staff/complaints/${complaintId}/accept`);
+   return response.data;
+}
+
+export async function rejectComplaint(complaintId, reason) {
+   const response = await complaintApiInstance.patch(`/staff/complaints/${complaintId}/reject`, { reason });
+   return response.data;
+}
+
+export async function resolveComplaint(complaintId, resolutionDescription, resolutionMedia = []) {
+   const response = await complaintApiInstance.patch(`/staff/complaints/${complaintId}/resolve`, {
+      resolutionDescription,
+      resolutionMedia,
    });
    return response.data;
 }

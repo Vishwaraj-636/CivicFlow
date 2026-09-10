@@ -77,6 +77,13 @@ PROJECT STRUCTURE OVERVIEW
           pages/StaffRequests.jsx
           components/ (StaffRequestTable, StaffRequestReviewModal, StaffRequestCard)
           services/staffRequest.api.js
+        staff/
+          hook/ (useStaffComplaints, useComplaintActions, useStaffDashboard)
+          pages/ (StaffDashboard, ComplaintQueue, AssignedComplaints, ComplaintDetails)
+          components/ (StaffComplaintCard, ComplaintQueueFilters,
+                       ComplaintActionPanel, StatusUpdateModal,
+                       RejectComplaintModal, ResolveComplaintModal)
+          services/staff.api.js
       components/
         auth/ (AuthRedirect, ProtectedRoute, RoleRoute)
         complaint/ (ComplaintCard, ComplaintStatus, ComplaintTimeline,
@@ -596,15 +603,17 @@ complaint.model.js:
   media             : Array of { fileId, url, type }
   location          : locationSchema (GeoJSON Point), required
   address           : String, required (human-readable)
-  status            : Enum [submitted, in_review, assigned, resolved,
-                            rejected, closed, deleted], default submitted
+  status            : Enum [submitted, in_review, in_progress, assigned,
+                            resolved, rejected, closed, deleted], default submitted
   priority          : Enum [low, medium, high, urgent], default medium
   assignedDepartment: ObjectId ref Department, null
   assignedStaff     : ObjectId ref User, null
+  assignedAt        : Date, null
   groupId           : ObjectId, null (for complaint grouping)
   duplicateOf       : ObjectId ref Complaint, null
   similarityScore   : Number [0,1], null
   resolutionDescription: String, null
+  rejectionReason   : String, null
   resolutionMedia   : Array of { fileId, url, type }
   timestamps        : createdAt, updatedAt
   Index: 2dsphere on location field for geospatial queries.
@@ -612,8 +621,9 @@ complaint.model.js:
 --- VALIDATION: complaint.validator.js ---
 
 Protected fields (cannot be set by client in create/update):
-  citizenId, status, assignedDepartment, assignedStaff, similarityScore,
-  groupId, duplicateOf, resolutionDescription, resolutionMedia.
+  citizenId, status, priority, assignedDepartment, assignedStaff,
+  similarityScore, groupId, duplicateOf, resolutionDescription,
+  resolutionMedia.
   Custom validator rejects any request body containing these keys.
 
 validateCreateComplaint:
@@ -626,7 +636,9 @@ validateUpdateComplaint:
   All fields optional but at least one editable field must be present.
 
 validateUpdateComplaintStatus:
-  status must be in [submitted, in_review, assigned, resolved, rejected, closed].
+  newStatus must be in [submitted, in_review, in_progress, assigned,
+  resolved, rejected, closed]. The backend validates the previous-to-new
+  status transition before saving.
 
 validateComplaintAssignment:
   assignedDepartment -> required MongoId; assignedStaff -> optional MongoId.
@@ -661,19 +673,37 @@ deleteComplaint (DELETE /api/complaints/:id - citizen only):
   Soft-deletes: sets status=deleted (data preserved for audit trail).
   Records deleted timeline entry.
 
-listComplaintsForStaff (GET /api/staff/complaints - admin + dept_staff):
-  Admin: returns ALL non-deleted complaints.
-  dept_staff: filters by assignedDepartment=req.user.departmentId.
-  Sorted newest first.
+getStaffComplaints (GET /api/staff/complaints - dept_staff):
+  Returns non-deleted complaints for req.user.departmentId, newest first.
 
-updateComplaintStatus (PATCH /api/staff/complaints/:id/status):
-  Verifies dept_staff can only update complaints assigned to their department.
-  Updates status and optional resolutionDescription.
-  Records status_changed timeline entry with previous and new status.
+getAssignedComplaints (GET /api/staff/complaints/assigned - dept_staff):
+  Returns only non-deleted complaints where assignedStaff=req.user._id.
+
+acceptComplaint (PATCH /api/staff/complaints/:id/accept - dept_staff):
+  Verifies department ownership and that the complaint is not assigned to another
+  staff member. Sets assignedStaff=req.user._id, records assignedAt, changes status
+  to in_review, and records an accepted timeline event.
+
+rejectComplaint (PATCH /api/staff/complaints/:id/reject - dept_staff):
+  Requires one of the supported rejection reasons. Sets status=rejected,
+  stores rejectionReason, and records a rejected timeline event.
+
+updateComplaintStatus (PATCH /api/staff/complaints/:id/status - dept_staff):
+  Receives newStatus and optional remark. The backend determines previousStatus,
+  verifies department and assigned-staff ownership, validates the transition,
+  then records a status_changed timeline event.
+
+resolveComplaint (PATCH /api/staff/complaints/:id/resolve - dept_staff):
+  Requires resolutionDescription and accepts optional resolutionMedia. Stores
+  resolution evidence separately from citizen media and changes status=resolved.
+
+Close workflow:
+  A resolved complaint may transition to closed through the status endpoint.
+  The staff complaint details page exposes a Close button for resolved complaints.
 
 assignComplaint (PATCH /api/staff/complaints/:id/assign - admin only):
-  Updates assignedDepartment and optional assignedStaff.
-  Sets status=assigned. Records assigned timeline entry.
+  Updates assignedDepartment and optional assignedStaff, records assignedAt when
+  a staff member is supplied, sets status=assigned, and records an assignment event.
 
 --- ROUTES: complaint.routes.js ---
   POST   /api/complaints                  -> citizen, validate, create
@@ -681,9 +711,14 @@ assignComplaint (PATCH /api/staff/complaints/:id/assign - admin only):
   GET    /api/complaints/:id              -> citizen, getById
   PATCH  /api/complaints/:id              -> citizen, validate, update
   DELETE /api/complaints/:id              -> citizen, delete
-  GET    /api/staff/complaints            -> admin+staff, list
-  PATCH  /api/staff/complaints/:id/status -> admin+staff, validate, updateStatus
-  PATCH  /api/staff/complaints/:id/assign -> admin only, validate, assign
+  GET    /api/staff/complaints                    -> dept_staff, department queue
+  GET    /api/staff/complaints/assigned           -> dept_staff, assigned queue
+  GET    /api/staff/complaints/:id                -> admin+dept_staff, details
+  PATCH  /api/staff/complaints/:id/accept        -> dept_staff, accept
+  PATCH  /api/staff/complaints/:id/reject        -> dept_staff, reject
+  PATCH  /api/staff/complaints/:id/status        -> dept_staff, update status
+  PATCH  /api/staff/complaints/:id/resolve       -> dept_staff, resolve
+  PATCH  /api/staff/complaints/:id/assign        -> admin only, assign
 
 --- FRONTEND: Complaint Submission and Listing ---
 
@@ -701,9 +736,18 @@ Citizen API (features/citizen/services/complaint.api.js):
     getComplaintById(id)            -> GET /complaints/:id
     updateComplaint(id, data)       -> PATCH /complaints/:id (with normalizer)
     deleteComplaint(id)             -> DELETE /complaints/:id
+    Citizen operations remain in citizen/services/complaint.api.js.
+    Staff operations are in staff/services/staff.api.js:
     getStaffComplaints()            -> GET /staff/complaints
-    updateComplaintStatus(id, stat) -> PATCH /staff/complaints/:id/status
-    assignComplaint(id, dept, staff, remark) -> PATCH /staff/complaints/:id/assign
+    getAssignedComplaints()         -> GET /staff/complaints/assigned
+    getComplaintById(id)            -> GET /staff/complaints/:id
+    acceptComplaint(id)             -> PATCH /staff/complaints/:id/accept
+    rejectComplaint(id, reason)     -> PATCH /staff/complaints/:id/reject
+    updateComplaintStatus(id, newStatus, options)
+                    -> PATCH /staff/complaints/:id/status
+    resolveComplaint(id, description, media)
+                    -> PATCH /staff/complaints/:id/resolve
+    getComplaintTimeline(id)        -> GET /complaints/:id/timeline
     getComplaintTimeline(id)        -> GET /complaints/:id/timeline
 
 CitizenDashboard.jsx:
@@ -751,13 +795,87 @@ ComplaintStatus.jsx (components/complaint/):
   Accepts size=sm|md to adjust text size and padding.
 
 GroupedReportsSummary.jsx (components/complaint/):
-  UI strip showing related nearby complaints from similarity service detection.
-  Takes: count, reports (array of { id, title, category, distanceM }), onViewAll.
-  Built and ready but not yet wired to live data in ComplaintDetails.
+  Legacy reusable component for related-report summaries. It is not rendered in
+  the current staff complaint details page, and related-report cards are not part
+  of the current staff UI.
 
 
 ================================================================================
-FEATURE 7 - MAP / LOCATION PICKING
+FEATURE 7 - STAFF OPERATIONS
+================================================================================
+
+PURPOSE: Give department staff a protected queue for triage, assignment,
+status changes, resolution, and closure.
+
+--- FRONTEND ROUTES ---
+
+  /staff                         StaffDashboard
+  /staff/complaints              Department ComplaintQueue
+  /staff/complaints/assigned     AssignedComplaints
+  /staff/complaints/:id          Staff ComplaintDetails
+
+All staff routes are nested under RoleRoute allowedRoles="dept_staff". The
+navbar exposes Dashboard, Complaint Queue, and Assigned Complaints. Complaint
+Details remains contextual and is opened from a queue item.
+
+--- STAFF HOOKS ---
+
+useStaffComplaints:
+  Fetches the department queue and owns loading, error, refresh, and client-side
+  filtering by status, priority, category, and date. Category filters use the
+  stored category labels, such as "Roads & Transport".
+
+useComplaintActions:
+  Owns accept, reject, status update, and resolve API mutations. It exposes a
+  shared loading/error state to action panels and modals.
+
+useStaffDashboard:
+  Derives total, pending, assigned, in-progress, resolved, and rejected counts
+  from the loaded department complaints.
+
+--- STAFF COMPONENTS ---
+
+StaffComplaintCard:
+  Compact queue representation with complaint ID, title, category, priority,
+  status, and contextual View/Actions controls.
+
+ComplaintQueueFilters:
+  Controlled filters for status, priority, category, and date.
+
+ComplaintActionPanel:
+  Shows Accept only for unassigned submitted complaints, Reject only before
+  assignment, Start Work for assigned/in-review complaints, Resolve for active
+  work, and Close after resolution.
+
+StatusUpdateModal:
+  Submits controlled { newStatus, remark } values. Reopen is not supported.
+
+RejectComplaintModal:
+  Requires one supported rejection reason before submission.
+
+ResolveComplaintModal:
+  Requires resolutionDescription and optionally collects resolutionMedia files.
+
+--- STATUS LIFECYCLE ---
+
+  submitted -> in_review -> in_progress -> resolved -> closed
+       |            |              |
+       +----------> rejected <-----+
+
+The backend validates each previous-to-new transition. A resolved complaint can
+be completely closed by the staff Close action. The reopen feature has been
+removed from both backend and frontend.
+
+--- STAFF TIMELINE ---
+
+Staff can read the timeline for complaints in their department. Timeline events
+include created, accepted, assigned, status_changed, resolved, rejected, closed,
+updated, and deleted actions where applicable. The UI displays Submitted,
+In Review, Assigned, In Progress, Resolved, Rejected, and Closed stages.
+
+
+================================================================================
+FEATURE 8 - MAP / LOCATION PICKING
 ================================================================================
 
 PURPOSE: Allow citizens to pick a precise location on an interactive map
@@ -788,7 +906,8 @@ LocationPicker.jsx (components/maps/):
   Correct Location toggle:
     Enables correcting mode. User clicks the map to reposition the pin.
 
-  Uses dark CartoCDN tile layer.
+  Uses the shared Jawg dark tile configuration from mapTiles.js, including the
+  VITE_JAWG_ACCESS_TOKEN environment value and common attribution.
   Renders MapMarker if a position is selected.
   Shows lat/lng in monospace text below the map.
 
@@ -802,17 +921,19 @@ MapMarker.jsx (components/maps/):
   Pre-built as constants PRIMARY_ICON and SECONDARY_ICON.
 
 ComplaintMap.jsx (components/maps/):
-  Props: complaint, relatedComplaints[], zoom, className.
+  Props: complaint, optional relatedComplaints[], zoom, className.
   Reads coordinates from complaint.location.coordinates ([lng, lat]),
   reverses to [lat, lng] for Leaflet.
   Renders primary complaint as gold MapMarker.
-  Renders relatedComplaints as gray secondary MapMarkers with popups.
-  Has a legend overlay (bottom-left) showing color meanings.
-  Used in ComplaintDetails page to show where the issue is located.
+  Can render relatedComplaints as gray secondary MapMarkers with popups when
+  supplied; current complaint details pages render the primary complaint only.
+  Does not render a map legend card. Marker popups remain available when marker
+  content is supplied.
+  Used in complaint details pages to show the complaint location.
 
 
 ================================================================================
-FEATURE 8 - COMPLAINT SIMILARITY / DUPLICATE DETECTION
+FEATURE 9 - COMPLAINT SIMILARITY / DUPLICATE DETECTION
 ================================================================================
 
 PURPOSE: When a complaint is filed, system checks for similar nearby complaints.
@@ -871,7 +992,7 @@ How it is used in createComplaint:
 
 
 ================================================================================
-FEATURE 9 - COMPLAINT TIMELINE / AUDIT LOG
+FEATURE 10 - COMPLAINT TIMELINE / AUDIT LOG
 ================================================================================
 
 PURPOSE: Every state change on a complaint is recorded. Citizens view full history.
@@ -895,15 +1016,17 @@ recordComplaintTimeline({ complaintId, action, performedBy, prev, new, remark })
   Internal helper (not a route). Called after every complaint mutation.
   Silently returns null on error (non-blocking - timeline failures don't break ops).
 
-getComplaintTimeline (GET /api/complaints/:id/timeline - citizen only):
-  1. Verifies complaint belongs to requesting citizen (ownership enforced).
+getComplaintTimeline (GET /api/complaints/:id/timeline - citizen or dept_staff):
+  1. Citizens must own the complaint; department staff must belong to the
+     complaint's assigned department.
   2. Fetches all timeline events for that complaint.
   3. Populates performedBy with { fullname, role }.
   4. Sorted by timestamp ascending (chronological).
   5. Returns timeline array.
 
 --- ROUTE: complaintTimeline.routes.js ---
-  GET /api/complaints/:id/timeline -> authenticate, citizen, getTimeline
+  GET /api/complaints/:id/timeline -> authenticate, citizen or dept_staff,
+  getTimeline
 
 --- FRONTEND ---
 
@@ -917,7 +1040,8 @@ TrackComplaint.jsx (features/citizen/pages/):
 
 ComplaintTimeline.jsx (components/complaint/):
   Visual stepper showing the complaint lifecycle.
-  STEPS array (ordered): submitted, in_review, assigned, resolved, closed.
+  STEPS array (ordered): submitted, in_review, assigned, in_progress, resolved,
+  rejected, closed.
 
   getStepState(stepKey, currentStatus):
     Finds index of each step and current status.
@@ -928,12 +1052,12 @@ ComplaintTimeline.jsx (components/complaint/):
     Vertical connector line: solid green (done), dashed gray (pending).
     Label: green (done), primary-accent + Active badge (active), muted (pending).
 
-  Rejected and deleted statuses are NOT in STEPS.
-  The raw activity log below shows those events.
+  Deleted complaints are not a normal lifecycle stage. Rejected is displayed as
+  a terminal stage, and the raw activity log shows exact actions and remarks.
 
 
 ================================================================================
-FEATURE 10 - MEDIA UPLOAD (IMAGE KIT)
+FEATURE 11 - MEDIA UPLOAD (IMAGE KIT)
 ================================================================================
 
 PURPOSE: Complaints can have images/videos attached. Files uploaded to ImageKit CDN.
@@ -955,7 +1079,8 @@ Backend stores { fileId, url, type } references only - not the files themselves.
 --- FRONTEND: Media Components ---
 
 MediaUploader.jsx (components/media/):
-  Handles file selection and uploading to ImageKit via frontend SDK.
+  Handles file selection and preparation in the frontend; uploads are sent to
+  the backend media endpoint, which uses ImageKit.
   Supports image (jpeg, png, webp) and video (mp4, webm).
   Shows upload progress and error states.
   On success: calls onChange with { fileId, url, type }.
@@ -965,12 +1090,13 @@ MediaPreview.jsx (components/media/):
   Images shown as thumbnails, videos as HTML5 video players.
   Allows removing items from the list.
 
-Note: Media components are fully built but not yet wired into ComplaintReport.
-The current form passes media: [] (empty array).
+ComplaintReport uploads selected citizen media through POST /api/complaints/media
+before POST /api/complaints. Resolution media is collected separately by the
+staff resolve flow and stored in resolutionMedia, not citizen media.
 
 
 ================================================================================
-FEATURE 11 - ROUTING AND NAVIGATION
+FEATURE 12 - ROUTING AND NAVIGATION
 ================================================================================
 
 PURPOSE: React Router v7 manages client-side navigation with role-based protection.
@@ -991,7 +1117,10 @@ PURPOSE: React Router v7 manages client-side navigation with role-based protecti
     /citizen/complaints/:id/track     TrackComplaint
     /citizen/profile                  Profile
 
-  /staff                          RoleRoute(dept_staff) > StaffDashboard (placeholder)
+  /staff                          RoleRoute(dept_staff) > StaffDashboard
+    /staff/complaints                 ComplaintQueue
+    /staff/complaints/assigned        AssignedComplaints
+    /staff/complaints/:id              Staff ComplaintDetails
 
   /admin                          RoleRoute(admin) > AdminDashboard
     /admin/staff-requests             StaffRequests
@@ -1013,7 +1142,9 @@ RootLayout.jsx (components/layout/):
 
 Navbar.jsx (components/layout/):
   Reads isAuthenticated, user, handleLogout from useAuth hook.
-  Authenticated: shows user fullname + Logout button.
+  Authenticated citizen: shows citizen navigation. Authenticated department
+  staff: shows Dashboard, Complaint Queue, and Assigned Complaints. All users
+  also see their fullname and Logout button.
   Not authenticated: shows Sign In + Register links.
   CivicFlow logo (CF initials in amber box) links to /.
   Sticky top-0, z-50 (always visible over content).

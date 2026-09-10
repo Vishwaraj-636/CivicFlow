@@ -26,10 +26,14 @@ export const recordComplaintTimeline = async ({
 
 export const getComplaintTimeline = async (req, res) => {
    try {
-      const complaint = await Complaint.findOne({
-         _id: req.params.id,
-         citizenId: req.user._id,
-      }).select("_id");
+      const complaintFilter = { _id: req.params.id };
+      if (req.user.role === "citizen") {
+         complaintFilter.citizenId = req.user._id;
+      } else if (req.user.role === "dept_staff") {
+         complaintFilter.assignedDepartment = req.user.departmentId;
+      }
+
+      const complaint = await Complaint.findOne(complaintFilter).select("_id");
 
       if (!complaint) {
          return res.status(404).json({ error: "Complaint not found" });

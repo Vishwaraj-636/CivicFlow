@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const complaintStatuses = [
    "submitted",
    "in_review",
+   "in_progress",
    "assigned",
    "resolved",
    "rejected",
@@ -20,7 +21,7 @@ const complaintTimelineSchema = new mongoose.Schema(
       },
       action: {
          type: String,
-         enum: ["created", "updated", "status_changed", "assigned", "resolved", "rejected", "closed", "deleted"],
+         enum: ["created", "updated", "status_changed", "assigned", "accepted", "resolved", "rejected", "closed", "deleted"],
          required: true,
          trim: true,
       },

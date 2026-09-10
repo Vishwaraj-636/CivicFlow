@@ -1,6 +1,7 @@
 import React from 'react';
 import { MapContainer, TileLayer, Popup } from 'react-leaflet';
 import MapMarker from './MapMarker';
+import { JAWG_ATTRIBUTION, JAWG_TILE_URL } from './mapTiles';
 
 /**
  * ComplaintMap
@@ -39,7 +40,7 @@ const ComplaintMap = ({
                attributionControl={false}
                className="z-0"
             >
-               <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
+               <TileLayer url={JAWG_TILE_URL} attribution={JAWG_ATTRIBUTION} />
 
                {/* Primary complaint marker */}
                {primaryPos && (
@@ -72,17 +73,6 @@ const ComplaintMap = ({
                })}
             </MapContainer>
 
-            {/* Legend */}
-            <div className="absolute bottom-3 left-3 z-10 bg-surface/90 backdrop-blur-sm border border-border rounded-lg px-3 py-2 flex flex-col gap-1.5 text-xs text-secondary-text">
-               <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-primary-accent shrink-0" />
-                  This complaint
-               </div>
-               <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-muted-text shrink-0" />
-                  Related reports
-               </div>
-            </div>
          </div>
       </div>
    );

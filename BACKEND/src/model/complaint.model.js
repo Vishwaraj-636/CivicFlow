@@ -64,7 +64,7 @@ const complaintSchema = new mongoose.Schema(
       },
       status: {
          type: String,
-         enum: ["submitted", "in_review", "assigned", "resolved", "rejected", "closed", "deleted"],
+         enum: ["submitted", "in_review", "in_progress", "assigned", "resolved", "rejected", "closed", "deleted"],
          default: "submitted",
       },
       priority: {
@@ -80,6 +80,10 @@ const complaintSchema = new mongoose.Schema(
       assignedStaff: {
          type: mongoose.Schema.Types.ObjectId,
          ref: "User",
+         default: null,
+      },
+      assignedAt: {
+         type: Date,
          default: null,
       },
       groupId: {
@@ -98,6 +102,11 @@ const complaintSchema = new mongoose.Schema(
          default: null,
       },
       resolutionDescription: {
+         type: String,
+         trim: true,
+         default: null,
+      },
+      rejectionReason: {
          type: String,
          trim: true,
          default: null,

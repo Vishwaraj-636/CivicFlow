@@ -5,7 +5,9 @@ const STEPS = [
    { key: 'submitted', label: 'Submitted' },
    { key: 'in_review', label: 'In Review' },
    { key: 'assigned', label: 'Assigned' },
+   { key: 'in_progress', label: 'In Progress' },
    { key: 'resolved', label: 'Resolved' },
+   { key: 'rejected', label: 'Rejected' },
    { key: 'closed', label: 'Closed' },
 ];
 

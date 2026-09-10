@@ -185,22 +185,164 @@ export const listComplaintsForStaff = async (req, res) => {
    }
 };
 
+export const getStaffComplaints = async (req, res) => {
+   try {
+      const complaints = await Complaint.find({
+         assignedDepartment: req.user.departmentId,
+         status: { $ne: "deleted" },
+      })
+         .populate("assignedDepartment", "fullname code")
+         .populate("assignedStaff", "fullname email")
+         .sort({ createdAt: -1 });
+
+      return res.status(200).json(complaints);
+   } catch (error) {
+      console.error("Error fetching department complaints:", error);
+      return res.status(500).json({ error: "Internal server error" });
+   }
+};
+
+export const getAssignedComplaints = async (req, res) => {
+   try {
+      const complaints = await Complaint.find({
+         assignedStaff: req.user._id,
+         status: { $ne: "deleted" },
+      })
+         .populate("assignedDepartment", "fullname code")
+         .populate("assignedStaff", "fullname email")
+         .sort({ createdAt: -1 });
+
+      return res.status(200).json(complaints);
+   } catch (error) {
+      console.error("Error fetching assigned complaints:", error);
+      return res.status(500).json({ error: "Internal server error" });
+   }
+};
+
+const findComplaintForStaff = (req) => Complaint.findOne({
+   _id: req.params.id,
+   assignedDepartment: req.user.departmentId,
+   status: { $ne: "deleted" },
+});
+
+const recordStaffStatusChange = async (complaint, req, previousStatus, action = "status_changed") => {
+   await recordComplaintTimeline({
+      complaintId: complaint._id,
+      action,
+      performedBy: req.user._id,
+      previousStatus,
+      newStatus: complaint.status,
+      remark: req.body.remark,
+   });
+};
+
+export const acceptComplaint = async (req, res) => {
+   try {
+      const complaint = await findComplaintForStaff(req);
+      if (!complaint) return res.status(404).json({ error: "Complaint not found" });
+      if (complaint.assignedStaff && String(complaint.assignedStaff) !== String(req.user._id)) {
+         return res.status(409).json({ error: "Complaint is assigned to another staff member" });
+      }
+
+      const previousStatus = complaint.status;
+      complaint.assignedStaff = req.user._id;
+      complaint.assignedAt = complaint.assignedAt ?? new Date();
+      complaint.status = "in_review";
+      await complaint.save();
+      await recordStaffStatusChange(complaint, req, previousStatus, "accepted");
+      return res.status(200).json(complaint);
+   } catch (error) {
+      console.error("Error accepting complaint:", error);
+      if (error.name === "CastError" || error.name === "ValidationError") {
+         return res.status(400).json({ error: error.message });
+      }
+      return res.status(500).json({ error: "Internal server error" });
+   }
+};
+
+export const rejectComplaint = async (req, res) => {
+   try {
+      const complaint = await findComplaintForStaff(req);
+      if (!complaint) return res.status(404).json({ error: "Complaint not found" });
+      if (complaint.assignedStaff && String(complaint.assignedStaff) !== String(req.user._id)) {
+         return res.status(403).json({ error: "Complaint is assigned to another staff member" });
+      }
+
+      const previousStatus = complaint.status;
+      complaint.status = "rejected";
+      complaint.rejectionReason = req.body.reason;
+      await complaint.save();
+      await recordComplaintTimeline({
+         complaintId: complaint._id,
+         action: "rejected",
+         performedBy: req.user._id,
+         previousStatus,
+         newStatus: complaint.status,
+         remark: req.body.reason,
+      });
+      return res.status(200).json(complaint);
+   } catch (error) {
+      console.error("Error rejecting complaint:", error);
+      if (error.name === "CastError" || error.name === "ValidationError") {
+         return res.status(400).json({ error: error.message });
+      }
+      return res.status(500).json({ error: "Internal server error" });
+   }
+};
+
+export const getComplaintByIdForStaff = async (req, res) => {
+   try {
+      const filter = { _id: req.params.id, status: { $ne: "deleted" } };
+      if (req.user.role === "dept_staff") {
+         filter.assignedDepartment = req.user.departmentId;
+      }
+
+      const complaint = await Complaint.findOne(filter)
+         .populate("assignedDepartment", "fullname code")
+         .populate("citizenId", "fullname email phone");
+
+      if (!complaint) {
+         return res.status(404).json({ error: "Complaint not found or you don't have access to it" });
+      }
+
+      return res.status(200).json(complaint);
+   } catch (error) {
+      console.error("Error fetching staff complaint details:", error);
+      if (error.name === "CastError") {
+         return res.status(400).json({ error: "Invalid complaint ID" });
+      }
+      return res.status(500).json({ error: "Internal server error" });
+   }
+};
+
 export const updateComplaintStatus = async (req, res) => {
    try {
-      const complaint = await Complaint.findOne({ _id: req.params.id, status: { $ne: "deleted" } });
+      const complaint = await findComplaintForStaff(req);
       if (!complaint) {
          return res.status(404).json({ error: "Complaint not found" });
       }
 
-      if (req.user.role === "dept_staff" && String(complaint.assignedDepartment) !== String(req.user.departmentId)) {
-         return res.status(403).json({ error: "Complaint is not assigned to your department" });
+      if (complaint.assignedStaff && String(complaint.assignedStaff) !== String(req.user._id)) {
+         return res.status(403).json({ error: "Complaint is assigned to another staff member" });
       }
 
       const previousStatus = complaint.status;
-      complaint.status = req.body.status;
-      if (req.body.resolutionDescription !== undefined) {
-         complaint.resolutionDescription = req.body.resolutionDescription;
+      const allowedTransitions = {
+         submitted: ["in_review", "in_progress", "assigned", "rejected"],
+         assigned: ["in_review", "in_progress", "rejected"],
+         in_review: ["in_progress", "resolved", "rejected"],
+         in_progress: ["resolved", "rejected"],
+         resolved: ["closed"],
+         rejected: [],
+         closed: [],
+      };
+      const newStatus = req.body.newStatus;
+      if (!allowedTransitions[previousStatus]?.includes(newStatus)) {
+         return res.status(409).json({
+            error: `Cannot change complaint status from ${previousStatus} to ${newStatus}`,
+         });
       }
+      complaint.status = newStatus;
       await complaint.save();
 
       await recordComplaintTimeline({
@@ -222,6 +364,33 @@ export const updateComplaintStatus = async (req, res) => {
    }
 };
 
+export const resolveComplaint = async (req, res) => {
+   try {
+      const complaint = await findComplaintForStaff(req);
+      if (!complaint) return res.status(404).json({ error: "Complaint not found" });
+      if (complaint.assignedStaff && String(complaint.assignedStaff) !== String(req.user._id)) {
+         return res.status(403).json({ error: "Complaint is assigned to another staff member" });
+      }
+      if (!req.body.resolutionDescription) {
+         return res.status(400).json({ error: "Resolution description is required" });
+      }
+
+      const previousStatus = complaint.status;
+      complaint.status = "resolved";
+      complaint.resolutionDescription = req.body.resolutionDescription;
+      complaint.resolutionMedia = req.body.resolutionMedia ?? [];
+      await complaint.save();
+      await recordStaffStatusChange(complaint, req, previousStatus, "resolved");
+      return res.status(200).json(complaint);
+   } catch (error) {
+      console.error("Error resolving complaint:", error);
+      if (error.name === "CastError" || error.name === "ValidationError") {
+         return res.status(400).json({ error: error.message });
+      }
+      return res.status(500).json({ error: "Internal server error" });
+   }
+};
+
 export const assignComplaint = async (req, res) => {
    try {
       const complaint = await Complaint.findOneAndUpdate(
@@ -229,6 +398,7 @@ export const assignComplaint = async (req, res) => {
          {
             assignedDepartment: req.body.assignedDepartment,
             assignedStaff: req.body.assignedStaff || null,
+            assignedAt: req.body.assignedStaff ? new Date() : null,
             status: "assigned",
          },
          { new: true, runValidators: true }
