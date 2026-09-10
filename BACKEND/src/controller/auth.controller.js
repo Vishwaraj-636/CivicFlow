@@ -235,7 +235,37 @@ export const getCurrentUser = async (req, res) => {
          role: req.user.role,
          departmentId: req.user.departmentId,
          profileCompleted: req.user.profileCompleted,
-         authProvider: req.user.authProvider
+         authProvider: req.user.authProvider,
+         profileImage: req.user.profileImage
       }
    });
+};
+
+export const updateProfile = async (req, res) => {
+   const { fullname, contact, profileImage } = req.body;
+   try {
+      const user = req.user;
+      if (fullname) user.fullname = fullname;
+      if (contact) user.contact = contact;
+      if (profileImage !== undefined) user.profileImage = profileImage;
+
+      await user.save();
+
+      res.status(200).json({
+         user: {
+            id: user._id,
+            email: user.email,
+            fullname: user.fullname,
+            contact: user.contact,
+            role: user.role,
+            departmentId: user.departmentId,
+            profileCompleted: user.profileCompleted,
+            authProvider: user.authProvider,
+            profileImage: user.profileImage
+         }
+      });
+   } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Internal server error" });
+   }
 };

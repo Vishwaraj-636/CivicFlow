@@ -12,7 +12,8 @@ import {
    completeGoogleProfile,
    getDepartments,
    logout,
-   getCurrentUser
+   getCurrentUser,
+   updateProfile
 } from "../services/auth.api";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -144,6 +145,22 @@ export const useAuth = () => {
       }
    }
 
+   async function handleUpdateProfile(profileData) {
+      try {
+         dispatch(setLoading(true));
+         const data = await updateProfile(profileData);
+         dispatch(setUser(data.user));
+         dispatch(setError(null));
+         return data;
+      } catch (error) {
+         const errorMessage = error.response?.data?.message || "Failed to update profile";
+         dispatch(setError(errorMessage));
+         throw error;
+      } finally {
+         dispatch(setLoading(false));
+      }
+   }
+
    return {
       user,
       loading,
@@ -157,6 +174,7 @@ export const useAuth = () => {
       handleCompleteProfile,
       getDepartments,
       handleLogout,
-      handleGetCurrentUser
+      handleGetCurrentUser,
+      handleUpdateProfile
    }
 }

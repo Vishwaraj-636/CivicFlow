@@ -26,11 +26,24 @@ const mediaUpload = multer({
    limits: { files: 7, fileSize: 50 * 1024 * 1024 },
 });
 
+const parseMediaUpload = (req, res, next) => {
+   mediaUpload.array("files", 7)(req, res, (error) => {
+      if (error) {
+         return res.status(400).json({
+            error: error.code === "LIMIT_FILE_SIZE"
+               ? "A media file exceeds the 50 MB upload limit"
+               : "Unable to read uploaded media",
+         });
+      }
+      next();
+   });
+};
+
 router.post(
    "/complaints/media",
    authenticate,
    requireRole("citizen"),
-   mediaUpload.array("files", 7),
+   parseMediaUpload,
    uploadComplaintMedia
 );
 

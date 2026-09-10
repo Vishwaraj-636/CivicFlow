@@ -14,6 +14,10 @@ const userSchema = new mongoose.Schema(
          type: String,
          required: false
       },
+      profileImage: {
+         type: String,
+         default: ""
+      },
       passwordHash: {
          type: String,
          required: function () {
@@ -46,20 +50,13 @@ const userSchema = new mongoose.Schema(
       googleId: {
          type: String,
       },
-
-
-      //future use cases for user management and session handling
-
       isActive: {
          type: Boolean,
-         default: true, // Used by admin to enable/disable user accounts
+         default: true,
       },
-      //  refreshToken: {
-      //    type: String, // For Session Management & Refresh Token handling
-      //  },
    },
    {
-      timestamps: true, // Automatically manages createdAt and updatedAt (useful for audit logs)
+      timestamps: true,
    }
 );
 
@@ -78,4 +75,3 @@ userSchema.methods.comparePassword = async function (password) {
 const User = mongoose.model('User', userSchema);
 
 export default User;
-

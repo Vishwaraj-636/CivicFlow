@@ -46,6 +46,11 @@ const complaintSchema = new mongoose.Schema(
                required: true,
                trim: true,
             },
+            metadata: {
+               originalName: { type: String, trim: true },
+               mimeType: { type: String, trim: true },
+               size: { type: Number, min: 0 },
+            },
          },
       ],
       location: {

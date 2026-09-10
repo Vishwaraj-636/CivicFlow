@@ -1,5 +1,3 @@
-import React from 'react';
-import ComplaintStatus from './ComplaintStatus';
 
 /**
  * GroupedReportsSummary
@@ -55,7 +53,7 @@ const GroupedReportsSummary = ({ count = 0, reports = [], onViewAll }) => {
             <ul className="flex flex-col gap-1.5">
                {reports.map((r) => (
                   <li
-                     key={r.id}
+                     key={r.id ?? r._id}
                      className="flex items-center gap-2 text-xs text-secondary-text"
                   >
                      {/* Category chip */}

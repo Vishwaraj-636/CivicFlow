@@ -1,13 +1,19 @@
 import { randomUUID } from "node:crypto";
 import Complaint from "../model/complaint.model.js";
+import Department from "../model/department.model.js";
 import { recordComplaintTimeline } from "./complaintTimeline.controller.js";
 import { findSimilarComplaints } from "../service/complaintSimilarity.service.js";
-import { uploadMedia } from "../service/imagekit.service.js";
+import { uploadMedia, validateMediaFile } from "../service/imagekit.service.js";
 
 const citizenQuery = (req) => ({ citizenId: req.user._id });
 
 export const createComplaint = async (req, res) => {
    try {
+      const department = await Department.findOne({
+         categories: req.body.category,
+         isActive: true,
+      }).select("_id");
+
       const complaint = await Complaint.create({
          title: req.body.title,
          description: req.body.description,
@@ -15,6 +21,7 @@ export const createComplaint = async (req, res) => {
          location: req.body.location,
          address: req.body.address,
          media: req.body.media,
+         assignedDepartment: department?._id ?? null,
          complaintId: `CF-${randomUUID()}`,
          citizenId: req.user._id,
       });
@@ -48,6 +55,16 @@ export const createComplaint = async (req, res) => {
 
 export const uploadComplaintMedia = async (req, res) => {
    try {
+      const invalidFile = (req.files ?? [])
+         .map((file) => ({ file, error: validateMediaFile(file) }))
+         .find(({ error }) => error);
+
+      if (invalidFile) {
+         return res.status(400).json({
+            error: `${invalidFile.file.originalname}: ${invalidFile.error}`,
+         });
+      }
+
       const media = await Promise.all(
          (req.files ?? []).map((file) => uploadMedia({
             buffer: file.buffer,
@@ -68,7 +85,7 @@ export const getComplaintById = async (req, res) => {
          _id: req.params.id,
          ...citizenQuery(req),
          status: { $ne: "deleted" },
-      });
+      }).populate("assignedDepartment", "fullname code");
 
       if (!complaint) {
          return res.status(404).json({ error: "Complaint not found" });
@@ -89,7 +106,7 @@ export const getMyComplaints = async (req, res) => {
       const complaints = await Complaint.find({
          citizenId: req.user._id,
          status: { $ne: "deleted" },
-      }).sort({ createdAt: -1 });
+      }).populate("assignedDepartment", "fullname code").sort({ createdAt: -1 });
       return res.status(200).json(complaints);
    } catch (error) {
       console.error("Error fetching citizen complaints:", error);

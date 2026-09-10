@@ -11,7 +11,7 @@ import Unauthorized from "../features/auth/pages/Unauthorized";
 import StaffRequests from "../features/admin/pages/StaffRequests";
 import CitizenDashboard from "../features/citizen/pages/CitizenDashboard";
 import MyComplaints from "../features/citizen/pages/MyComplaints";
-import ComplaintReport from "../features/citizen/pages/ComplaintReport";
+import ReportComplaint from "../features/citizen/pages/ReportComplaint";
 import ComplaintDetails from "../features/citizen/pages/ComplaintDetails";
 import TrackComplaint from "../features/citizen/pages/TrackComplaint";
 import Profile from "../features/citizen/pages/Profile";
@@ -76,7 +76,7 @@ export const routes = createBrowserRouter([
                },
                {
                   path: "complaints/report",
-                  element: <ComplaintReport />
+                  element: <ReportComplaint />
                },
                {
                   path: "complaints/:id",

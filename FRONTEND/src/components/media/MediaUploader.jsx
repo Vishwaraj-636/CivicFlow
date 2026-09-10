@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import { useState, useRef, useCallback } from 'react';
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 const ACCEPTED_VIDEO_TYPES = ['video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/webm'];
@@ -128,10 +128,10 @@ function UploadSection({ kind, onFiles, error }) {
  * @param {number}   [maxVideos=2] - Maximum video count
  */
 const MediaUploader = ({ onFilesReady, maxImages = 5, maxVideos = 2 }) => {
-   const [images, setImages] = React.useState([]);
-   const [videos, setVideos] = React.useState([]);
-   const [imageError, setImageError] = React.useState('');
-   const [videoError, setVideoError] = React.useState('');
+   const [images, setImages] = useState([]);
+   const [videos, setVideos] = useState([]);
+   const [imageError, setImageError] = useState('');
+   const [videoError, setVideoError] = useState('');
 
    const handleFiles = useCallback((files, kind) => {
       const setError = kind === 'image' ? setImageError : setVideoError;

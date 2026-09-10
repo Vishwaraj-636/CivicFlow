@@ -26,6 +26,22 @@ const Navbar = () => {
             <div className="flex items-center gap-4">
                {isAuthenticated ? (
                   <>
+                     {user?.role === "citizen" && (
+                        <div className="flex items-center gap-6 mr-4 border-r border-border pr-6 hidden md:flex">
+                           <Link to="/citizen" className="text-sm font-medium text-secondary-text hover:text-primary-text">
+                              Dashboard
+                           </Link>
+                           <Link to="/citizen/complaints/report" className="text-sm font-medium text-secondary-text hover:text-primary-text">
+                              Report Complaint
+                           </Link>
+                           <Link to="/citizen/complaints" className="text-sm font-medium text-secondary-text hover:text-primary-text">
+                              My Complaints
+                           </Link>
+                           <Link to="/citizen/profile" className="text-sm font-medium text-secondary-text hover:text-primary-text">
+                              Profile
+                           </Link>
+                        </div>
+                     )}
                      <span className="text-sm font-medium text-secondary-text">
                         {user?.fullname || user?.email}
                      </span>

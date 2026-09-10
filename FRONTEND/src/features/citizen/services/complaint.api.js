@@ -6,7 +6,10 @@ const complaintApiInstance = axios.create({
 });
 
 function normalizeComplaintData(complaintData) {
-   if (!complaintData?.location?.lat && complaintData?.location?.lat !== 0) {
+   const latitude = complaintData?.location?.latitude ?? complaintData?.location?.lat;
+   const longitude = complaintData?.location?.longitude ?? complaintData?.location?.lng;
+
+   if (typeof latitude !== "number" || typeof longitude !== "number") {
       return complaintData;
    }
 
@@ -14,7 +17,7 @@ function normalizeComplaintData(complaintData) {
       ...complaintData,
       location: {
          type: "Point",
-         coordinates: [complaintData.location.lng, complaintData.location.lat],
+         coordinates: [longitude, latitude],
       },
    };
 }

@@ -72,3 +72,12 @@ export async function getCurrentUser() {
    const response = await authApiInstance.get("/me");
    return response.data;
 }
+
+export async function updateProfile({ fullname, contact, profileImage }) {
+   const response = await authApiInstance.put("/me", {
+      fullname,
+      contact,
+      profileImage
+   });
+   return response.data;
+}

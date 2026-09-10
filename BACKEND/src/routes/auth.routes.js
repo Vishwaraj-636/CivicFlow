@@ -13,7 +13,8 @@ import {
    googleCallback,
    completeGoogleProfile,
    logout,
-   getCurrentUser
+   getCurrentUser,
+   updateProfile
 } from '../controller/auth.controller.js';
 import passport from 'passport';
 import { config } from '../config/config.js';
@@ -61,6 +62,7 @@ router.get('/google/callback',
 router.post('/complete-profile', validateGoogleProfileCompletion, completeGoogleProfile);
 
 router.get('/me', authenticate, getCurrentUser);
+router.put('/me', authenticate, updateProfile);
 
 router.post('/logout', logout);
 

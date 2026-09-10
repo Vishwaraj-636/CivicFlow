@@ -1,4 +1,3 @@
-import React from 'react';
 import ComplaintStatus from './ComplaintStatus';
 
 /**
@@ -44,14 +43,16 @@ const LocationPinIcon = () => (
 const ComplaintCard = ({ complaint, onClick }) => {
    const {
       _id,
+      complaintId,
       title = 'Untitled Complaint',
       category = '—',
       status = 'submitted',
+      priority = 'medium',
       createdAt,
       location,
    } = complaint ?? {};
 
-   const shortId = _id ? `#${String(_id).slice(-6).toUpperCase()}` : '—';
+   const displayId = complaintId || (_id ? `#${String(_id).slice(-6).toUpperCase()}` : '—');
 
    const formattedDate = createdAt
       ? new Date(createdAt).toLocaleDateString('en-IN', {
@@ -71,7 +72,7 @@ const ComplaintCard = ({ complaint, onClick }) => {
          {/* ── Header row: ID + Status ── */}
          <div className="flex items-center justify-between gap-2">
             <span className="text-[11px] font-mono font-bold text-muted-text tracking-wider bg-surface-elevated border border-border rounded-lg px-2 py-0.5">
-               {shortId}
+               {displayId}
             </span>
             <ComplaintStatus status={status} size="sm" />
          </div>
@@ -85,6 +86,11 @@ const ComplaintCard = ({ complaint, onClick }) => {
          <span className="self-start text-[10px] font-semibold uppercase tracking-widest text-secondary-text bg-surface-elevated border border-border rounded-md px-2 py-0.5">
             {category}
          </span>
+
+         <div className="flex items-center justify-between text-xs text-secondary-text">
+            <span>Priority</span>
+            <span className="font-semibold capitalize text-primary-text">{priority}</span>
+         </div>
 
          {/* ── Meta: date & location ── */}
          <div className="flex flex-col gap-1.5 pt-0.5">

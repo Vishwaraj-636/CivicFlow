@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
 import MapMarker from './MapMarker';
 
@@ -9,7 +9,7 @@ function MapClickHandler({ onLocationChange, correcting }) {
    useMapEvents({
       click(e) {
          if (correcting) {
-            onLocationChange({ lat: e.latlng.lat, lng: e.latlng.lng });
+            onLocationChange({ latitude: e.latlng.lat, longitude: e.latlng.lng });
          }
       },
    });
@@ -25,8 +25,8 @@ function MapClickHandler({ onLocationChange, correcting }) {
  *   - Display marker at selected position
  *   - Allow the user to correct/re-pick the location
  *
- * @param {Object}   value              - Current coordinates { lat, lng }
- * @param {Function} onChange           - Called with new { lat, lng }
+ * @param {Object}   value              - Current coordinates { latitude, longitude }
+ * @param {Function} onChange           - Called with new { latitude, longitude }
  * @param {number[]} [defaultCenter]    - [lat, lng] default map center
  * @param {number}   [defaultZoom=13]
  */
@@ -41,7 +41,7 @@ const LocationPicker = ({
    const [gpsError, setGpsError] = useState('');
 
    const markerPos = value
-      ? [value.lat, value.lng]
+      ? [value.latitude ?? value.lat, value.longitude ?? value.lng]
       : null;
 
    const mapCenter = markerPos ?? defaultCenter;
@@ -56,7 +56,7 @@ const LocationPicker = ({
       navigator.geolocation.getCurrentPosition(
          (pos) => {
             setGpsLoading(false);
-            onChange?.({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+            onChange?.({ latitude: pos.coords.latitude, longitude: pos.coords.longitude });
          },
          () => {
             setGpsLoading(false);
@@ -64,6 +64,13 @@ const LocationPicker = ({
          }
       );
    }, [onChange]);
+
+   // Auto-fetch location on mount if no value is set
+   useEffect(() => {
+      if (!value) {
+         handleGps();
+      }
+   }, [handleGps, value]);
 
    const handleLocationChange = useCallback(
       (coords) => {
@@ -84,8 +91,11 @@ const LocationPicker = ({
                className="z-0"
                attributionControl={false}
             >
-               {/* Dark tile layer */}
-               <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
+               {/* Dark tile layer using Jawg Maps */}
+               <TileLayer
+                  url={`https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=${import.meta.env.VITE_JAWG_ACCESS_TOKEN || 'YOUR_JAWG_ACCESS_TOKEN'}`}
+                  attribution='<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+               />
 
                <MapClickHandler
                   onLocationChange={handleLocationChange}
@@ -129,7 +139,7 @@ const LocationPicker = ({
          <div className="flex items-center justify-between gap-3 flex-wrap">
             <p className="text-xs text-muted-text font-mono">
                {markerPos
-                  ? `Lat: ${value.lat.toFixed(4)} | Lng: ${value.lng.toFixed(4)}`
+                  ? `Lat: ${markerPos[0].toFixed(4)} | Lng: ${markerPos[1].toFixed(4)}`
                   : 'No location selected'}
             </p>
 
@@ -137,8 +147,8 @@ const LocationPicker = ({
             <button
                onClick={() => setCorrecting((c) => !c)}
                className={`text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors cursor-pointer ${correcting
-                     ? 'bg-primary-accent/20 text-primary-accent border-primary-accent'
-                     : 'border-border text-secondary-text hover:border-primary-accent/50 hover:text-primary-accent'
+                  ? 'bg-primary-accent/20 text-primary-accent border-primary-accent'
+                  : 'border-border text-secondary-text hover:border-primary-accent/50 hover:text-primary-accent'
                   }`}
             >
                {correcting ? 'Cancel Correction' : 'Correct Location'}

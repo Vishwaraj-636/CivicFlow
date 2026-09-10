@@ -13,6 +13,7 @@ const protectedFields = [
 ];
 
 const supportedMediaTypePattern = /^(image\/(jpeg|png|webp|gif)|video\/(mp4|quicktime|x-msvideo|webm))$/i;
+const supportedCategories = ["Pothole", "Road Damage", "Garbage", "Water Leakage", "Streetlight", "Drainage"];
 
 function validateRequest(req, res, next) {
    const errors = validationResult(req);
@@ -70,7 +71,16 @@ function createMediaValidation() {
          typeof item === "object" &&
          typeof item.fileId === "string" &&
          typeof item.url === "string" &&
-         supportedMediaTypePattern.test(item.type)
+         supportedMediaTypePattern.test(item.type) &&
+         (item.metadata === undefined || (
+            item.metadata &&
+            typeof item.metadata === "object" &&
+            (item.metadata.originalName === undefined || typeof item.metadata.originalName === "string") &&
+            (item.metadata.mimeType === undefined || typeof item.metadata.mimeType === "string") &&
+            (item.metadata.size === undefined || (
+               typeof item.metadata.size === "number" && item.metadata.size >= 0
+            ))
+         ))
       ))).withMessage("Media must contain { fileId, url, type } with a supported image or video type");
 }
 
@@ -87,7 +97,8 @@ function createComplaintFields() {
       body("category")
          .isString().withMessage("Category must be a string")
          .trim()
-         .notEmpty().withMessage("Category is required"),
+         .notEmpty().withMessage("Category is required")
+         .isIn(supportedCategories).withMessage("Category is not supported"),
       createLocationValidation(),
       body("address")
          .isString().withMessage("Address must be a string")
