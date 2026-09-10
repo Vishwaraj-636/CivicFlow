@@ -1,4 +1,4 @@
-import { createBrowserRouter, Outlet } from "react-router";
+import { createBrowserRouter } from "react-router";
 import Register from "../features/auth/pages/register";
 import Login from "../features/auth/pages/Login";
 import DeptStaffRequest from "../features/auth/pages/DeptStaffRequest";
@@ -15,15 +15,8 @@ import ReportComplaint from "../features/citizen/pages/ReportComplaint";
 import ComplaintDetails from "../features/citizen/pages/ComplaintDetails";
 import TrackComplaint from "../features/citizen/pages/TrackComplaint";
 import Profile from "../features/citizen/pages/Profile";
-
-
-const StaffDashboard = () => <div className="p-8 text-center"><h1 className="text-3xl font-light">Staff Dashboard</h1></div>;
-const AdminDashboard = () => (
-   <div className="p-8 text-center">
-      <h1 className="text-3xl font-light">Admin Dashboard</h1>
-      <Outlet />
-   </div>
-);
+import StaffDashboard from "../features/staff/pages/StaffDashboard";
+import AdminDashboard from "../features/admin/pages/AdminDashboard";
 
 export const routes = createBrowserRouter([
    {

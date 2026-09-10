@@ -1,30 +1,31 @@
 import Department from '../model/department.model.js';
+import { supportedCategories } from './complaintCategories.js';
 
 const initialDepartments = [
    {
       fullname: 'Public Works',
       code: 'PUBLIC_WORKS',
-      categories: ['Pothole', 'Road Damage']
+      categories: [supportedCategories[0]]
    },
    {
       fullname: 'Sanitation',
       code: 'SANITATION',
-      categories: ['Garbage']
+      categories: [supportedCategories[1]]
    },
    {
       fullname: 'Water Supply',
       code: 'WATER_SUPPLY',
-      categories: ['Water Leakage']
+      categories: [supportedCategories[2]]
    },
    {
       fullname: 'Electrical',
       code: 'ELECTRICAL',
-      categories: ['Streetlight']
+      categories: [supportedCategories[3]]
    },
    {
       fullname: 'Drainage',
       code: 'DRAINAGE',
-      categories: ['Drainage']
+      categories: [supportedCategories[4]]
    }
 ];
 
@@ -32,7 +33,7 @@ export const seedDepartments = async () => {
    await Promise.all(
       initialDepartments.map((department) => Department.updateOne(
          { code: department.code },
-         { $setOnInsert: department },
+         { $set: { ...department } },
          { upsert: true }
       ))
    );

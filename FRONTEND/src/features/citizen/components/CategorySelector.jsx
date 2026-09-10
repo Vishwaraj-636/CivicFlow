@@ -1,13 +1,4 @@
-import React from "react";
-
-const CATEGORIES = [
-   { id: "pothole", label: "Pothole", icon: "🕳️" },
-   { id: "road_damage", label: "Road Damage", icon: "🛣️" },
-   { id: "garbage", label: "Garbage", icon: "🗑️" },
-   { id: "water_leakage", label: "Water Leakage", icon: "💧" },
-   { id: "streetlight", label: "Streetlight", icon: "💡" },
-   { id: "drainage", label: "Drainage", icon: "🌊" },
-];
+import { COMPLAINT_CATEGORIES } from "../../../constants/complaintCategories";
 
 const CategorySelector = ({ value, onChange }) => {
    return (
@@ -22,7 +13,7 @@ const CategorySelector = ({ value, onChange }) => {
          </div>
 
          <div className="grid grid-cols-3 gap-2">
-            {CATEGORIES.map((cat) => {
+            {COMPLAINT_CATEGORIES.map((cat) => {
                const isSelected = value === cat.label;
                return (
                   <button
@@ -30,8 +21,8 @@ const CategorySelector = ({ value, onChange }) => {
                      type="button"
                      onClick={() => onChange(cat.label)}
                      className={`flex flex-col items-center justify-center gap-1.5 rounded-xl p-2.5 text-center transition-all min-h-[80px] ${isSelected
-                           ? "border-2 border-emerald-600 bg-emerald-50/50 font-bold text-emerald-900 shadow-sm"
-                           : "border border-slate-200 hover:border-emerald-500 text-slate-700"
+                        ? "border-2 border-emerald-600 bg-emerald-50/50 font-bold text-emerald-900 shadow-sm"
+                        : "border border-slate-200 hover:border-emerald-500 text-slate-700"
                         }`}
                   >
                      <span className="text-2xl">{cat.icon}</span>

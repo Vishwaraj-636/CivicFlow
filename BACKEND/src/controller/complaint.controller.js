@@ -175,7 +175,9 @@ export const listComplaintsForStaff = async (req, res) => {
          filter.assignedDepartment = req.user.departmentId;
       }
 
-      const complaints = await Complaint.find(filter).sort({ createdAt: -1 });
+      const complaints = await Complaint.find(filter)
+         .populate("assignedDepartment", "fullname code")
+         .sort({ createdAt: -1 });
       return res.status(200).json(complaints);
    } catch (error) {
       console.error("Error fetching staff complaints:", error);

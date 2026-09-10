@@ -1,4 +1,5 @@
 import { body, validationResult } from "express-validator";
+import { supportedCategories } from "../config/complaintCategories.js";
 
 const protectedFields = [
    "citizenId",
@@ -13,8 +14,6 @@ const protectedFields = [
 ];
 
 const supportedMediaTypePattern = /^(image\/(jpeg|png|webp|gif)|video\/(mp4|quicktime|x-msvideo|webm))$/i;
-const supportedCategories = ["Pothole", "Road Damage", "Garbage", "Water Leakage", "Streetlight", "Drainage"];
-
 function validateRequest(req, res, next) {
    const errors = validationResult(req);
    if (!errors.isEmpty()) {
