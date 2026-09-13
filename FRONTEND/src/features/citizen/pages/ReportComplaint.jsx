@@ -4,7 +4,7 @@ import LocationPicker from "../../../components/maps/LocationPicker";
 import MediaPreview from "../../../components/media/MediaPreview";
 import MediaUploader from "../../../components/media/MediaUploader";
 import { createComplaint, uploadComplaintMedia } from "../services/complaint.api";
-import CategorySelector from "../components/CategorySelector";
+import { COMPLAINT_CATEGORIES } from "../../../constants/complaintCategories";
 import useComplaintForm from "../hook/useComplaintForm";
 
 const ReportComplaint = () => {
@@ -74,101 +74,172 @@ const ReportComplaint = () => {
       }
    }
 
+   const attachedCount = media.images.length + media.videos.length;
+
    return (
-      <div className="min-h-screen bg-slate-50 pb-12 font-sans text-slate-800 antialiased">
-         {/* Header */}
-         <header className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200 bg-white/90 px-4 py-3.5 backdrop-blur-md">
-            <div className="flex items-center gap-3">
+      <div
+         className="min-h-[calc(100vh-4rem)] w-full bg-[#F7F7F5] text-[#17202A] font-['Public_Sans',sans-serif] antialiased pb-16"
+         style={{
+            fontFamily: "'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+            "--color-surface": "#FFFFFF",
+            "--color-surface-secondary": "#F1F3F2",
+            "--color-surface-elevated": "#F1F3F2",
+            "--color-border": "#E2E6E4",
+            "--color-primary-text": "#17202A",
+            "--color-secondary-text": "#52606D",
+            "--color-muted-text": "#87919B",
+            "--color-primary-accent": "#173B5E",
+            "--color-accent-hover": "#122E4A",
+         }}
+      >
+         {/* Top Institutional Context Header */}
+         <div className="border-b border-[#E2E6E4] bg-white">
+            <div className="mx-auto max-w-3xl px-4 py-3 sm:py-4 flex items-center justify-between">
                <button
                   type="button"
                   onClick={() => navigate(-1)}
                   aria-label="Go back"
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200"
+                  className="inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-[#E2E6E4] bg-white px-3.5 py-2 text-xs font-medium text-[#52606D] transition hover:border-[#CBD2CF] hover:text-[#17202A] cursor-pointer"
                >
-                  ←
+                  <span aria-hidden="true">←</span>
+                  <span>Back</span>
                </button>
-               <div>
-                  <h1 className="text-base font-bold leading-tight text-slate-900">Report Complaint</h1>
-                  <p className="text-xs text-slate-500">Citizen Services Portal</p>
+               <div className="flex items-center gap-2">
+                  <span className="inline-block h-2 w-2 rounded-full bg-[#39756B]" />
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#39756B]">
+                     Citizen Services Portal
+                  </span>
                </div>
             </div>
-            <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700">
-               Public
-            </span>
-         </header>
+         </div>
 
-         <main className="mx-auto max-w-lg space-y-4 px-4 pt-4">
-            {/* Notice Banner */}
-            <div className="flex gap-3 rounded-2xl border border-emerald-100 bg-linear-to-r from-emerald-50 to-teal-50 p-4 shadow-sm">
-               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-600/10 text-emerald-600">
-                  ℹ
-               </div>
-               <div>
-                  <h2 className="text-xs font-semibold uppercase tracking-wider text-emerald-950">Citizen Voice</h2>
-                  <p className="mt-0.5 text-xs leading-relaxed text-emerald-800">
-                     Submit civic issues directly to municipal dispatch. Provide detailed location and photos for faster resolution.
-                  </p>
-               </div>
+         <main className="mx-auto max-w-3xl px-4 pt-6 sm:px-6 sm:pt-8 space-y-6">
+            {/* Page Header */}
+            <div className="space-y-1">
+               <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#17202A]">
+                  Report a Civic Issue
+               </h1>
+               <p className="text-sm text-[#52606D]">
+                  Submit municipal issues directly to dispatch with verified details, evidence photos, and map location.
+               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-               {/* 1. Category Selection */}
-               <CategorySelector
-                  value={form.category}
-                  onChange={handleCategory}
-               />
-
-               {/* 2. Title & Description */}
-               <div className="space-y-3.5 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                  <div>
-                     <div className="mb-1.5 flex items-center justify-between">
-                        <label htmlFor="title" className="text-xs font-semibold uppercase tracking-wide text-slate-700">
-                           Title <span className="text-rose-500">*</span>
-                        </label>
-                        <span className="text-[11px] text-slate-400">{form.title.length}/80</span>
-                     </div>
-                     <input
-                        id="title"
-                        name="title"
-                        type="text"
-                        required
-                        maxLength={80}
-                        value={form.title}
-                        onChange={handleForm}
-                        placeholder="Brief summary of the issue"
-                        className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 transition focus:border-emerald-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
-                     />
-                  </div>
-
-                  <div>
-                     <div className="mb-1.5 flex items-center justify-between">
-                        <label htmlFor="description" className="text-xs font-semibold uppercase tracking-wide text-slate-700">
-                           Description <span className="text-rose-500">*</span>
-                        </label>
-                        <span className="text-[11px] text-slate-400">Detailed breakdown</span>
-                     </div>
-                     <textarea
-                        id="description"
-                        name="description"
-                        required
-                        rows={4}
-                        value={form.description}
-                        onChange={handleForm}
-                        placeholder="Explain the severity, hazards, or specific landmarks nearby..."
-                        className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 transition focus:border-emerald-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
-                     />
-                  </div>
-               </div>
-
-               {/* 3. Media Upload */}
-               <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <form onSubmit={handleSubmit} className="space-y-6">
+               {/* CARD 1 — CATEGORY */}
+               <section className="rounded-xl border border-[#E2E6E4] bg-white p-5 sm:p-6 shadow-2xs space-y-4">
                   <div className="flex items-center justify-between">
-                     <label className="text-xs font-semibold uppercase tracking-wide text-slate-700">
-                        Evidence Media
-                     </label>
-                     {(media.images.length > 0 || media.videos.length > 0) && (
-                        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700">
-                           {media.images.length + media.videos.length} attached
+                     <div>
+                        <h2 className="text-base sm:text-lg font-semibold tracking-tight text-[#17202A]">
+                           1. What is the issue?
+                        </h2>
+                        <p className="text-xs text-[#52606D]">
+                           Select the municipal category that best matches your issue <span className="text-[#A44A4A]">*</span>
+                        </p>
+                     </div>
+                     {form.category && (
+                        <span className="hidden sm:inline-block rounded-full bg-[#EEF4FA] px-2.5 py-0.5 text-xs font-medium text-[#24527A] border border-[#D2E3F3]">
+                           {form.category}
+                        </span>
+                     )}
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+                     {COMPLAINT_CATEGORIES.map((cat) => {
+                        const isSelected = form.category === cat.label;
+                        return (
+                           <button
+                              key={cat.id}
+                              type="button"
+                              onClick={() => handleCategory(cat.label)}
+                              className={`flex items-center gap-3 rounded-lg p-3 text-left transition min-h-[56px] cursor-pointer ${isSelected
+                                    ? "border-2 border-[#173B5E] bg-[#EEF4FA] text-[#173B5E] shadow-2xs font-semibold"
+                                    : "border border-[#E2E6E4] bg-white text-[#17202A] hover:border-[#CBD2CF] hover:bg-[#F7F7F5]"
+                                 }`}
+                           >
+                              <span className="text-xl shrink-0" role="img" aria-label={cat.label}>
+                                 {cat.icon}
+                              </span>
+                              <div className="flex-1 min-w-0">
+                                 <p className="text-xs font-semibold leading-tight truncate">{cat.label}</p>
+                              </div>
+                              {isSelected && (
+                                 <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#173B5E] text-[10px] text-white">
+                                    ✓
+                                 </span>
+                              )}
+                           </button>
+                        );
+                     })}
+                  </div>
+               </section>
+
+               {/* CARD 2 — DETAILS */}
+               <section className="rounded-xl border border-[#E2E6E4] bg-white p-5 sm:p-6 shadow-2xs space-y-4">
+                  <div>
+                     <h2 className="text-base sm:text-lg font-semibold tracking-tight text-[#17202A]">
+                        2. Tell us about the issue
+                     </h2>
+                     <p className="text-xs text-[#52606D]">
+                        Provide a clear summary and detailed breakdown of the situation
+                     </p>
+                  </div>
+
+                  <div className="space-y-4">
+                     <div>
+                        <div className="mb-1.5 flex items-center justify-between">
+                           <label htmlFor="title" className="text-xs font-semibold uppercase tracking-wider text-[#52606D]">
+                              Issue Title <span className="text-[#A44A4A]">*</span>
+                           </label>
+                           <span className="text-xs text-[#87919B]">{form.title.length}/80</span>
+                        </div>
+                        <input
+                           id="title"
+                           name="title"
+                           type="text"
+                           required
+                           maxLength={80}
+                           value={form.title}
+                           onChange={handleForm}
+                           placeholder="Brief summary (e.g. Deep pothole causing hazard on 5th Main)"
+                           className="w-full min-h-[44px] rounded-lg border border-[#CBD2CF] bg-white px-3.5 py-2.5 text-sm text-[#17202A] placeholder-[#87919B] transition focus:border-[#173B5E] focus:outline-none focus:ring-2 focus:ring-[#173B5E]/20"
+                        />
+                     </div>
+
+                     <div>
+                        <div className="mb-1.5 flex items-center justify-between">
+                           <label htmlFor="description" className="text-xs font-semibold uppercase tracking-wider text-[#52606D]">
+                              Detailed Description <span className="text-[#A44A4A]">*</span>
+                           </label>
+                           <span className="text-xs text-[#87919B]">Detailed breakdown</span>
+                        </div>
+                        <textarea
+                           id="description"
+                           name="description"
+                           required
+                           rows={4}
+                           value={form.description}
+                           onChange={handleForm}
+                           placeholder="Explain the severity, hazards, length of time the issue has existed, or specific landmarks nearby..."
+                           className="w-full resize-none rounded-lg border border-[#CBD2CF] bg-white px-3.5 py-2.5 text-sm text-[#17202A] placeholder-[#87919B] transition focus:border-[#173B5E] focus:outline-none focus:ring-2 focus:ring-[#173B5E]/20"
+                        />
+                     </div>
+                  </div>
+               </section>
+
+               {/* CARD 3 — EVIDENCE */}
+               <section className="rounded-xl border border-[#E2E6E4] bg-white p-5 sm:p-6 shadow-2xs space-y-4">
+                  <div className="flex items-center justify-between">
+                     <div>
+                        <h2 className="text-base sm:text-lg font-semibold tracking-tight text-[#17202A]">
+                           3. Add supporting evidence
+                        </h2>
+                        <p className="text-xs text-[#52606D]">
+                           Attach photos or short videos to help inspectors verify the issue
+                        </p>
+                     </div>
+                     {attachedCount > 0 && (
+                        <span className="rounded-full border border-[#D2E3F3] bg-[#EEF4FA] px-2.5 py-0.5 text-xs font-medium text-[#24527A]">
+                           {attachedCount} attached
                         </span>
                      )}
                   </div>
@@ -181,22 +252,27 @@ const ReportComplaint = () => {
                      onRemoveImage={handleRemoveImage}
                      onRemoveVideo={handleRemoveVideo}
                   />
-               </div>
+               </section>
 
-               {/* 4. Location & Address */}
-               <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                  <label className="block text-xs font-semibold uppercase tracking-wide text-slate-700">
-                     Location & Map <span className="text-rose-500">*</span>
-                  </label>
+               {/* CARD 4 — LOCATION */}
+               <section className="rounded-xl border border-[#E2E6E4] bg-white p-5 sm:p-6 shadow-2xs space-y-4">
+                  <div>
+                     <h2 className="text-base sm:text-lg font-semibold tracking-tight text-[#17202A]">
+                        4. Where is the issue?
+                     </h2>
+                     <p className="text-xs text-[#52606D]">
+                        Pinpoint the location on the map and confirm the street address <span className="text-[#A44A4A]">*</span>
+                     </p>
+                  </div>
 
                   <LocationPicker
                      value={form.location}
                      onChange={handleLocation}
                   />
 
-                  <div>
-                     <label htmlFor="address" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-700">
-                        Street Address <span className="text-rose-500">*</span>
+                  <div className="pt-2">
+                     <label htmlFor="address" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[#52606D]">
+                        Street Address <span className="text-[#A44A4A]">*</span>
                      </label>
                      <input
                         id="address"
@@ -205,30 +281,41 @@ const ReportComplaint = () => {
                         required
                         value={form.address}
                         onChange={handleForm}
-                        placeholder="Door number, street name, landmark"
-                        className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 transition focus:border-emerald-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                        placeholder="Door number, street name, locality, landmark"
+                        className="w-full min-h-[44px] rounded-lg border border-[#CBD2CF] bg-white px-3.5 py-2.5 text-sm text-[#17202A] placeholder-[#87919B] transition focus:border-[#173B5E] focus:outline-none focus:ring-2 focus:ring-[#173B5E]/20"
                      />
                   </div>
-               </div>
+               </section>
 
                {/* Error Message */}
                {error && (
-                  <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-600">
-                     {error}
+                  <div className="flex items-start gap-2.5 rounded-xl border border-[#F3D0D0] bg-[#FBF0F0] p-4 text-xs sm:text-sm text-[#A44A4A]">
+                     <span className="shrink-0 font-bold">!</span>
+                     <p>{error}</p>
                   </div>
                )}
 
                {/* Submit Action */}
-               <div className="pt-2">
+               <div className="pt-2 space-y-2">
                   <button
                      type="submit"
                      disabled={saving}
-                     className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3.5 font-semibold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700 active:bg-emerald-800 disabled:opacity-50"
+                     className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-lg bg-[#173B5E] px-4 py-3 text-sm font-medium text-white shadow-xs transition hover:bg-[#122E4A] active:bg-[#0f243b] disabled:opacity-50 cursor-pointer"
                   >
-                     {saving ? "Submitting..." : "Submit Complaint"}
+                     {saving ? (
+                        <>
+                           <svg className="h-4 w-4 animate-spin text-white" viewBox="0 0 24 24" fill="none">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                           </svg>
+                           <span>Submitting Complaint...</span>
+                        </>
+                     ) : (
+                        "Submit Complaint"
+                     )}
                   </button>
-                  <p className="mt-2 text-center text-[11px] text-slate-400">
-                     Your report will be routed to the municipal dispatch center.
+                  <p className="text-center text-xs text-[#87919B]">
+                     Your report will be routed to the municipal dispatch center for departmental assignment.
                   </p>
                </div>
             </form>
@@ -238,4 +325,3 @@ const ReportComplaint = () => {
 };
 
 export default ReportComplaint;
-

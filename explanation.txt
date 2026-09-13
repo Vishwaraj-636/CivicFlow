@@ -1152,6 +1152,104 @@ Navbar.jsx (components/layout/):
 
 
 ================================================================================
+FEATURE 13 - FRONTEND UI REFINEMENT AND PAGE STATES
+================================================================================
+
+PURPOSE: Provide a consistent, responsive, and clearer user experience across
+authentication, citizen, staff, and admin workflows without changing the API
+contracts or role permissions.
+
+--- SHARED PAGE PRESENTATION ---
+
+  Updated pages use a consistent civic operations visual language:
+    - Warm off-white page background with white content surfaces.
+    - Navy primary actions, teal workspace accents, muted gray text, and subtle
+      borders for hierarchy.
+    - Public Sans typography with responsive spacing and layouts.
+    - Rounded panels and cards with consistent padding and mobile-friendly
+      minimum button heights.
+    - Responsive grids and navigation that remain usable on small screens.
+
+  Data-driven screens now distinguish their main states instead of showing only
+  plain text:
+    - Loading states use skeleton placeholders that preserve page structure.
+    - Empty states explain what is missing and provide the next relevant action.
+    - API failures use visible error banners or recovery panels.
+    - Mutation buttons show progress text or spinners while a request is active.
+
+--- AUTHENTICATION PAGES ---
+
+  Login, Register, CompleteGoogleProfile, DeptStaffRequest, and Unauthorized:
+    - Use the updated responsive form layout and visual hierarchy.
+    - Present validation and server errors in consistent alert areas.
+    - Keep primary actions prominent and provide clear navigation to related
+      authentication or dashboard routes.
+    - Preserve the existing local-login, Google profile completion, and staff
+      request behavior.
+
+--- CITIZEN PAGES ---
+
+  CitizenDashboard:
+    - Presents a welcome header, summary metrics, quick actions, and recent
+      complaints in a responsive layout.
+    - Shows loading placeholders while complaints are fetched.
+    - Shows an actionable empty state linking to Report a Complaint when no
+      complaints exist.
+
+  MyComplaints, ComplaintDetails, Profile, and ReportComplaint:
+    - Use consistent page headers, cards, metadata sections, and responsive
+      form controls.
+    - Add clearer loading, error, and empty states.
+    - Complaint submission shows a saving state and explains departmental
+      routing before the report is submitted.
+    - Complaint details retain status, location, media, delete, and tracking
+      actions while making the complaint record easier to scan.
+    - Profile keeps account information and profile updates in a structured
+      read/edit layout.
+
+  TrackComplaint:
+    - Loads complaint details and timeline data in parallel with explicit
+      loading and failure states.
+    - Adds breadcrumb-style navigation back to the complaint and report list.
+    - Displays the current status with ComplaintStatus and the lifecycle
+      stepper, followed by a readable activity history.
+    - Uses friendly action labels such as Report Lodged, Staff Dispatched,
+      Fieldwork Completed, and Report Closed while retaining the raw event
+      meaning and localized timestamps.
+
+--- STAFF PAGES ---
+
+  StaffDashboard:
+    - Displays the department workspace context and a metric strip for total,
+      pending, assigned, in-progress, resolved, and rejected complaints.
+    - Provides a direct View Queue action and a visible error banner when the
+      dashboard request fails.
+
+  ComplaintQueue and AssignedComplaints:
+    - Use responsive complaint grids with compact cards and clearer metadata.
+    - Preserve status, priority, category, and date filtering.
+    - Show filter-aware empty states, loading skeletons, and API error banners.
+
+  Staff ComplaintDetails:
+    - Keeps the action panel, status updates, rejection flow, resolution flow,
+      media preview, map, and timeline available in a more structured layout.
+    - Makes loading, action progress, and failure feedback visible to staff.
+
+--- ADMIN AND NAVIGATION ---
+
+  StaffRequests:
+    - Presents pending staff requests in a responsive table/card layout.
+    - Review actions use a structured modal with applicant details, department
+      selection, validation feedback, loading feedback, and clear success or
+      failure notifications.
+
+  Navbar:
+    - Shows role-specific navigation for citizens and department staff.
+    - Keeps the logo, account identity, and logout action available while
+      collapsing navigation appropriately on smaller screens.
+
+
+================================================================================
 CROSS-CUTTING CONCERNS
 ================================================================================
 

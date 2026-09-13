@@ -49,114 +49,176 @@ const Register = () => {
    };
 
    return (
-      <div className="min-h-[calc(100vh-4rem)] bg-background flex flex-col justify-center items-center p-6 relative overflow-hidden font-sans selection:bg-primary-accent/30">
-         <div className="w-full max-w-xl relative z-10 my-8">
-            <div className="bg-surface p-10 sm:p-12 rounded-2xl border border-border shadow-md">
-               <div className="mb-10 text-center">
-                  <h1 className="text-3xl font-light tracking-tight text-primary-text mb-3">Create Account</h1>
-                  <p className="text-secondary-text text-sm font-medium tracking-wide">Create an account to get started.</p>
+      <div className="min-h-[calc(100vh-4rem)] bg-[#F7F7F5] flex flex-col justify-center items-center px-4 py-8 sm:px-6 lg:px-8 text-[#17202A] font-sans selection:bg-[#173B5E]/10">
+         <div className="w-full max-w-xl relative z-10 my-4 sm:my-8">
+            <div className="bg-white p-6 sm:p-8 rounded-xl border border-[#E2E6E4] shadow-sm">
+
+               {/* Institutional Eyebrow & Headline */}
+               <div className="mb-6">
+                  <div className="flex items-center justify-between mb-2">
+                     <span className="text-[11px] font-bold font-mono tracking-wider text-[#39756B] uppercase">
+                        RESIDENT ONBOARDING
+                     </span>
+                     <span className="inline-flex items-center text-[11px] font-mono px-2 py-0.5 rounded bg-[#F1F3F2] text-[#52606D] border border-[#E2E6E4]">
+                        REGISTER
+                     </span>
+                  </div>
+                  <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#17202A]">
+                     Create your CivicFlow account
+                  </h1>
+                  <p className="mt-1 text-sm text-[#52606D] leading-relaxed">
+                     Create your CivicFlow account to file civic complaints, track their progress, and access municipal services.
+                  </p>
                </div>
 
+               {/* Error Alert */}
                {error && (
-                  <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-500 text-sm">
-                     {error}
+                  <div className="mb-6 p-3.5 rounded-lg bg-[#FBF0F0] border border-[#F3C5C5] text-[#A44A4A] text-xs font-medium flex items-start gap-2.5">
+                     <svg className="w-4 h-4 shrink-0 mt-0.5 text-[#A44A4A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                     </svg>
+                     <span className="leading-snug">{error}</span>
                   </div>
                )}
 
-               <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                     <div className="space-y-1">
-                        <label className="text-[11px] uppercase tracking-wider font-semibold text-muted-text ml-1" htmlFor="fullname">Full Name</label>
+               {/* Form */}
+               <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                     <div>
+                        <label className="block text-[11px] font-mono font-semibold text-[#52606D] tracking-wider uppercase mb-1.5" htmlFor="fullname">
+                           Full Name <span className="text-red-600">*</span>
+                        </label>
                         <input
                            type="text"
                            id="fullname"
                            name="fullname"
                            value={formData.fullname}
                            onChange={handleChange}
-                           className="w-full bg-surface-secondary/50 border border-border/60 rounded-xl px-5 py-3.5 text-primary-text text-sm placeholder-muted-text/50 focus:outline-none focus:ring-1 focus:ring-primary-accent focus:border-primary-accent focus:bg-surface-secondary transition-all duration-300 shadow-sm"
+                           className="w-full min-h-[44px] px-3.5 py-2.5 bg-white text-[#17202A] text-sm rounded-lg border border-[#CBD2CF] focus:outline-none focus:ring-2 focus:ring-[#173B5E]/20 focus:border-[#173B5E] placeholder-[#87919B] transition-colors"
                            placeholder="John Doe"
                            required
                         />
                      </div>
 
-                     <div className="space-y-1">
-                        <label className="text-[11px] uppercase tracking-wider font-semibold text-muted-text ml-1" htmlFor="contact">Contact Number</label>
+                     <div>
+                        <label className="block text-[11px] font-mono font-semibold text-[#52606D] tracking-wider uppercase mb-1.5" htmlFor="contact">
+                           Contact Number <span className="text-red-600">*</span>
+                        </label>
                         <input
                            type="tel"
                            id="contact"
                            name="contact"
                            value={formData.contact}
                            onChange={handleChange}
-                           className="w-full bg-surface-secondary/50 border border-border/60 rounded-xl px-5 py-3.5 text-primary-text text-sm placeholder-muted-text/50 focus:outline-none focus:ring-1 focus:ring-primary-accent focus:border-primary-accent focus:bg-surface-secondary transition-all duration-300 shadow-sm"
-                           placeholder="1234567890"
+                           className="w-full min-h-[44px] px-3.5 py-2.5 bg-white text-[#17202A] text-sm rounded-lg border border-[#CBD2CF] focus:outline-none focus:ring-2 focus:ring-[#173B5E]/20 focus:border-[#173B5E] placeholder-[#87919B] font-mono transition-colors"
+                           placeholder="9876543210"
                            required
                         />
                      </div>
                   </div>
 
-                  <div className="space-y-1">
-                     <label className="text-[11px] uppercase tracking-wider font-semibold text-muted-text ml-1" htmlFor="email">Email Address</label>
+                  <div>
+                     <label className="block text-[11px] font-mono font-semibold text-[#52606D] tracking-wider uppercase mb-1.5" htmlFor="email">
+                        Email Address <span className="text-red-600">*</span>
+                     </label>
                      <input
                         type="email"
                         id="email"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        className="w-full bg-surface-secondary/50 border border-border/60 rounded-xl px-5 py-3.5 text-primary-text text-sm placeholder-muted-text/50 focus:outline-none focus:ring-1 focus:ring-primary-accent focus:border-primary-accent focus:bg-surface-secondary transition-all duration-300 shadow-sm"
-                        placeholder="you@example.com"
+                        className="w-full min-h-[44px] px-3.5 py-2.5 bg-white text-[#17202A] text-sm rounded-lg border border-[#CBD2CF] focus:outline-none focus:ring-2 focus:ring-[#173B5E]/20 focus:border-[#173B5E] placeholder-[#87919B] transition-colors"
+                        placeholder="resident@municipality.gov"
                         required
                      />
                   </div>
 
-                  <div className="space-y-1">
-                     <label className="text-[11px] uppercase tracking-wider font-semibold text-muted-text ml-1" htmlFor="password">Password</label>
-                     <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        className="w-full bg-surface-secondary/50 border border-border/60 rounded-xl px-5 py-3.5 text-primary-text text-sm placeholder-muted-text/50 focus:outline-none focus:ring-1 focus:ring-primary-accent focus:border-primary-accent focus:bg-surface-secondary transition-all duration-300 shadow-sm"
-                        placeholder="••••••••"
-                        required
-                     />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                     <div>
+                        <label className="block text-[11px] font-mono font-semibold text-[#52606D] tracking-wider uppercase mb-1.5" htmlFor="password">
+                           Password <span className="text-red-600">*</span>
+                        </label>
+                        <input
+                           type="password"
+                           id="password"
+                           name="password"
+                           value={formData.password}
+                           onChange={handleChange}
+                           className="w-full min-h-[44px] px-3.5 py-2.5 bg-white text-[#17202A] text-sm rounded-lg border border-[#CBD2CF] focus:outline-none focus:ring-2 focus:ring-[#173B5E]/20 focus:border-[#173B5E] placeholder-[#87919B] font-mono transition-colors"
+                           placeholder="••••••••••••"
+                           required
+                        />
+                     </div>
+
+                     <div>
+                        <label className="block text-[11px] font-mono font-semibold text-[#52606D] tracking-wider uppercase mb-1.5" htmlFor="confirmPassword">
+                           Confirm Password <span className="text-red-600">*</span>
+                        </label>
+                        <input
+                           type="password"
+                           id="confirmPassword"
+                           name="confirmPassword"
+                           value={formData.confirmPassword}
+                           onChange={handleChange}
+                           className="w-full min-h-[44px] px-3.5 py-2.5 bg-white text-[#17202A] text-sm rounded-lg border border-[#CBD2CF] focus:outline-none focus:ring-2 focus:ring-[#173B5E]/20 focus:border-[#173B5E] placeholder-[#87919B] font-mono transition-colors"
+                           placeholder="••••••••••••"
+                           required
+                        />
+                     </div>
                   </div>
 
-                  <div className="space-y-1">
-                     <label className="text-[11px] uppercase tracking-wider font-semibold text-muted-text ml-1" htmlFor="confirmPassword">Confirm Password</label>
-                     <input
-                        type="password"
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                        className="w-full bg-surface-secondary/50 border border-border/60 rounded-xl px-5 py-3.5 text-primary-text text-sm placeholder-muted-text/50 focus:outline-none focus:ring-1 focus:ring-primary-accent focus:border-primary-accent focus:bg-surface-secondary transition-all duration-300 shadow-sm"
-                        placeholder="••••••••"
-                        required
-                     />
+                  {/* Institutional Compliance Notice */}
+                  <div className="p-3.5 rounded-lg bg-[#EEF4FA] border border-[#CBD2CF]/60 flex items-start gap-3">
+                     <svg className="w-4 h-4 text-[#173B5E] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                     </svg>
+                     <div className="text-xs text-[#52606D] leading-relaxed">
+                        <span className="font-semibold text-[#17202A]">CivicFlow account notice:</span> Your account provides access to complaint reporting, complaint tracking, and available municipal services.
+                     </div>
                   </div>
 
+                  {/* Submit Button */}
                   <button
                      type="submit"
                      disabled={loading}
-                     className="w-full bg-primary-accent hover:opacity-90 disabled:opacity-50 text-surface font-semibold text-sm rounded-lg py-3 mt-8 transition-opacity duration-200 cursor-pointer"
+                     className="w-full min-h-[44px] mt-2 px-5 py-2.5 bg-[#173B5E] hover:bg-[#122E4A] disabled:opacity-50 text-white text-sm font-semibold rounded-lg shadow-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
                   >
-                     {loading ? 'Creating Account...' : 'Create Account'}
+                     {loading ? (
+                        <>
+                           <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                           </svg>
+                           <span>Creating Account…</span>
+                        </>
+                     ) : (
+                        <>
+                           <span>Create Account</span>
+                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                           </svg>
+                        </>
+                     )}
                   </button>
 
-                  <div className="relative flex items-center py-2">
-                     <div className="grow border-t border-border/60"></div>
-                     <span className="shrink-0 px-4 text-xs text-muted-text font-medium uppercase tracking-wider">or</span>
-                     <div className="grow border-t border-border/60"></div>
+                  <div className="relative my-6">
+                     <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-[#E2E6E4]"></div>
+                     </div>
+                     <div className="relative flex justify-center text-[11px] uppercase tracking-wider font-mono">
+                        <span className="bg-white px-3 text-[#87919B]">or continue with</span>
+                     </div>
                   </div>
 
                   <ContinueWithGoogle />
                </form>
 
-               <div className="mt-10 text-center">
-                  <p className="text-sm text-secondary-text">
-                     Already have an account? <Link to="/login" className="text-primary-text hover:text-primary-accent font-medium ml-1 border-b border-transparent hover:border-primary-accent transition-all pb-0.5">Sign in</Link>
-                  </p>
+               {/* Card Footer */}
+               <div className="mt-8 pt-5 border-t border-[#E2E6E4] flex items-center justify-between text-xs">
+                  <span className="text-[#52606D]">Already registered with municipal portal?</span>
+                  <Link to="/login" className="font-semibold text-[#173B5E] hover:text-[#122E4A] underline decoration-[#CBD2CF] underline-offset-4 transition-colors">
+                     Sign in →
+                  </Link>
                </div>
             </div>
          </div>
