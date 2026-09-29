@@ -30,14 +30,14 @@ export const attachSocketServer = (httpServer) => {
    });
 
    io.on("connection", (socket) => {
-      socket.on("incident:join", async (incidentId, callback = () => {}) => {
+      socket.on("incident:join", async (incidentId, callback = () => { }) => {
          const incident = await loadAuthorizedIncident(incidentId, socket.user);
          if (!incident) return callback({ error: "Incident not found" });
          socket.join(`incident:${incidentId}`);
          callback({ ok: true });
       });
       socket.on("incident:leave", (incidentId) => socket.leave(`incident:${incidentId}`));
-      socket.on("message:send", async ({ incidentId, message, messageType = "message" }, callback = () => {}) => {
+      socket.on("message:send", async ({ incidentId, message, messageType = "message" }, callback = () => { }) => {
          const incident = await loadAuthorizedIncident(incidentId, socket.user);
          if (!incident || !message?.trim()) return callback({ error: "Message not allowed" });
          const saved = await IncidentMessage.create({ incidentId, senderId: socket.user._id, senderDepartmentId: socket.user.departmentId, message: message.trim(), messageType });

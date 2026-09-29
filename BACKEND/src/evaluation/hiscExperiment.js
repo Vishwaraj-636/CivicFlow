@@ -57,30 +57,30 @@ export const analyzeDuplicateThresholds = (validation, weights = HISC_CONFIG.wei
 
 export const selectFrozenConfig = (training, validation) => {
    let selected = null;
-      let selectedWeights = null;
-      for (const weights of weightCandidates) {
-         const result = evaluateIncidentAlgorithm(training, { ...HISC_CONFIG, weights });
-         const candidate = { metrics: result.metrics, weights };
-         if (isBetter(candidate, selectedWeights)) selectedWeights = candidate;
+   let selectedWeights = null;
+   for (const weights of weightCandidates) {
+      const result = evaluateIncidentAlgorithm(training, { ...HISC_CONFIG, weights });
+      const candidate = { metrics: result.metrics, weights };
+      if (isBetter(candidate, selectedWeights)) selectedWeights = candidate;
+   }
+   let selectedThresholds = null;
+   for (const duplicateThreshold of DUPLICATE_THRESHOLDS) {
+      for (const relatedThreshold of RELATED_THRESHOLDS) {
+         const result = evaluateIncidentAlgorithm(validation, {
+            ...HISC_CONFIG,
+            weights: selectedWeights.weights,
+            duplicateThreshold,
+            relatedThreshold,
+         });
+         const candidate = { metrics: result.metrics, duplicateThreshold, relatedThreshold };
+         if (isBetter(candidate, selectedThresholds)) selectedThresholds = candidate;
       }
-      let selectedThresholds = null;
-      for (const duplicateThreshold of DUPLICATE_THRESHOLDS) {
-         for (const relatedThreshold of RELATED_THRESHOLDS) {
-            const result = evaluateIncidentAlgorithm(validation, {
-               ...HISC_CONFIG,
-               weights: selectedWeights.weights,
-               duplicateThreshold,
-               relatedThreshold,
-            });
-            const candidate = { metrics: result.metrics, duplicateThreshold, relatedThreshold };
-            if (isBetter(candidate, selectedThresholds)) selectedThresholds = candidate;
-         }
-      }
+   }
    return {
       ...HISC_CONFIG,
-         weights: selectedWeights.weights,
-         duplicateThreshold: selectedThresholds.duplicateThreshold,
-         relatedThreshold: selectedThresholds.relatedThreshold,
+      weights: selectedWeights.weights,
+      duplicateThreshold: selectedThresholds.duplicateThreshold,
+      relatedThreshold: selectedThresholds.relatedThreshold,
       calibrationSamples: training.length,
       validationSamples: validation.length,
    };
@@ -91,11 +91,11 @@ export const runHiscExperiment = (dataset) => {
    const frozenConfig = selectFrozenConfig(training, validation);
    const thresholdAnalysis = analyzeDuplicateThresholds(validation, frozenConfig.weights);
    const full = evaluateIncidentAlgorithm(test, frozenConfig);
-      const ablations = Object.fromEntries(["semantic", "temporal", "geographic", "lexical", "category"].map((feature) => {
-         const enabledFeatures = { [feature]: false };
-         const result = evaluateIncidentAlgorithm(test, { ...frozenConfig, enabledFeatures });
-         return [`HISC - ${feature}`, { ...result.metrics, meanScore: result.meanScore }];
-      }));
+   const ablations = Object.fromEntries(["semantic", "temporal", "geographic", "lexical", "category"].map((feature) => {
+      const enabledFeatures = { [feature]: false };
+      const result = evaluateIncidentAlgorithm(test, { ...frozenConfig, enabledFeatures });
+      return [`HISC - ${feature}`, { ...result.metrics, meanScore: result.meanScore }];
+   }));
    return {
       split: { training: training.length, validation: validation.length, test: test.length },
       frozenConfig: {
@@ -104,8 +104,8 @@ export const runHiscExperiment = (dataset) => {
          weights: frozenConfig.weights,
       },
       thresholdAnalysis,
-         finalTest: { ...full.metrics, meanScore: full.meanScore },
-         ablations: { "Full HISC": { ...full.metrics, meanScore: full.meanScore }, ...ablations },
+      finalTest: { ...full.metrics, meanScore: full.meanScore },
+      ablations: { "Full HISC": { ...full.metrics, meanScore: full.meanScore }, ...ablations },
       labels,
    };
 };
