@@ -53,3 +53,11 @@ export async function requestDepartmentHandoff(incidentId, departmentId, reason)
    });
    return response.data?.incident ?? response.data?.data ?? response.data;
 }
+
+export async function getIncidents(params = {}) {
+   const response = await incidentApi.get("/incidents", { params });
+   const payload = response.data;
+   return Array.isArray(payload)
+      ? payload
+      : payload?.incidents ?? payload?.data ?? [];
+}
