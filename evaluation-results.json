@@ -1,0 +1,409 @@
+﻿{
+  "dataset": {
+    "source": "civicflow_400_labeled_complaint_pairs.csv",
+    "samples": 400
+  },
+  "baseline": {
+    "algorithm": "Baseline",
+    "metrics": {
+      "samples": 400,
+      "accuracy": 0.39,
+      "precision": 0.5,
+      "recall": 0.37777777777777777,
+      "f1": 0.3006535947712418,
+      "falsePositiveRate": 0,
+      "byClass": {
+        "duplicate": {
+          "precision": 1,
+          "recall": 0.13333333333333333,
+          "f1": 0.23529411764705882
+        },
+        "related": {
+          "precision": 0,
+          "recall": 0,
+          "f1": 0
+        },
+        "independent": {
+          "precision": 0.5,
+          "recall": 1,
+          "f1": 0.6666666666666666
+        }
+      },
+      "confusion": {
+        "duplicate": {
+          "duplicate": 16,
+          "related": 104,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 140
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 140
+        }
+      }
+    },
+    "processingTimeMs": 5.529
+  },
+  "proposed": {
+    "split": {
+      "training": 240,
+      "validation": 80,
+      "test": 80
+    },
+    "frozenConfig": {
+      "duplicateThreshold": 0.6,
+      "relatedThreshold": 0.35,
+      "weights": {
+        "category": 0.2,
+        "geographic": 0.25,
+        "lexical": 0.1,
+        "semantic": 0.3,
+        "temporal": 0.15
+      }
+    },
+    "thresholdAnalysis": [
+      {
+        "duplicateThreshold": 0.55,
+        "duplicateF1": 0.888888888888889,
+        "macroF1": 0.8397958075377431
+      },
+      {
+        "duplicateThreshold": 0.6,
+        "duplicateF1": 0.9795918367346939,
+        "macroF1": 0.9133201667763879
+      },
+      {
+        "duplicateThreshold": 0.65,
+        "duplicateF1": 0.8837209302325582,
+        "macroF1": 0.8623155788947238
+      },
+      {
+        "duplicateThreshold": 0.7,
+        "duplicateF1": 0.45161290322580644,
+        "macroF1": 0.6705183758626223
+      },
+      {
+        "duplicateThreshold": 0.75,
+        "duplicateF1": 0.2857142857142857,
+        "macroF1": 0.605837173579109
+      },
+      {
+        "duplicateThreshold": 0.78,
+        "duplicateF1": 0.15384615384615385,
+        "macroF1": 0.5560610238029593
+      },
+      {
+        "duplicateThreshold": 0.8,
+        "duplicateF1": 0.15384615384615385,
+        "macroF1": 0.5560610238029593
+      }
+    ],
+    "finalTest": {
+      "samples": 80,
+      "accuracy": 0.975,
+      "precision": 0.9751724137931035,
+      "recall": 0.9761904761904763,
+      "f1": 0.9750036466828447,
+      "falsePositiveRate": 0,
+      "byClass": {
+        "duplicate": {
+          "precision": 0.96,
+          "recall": 1,
+          "f1": 0.9795918367346939
+        },
+        "related": {
+          "precision": 1,
+          "recall": 0.9285714285714286,
+          "f1": 0.962962962962963
+        },
+        "independent": {
+          "precision": 0.9655172413793104,
+          "recall": 1,
+          "f1": 0.9824561403508771
+        }
+      },
+      "confusion": {
+        "duplicate": {
+          "duplicate": 24,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 1,
+          "related": 26,
+          "independent": 1
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 28
+        }
+      }
+    },
+    "ablations": {
+      "Full HISC": {
+        "samples": 80,
+        "accuracy": 0.975,
+        "precision": 0.9751724137931035,
+        "recall": 0.9761904761904763,
+        "f1": 0.9750036466828447,
+        "falsePositiveRate": 0,
+        "byClass": {
+          "duplicate": {
+            "precision": 0.96,
+            "recall": 1,
+            "f1": 0.9795918367346939
+          },
+          "related": {
+            "precision": 1,
+            "recall": 0.9285714285714286,
+            "f1": 0.962962962962963
+          },
+          "independent": {
+            "precision": 0.9655172413793104,
+            "recall": 1,
+            "f1": 0.9824561403508771
+          }
+        },
+        "confusion": {
+          "duplicate": {
+            "duplicate": 24,
+            "related": 0,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 1,
+            "related": 26,
+            "independent": 1
+          },
+          "independent": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 28
+          }
+        }
+      },
+      "HISC - semantic": {
+        "samples": 80,
+        "accuracy": 0.7625,
+        "precision": 0.7999999999999999,
+        "recall": 0.7738095238095238,
+        "f1": 0.7505119204329384,
+        "falsePositiveRate": 0.1071428571428571,
+        "byClass": {
+          "duplicate": {
+            "precision": 0.6,
+            "recall": 1,
+            "f1": 0.7499999999999999
+          },
+          "related": {
+            "precision": 0.8,
+            "recall": 0.42857142857142855,
+            "f1": 0.5581395348837209
+          },
+          "independent": {
+            "precision": 1,
+            "recall": 0.8928571428571429,
+            "f1": 0.9433962264150945
+          }
+        },
+        "confusion": {
+          "duplicate": {
+            "duplicate": 24,
+            "related": 0,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 16,
+            "related": 12,
+            "independent": 0
+          },
+          "independent": {
+            "duplicate": 0,
+            "related": 3,
+            "independent": 25
+          }
+        }
+      },
+      "HISC - temporal": {
+        "samples": 80,
+        "accuracy": 0.85,
+        "precision": 0.8692307692307693,
+        "recall": 0.8472222222222222,
+        "f1": 0.8501291989664083,
+        "falsePositiveRate": 0,
+        "byClass": {
+          "duplicate": {
+            "precision": 1,
+            "recall": 0.7916666666666666,
+            "f1": 0.8837209302325582
+          },
+          "related": {
+            "precision": 0.8076923076923077,
+            "recall": 0.75,
+            "f1": 0.7777777777777779
+          },
+          "independent": {
+            "precision": 0.8,
+            "recall": 1,
+            "f1": 0.888888888888889
+          }
+        },
+        "confusion": {
+          "duplicate": {
+            "duplicate": 19,
+            "related": 5,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 0,
+            "related": 21,
+            "independent": 7
+          },
+          "independent": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 28
+          }
+        }
+      },
+      "HISC - geographic": {
+        "samples": 80,
+        "accuracy": 0.725,
+        "precision": 0.76994851994852,
+        "recall": 0.7202380952380952,
+        "f1": 0.7254578754578754,
+        "falsePositiveRate": 0.0714285714285714,
+        "byClass": {
+          "duplicate": {
+            "precision": 1,
+            "recall": 0.625,
+            "f1": 0.7692307692307693
+          },
+          "related": {
+            "precision": 0.6071428571428571,
+            "recall": 0.6071428571428571,
+            "f1": 0.6071428571428571
+          },
+          "independent": {
+            "precision": 0.7027027027027027,
+            "recall": 0.9285714285714286,
+            "f1": 0.7999999999999999
+          }
+        },
+        "confusion": {
+          "duplicate": {
+            "duplicate": 15,
+            "related": 9,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 0,
+            "related": 17,
+            "independent": 11
+          },
+          "independent": {
+            "duplicate": 0,
+            "related": 2,
+            "independent": 26
+          }
+        }
+      },
+      "HISC - lexical": {
+        "samples": 80,
+        "accuracy": 0.9625,
+        "precision": 0.9629629629629629,
+        "recall": 0.9642857142857143,
+        "f1": 0.9615242323344432,
+        "falsePositiveRate": 0,
+        "byClass": {
+          "duplicate": {
+            "precision": 0.8888888888888888,
+            "recall": 1,
+            "f1": 0.9411764705882353
+          },
+          "related": {
+            "precision": 1,
+            "recall": 0.8928571428571429,
+            "f1": 0.9433962264150945
+          },
+          "independent": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "confusion": {
+          "duplicate": {
+            "duplicate": 24,
+            "related": 0,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 3,
+            "related": 25,
+            "independent": 0
+          },
+          "independent": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 28
+          }
+        }
+      },
+      "HISC - category": {
+        "samples": 80,
+        "accuracy": 0.8625,
+        "precision": 0.8750700280112045,
+        "recall": 0.8511904761904763,
+        "f1": 0.8523680474899988,
+        "falsePositiveRate": 0,
+        "byClass": {
+          "duplicate": {
+            "precision": 0.8823529411764706,
+            "recall": 0.625,
+            "f1": 0.7317073170731708
+          },
+          "related": {
+            "precision": 0.7428571428571429,
+            "recall": 0.9285714285714286,
+            "f1": 0.8253968253968255
+          },
+          "independent": {
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "confusion": {
+          "duplicate": {
+            "duplicate": 15,
+            "related": 9,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 2,
+            "related": 26,
+            "independent": 0
+          },
+          "independent": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 28
+          }
+        }
+      }
+    },
+    "labels": [
+      "duplicate",
+      "related",
+      "independent"
+    ],
+    "processingTimeMs": 105.937
+  }
+}

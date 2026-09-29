@@ -4,6 +4,7 @@ import Department from "../model/department.model.js";
 import { recordComplaintTimeline } from "./complaintTimeline.controller.js";
 import { findSimilarComplaints } from "../service/complaintSimilarity.service.js";
 import { uploadMedia, validateMediaFile } from "../service/imagekit.service.js";
+import { upsertIncidentCluster } from "../service/incidentIntelligence.service.js";
 
 const citizenQuery = (req) => ({ citizenId: req.user._id });
 
@@ -35,6 +36,12 @@ export const createComplaint = async (req, res) => {
          }
       }
       await complaint.save();
+      // Incident intelligence is an enhancement; a database or scoring failure must not reject a complaint.
+      try {
+         await upsertIncidentCluster(complaint);
+      } catch (incidentError) {
+         console.error("Incident analysis unavailable:", incidentError.message);
+      }
 
       await recordComplaintTimeline({
          complaintId: complaint._id,

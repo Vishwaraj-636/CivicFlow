@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import ComplaintCard from "../../../components/complaint/ComplaintCard";
 import useStaffComplaints from "../hook/useStaffComplaints";
 import useStaffDashboard from "../hook/useStaffDashboard";
+import IncidentIntelligence from "../components/IncidentIntelligence";
 
 const StaffDashboard = () => {
    const navigate = useNavigate();
@@ -126,6 +127,8 @@ const StaffDashboard = () => {
                   </div>
                </div>
             </section>
+
+            <IncidentIntelligence />
 
             {/* Recent Complaints Section */}
             <section aria-label="Recent Department Complaints" className="space-y-4">

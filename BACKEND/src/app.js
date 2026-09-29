@@ -13,6 +13,8 @@ import requestRouter from './routes/request.routes.js';
 import departmentRouter from "./routes/department.routes.js"
 import complaintRouter from "./routes/complaint.routes.js";
 import complaintTimelineRouter from "./routes/complaintTimeline.routes.js";
+import incidentRouter from "./routes/incident.routes.js";
+import aiRouter from "./routes/ai.routes.js";
 
 
 
@@ -49,6 +51,8 @@ app.use('/api', requestRouter);
 app.use('/api', departmentRouter);
 app.use('/api', complaintRouter);
 app.use('/api', complaintTimelineRouter);
+app.use('/api', incidentRouter);
+app.use('/api', aiRouter);
 
 export default app;
 
