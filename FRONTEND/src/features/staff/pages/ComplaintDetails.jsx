@@ -15,6 +15,7 @@ import ComplaintActionPanel from "../components/ComplaintActionPanel";
 import StatusUpdateModal from "../components/StatusUpdateModal";
 import RejectComplaintModal from "../components/RejectComplaintModal";
 import ResolveComplaintModal from "../components/ResolveComplaintModal";
+import { IncidentIntelligencePanel } from "../../incident";
 
 const ComplaintDetails = () => {
    const { id } = useParams();
@@ -290,6 +291,9 @@ const ComplaintDetails = () => {
                   </div>
                </div>
             </section>
+
+            {/* HISC Incident Intelligence */}
+            <IncidentIntelligencePanel complaintId={id} />
 
             {/* Citizen Information Card */}
             <section className="rounded-xl border border-[#E2E6E4] bg-white p-5 sm:p-6 shadow-2xs space-y-3">
