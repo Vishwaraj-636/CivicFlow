@@ -62,12 +62,20 @@ const CitizenDashboard = () => {
                      Overview of your reported municipal issues, active service requests, and resolution progress.
                   </p>
                </div>
-               <Link
-                  to="/citizen/complaints/report"
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-[#173B5E] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#122E4A] focus:outline-none focus:ring-2 focus:ring-[#173B5E]/30 text-center shadow-xs self-start sm:self-auto cursor-pointer"
-               >
-                  Report Complaint
-               </Link>
+               <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                  <Link
+                     to="/request-dept-staff"
+                     className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-[#173B5E] bg-white px-5 py-2.5 text-sm font-medium text-[#173B5E] transition-colors hover:bg-[#EEF4FA] focus:outline-none focus:ring-2 focus:ring-[#173B5E]/30 text-center shadow-xs cursor-pointer"
+                  >
+                     Request Staff Access
+                  </Link>
+                  <Link
+                     to="/citizen/complaints/report"
+                     className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-[#173B5E] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#122E4A] focus:outline-none focus:ring-2 focus:ring-[#173B5E]/30 text-center shadow-xs cursor-pointer"
+                  >
+                     Report Complaint
+                  </Link>
+               </div>
             </div>
 
             {/* Error Banner */}

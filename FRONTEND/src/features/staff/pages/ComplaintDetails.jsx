@@ -32,21 +32,33 @@ const ComplaintDetails = () => {
    }, [id]);
 
    const fetchComplaintDetails = () => {
-      Promise.all([getComplaintById(id), getComplaintTimeline(id)])
+      return Promise.all([getComplaintById(id), getComplaintTimeline(id)])
          .then(([item, events]) => {
             setComplaint(item);
             setTimeline(events);
+            return item;
          })
-         .catch(() => setError("Complaint not found or you do not have permission to view it."));
+         .catch((fetchError) => {
+            setError("Complaint not found or you do not have permission to view it.");
+            throw fetchError;
+         });
    };
 
    const handleAccept = async () => {
       setIsUpdating(true);
       try {
          await acceptComplaint(id);
-         fetchComplaintDetails();
+         await fetchComplaintDetails();
       } catch (err) {
-         alert("Failed to accept complaint.");
+         try {
+            const currentComplaint = await getComplaintById(id);
+            if (currentComplaint.status === "in_review") {
+               setComplaint(currentComplaint);
+               return;
+            }
+         } catch {
+         }
+         alert(err.response?.data?.error ?? "Failed to accept complaint.");
       } finally {
          setIsUpdating(false);
       }

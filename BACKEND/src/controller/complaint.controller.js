@@ -245,12 +245,20 @@ export const acceptComplaint = async (req, res) => {
       }
 
       const previousStatus = complaint.status;
-      complaint.assignedStaff = req.user._id;
-      complaint.assignedAt = complaint.assignedAt ?? new Date();
-      complaint.status = "in_review";
-      await complaint.save();
-      await recordStaffStatusChange(complaint, req, previousStatus, "accepted");
-      return res.status(200).json(complaint);
+      const updatedComplaint = await Complaint.findOneAndUpdate(
+         { _id: complaint._id },
+         {
+            $set: {
+               assignedStaff: req.user._id,
+               assignedAt: complaint.assignedAt ?? new Date(),
+               status: "in_review",
+            },
+         },
+         { new: true, runValidators: true }
+      );
+
+      await recordStaffStatusChange(updatedComplaint, req, previousStatus, "accepted");
+      return res.status(200).json(updatedComplaint);
    } catch (error) {
       console.error("Error accepting complaint:", error);
       if (error.name === "CastError" || error.name === "ValidationError") {

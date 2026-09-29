@@ -67,6 +67,8 @@ const Profile = () => {
       : "U";
 
    const displayId = user?.id || user?._id ? `#CF-RES-${String(user?.id || user?._id).slice(-5).toUpperCase()}` : "—";
+   const roleLabel = user?.role === "dept_staff" ? "Department Staff" : user?.role === "admin" ? "Administrator" : "Citizen";
+   const portalLabel = user?.role === "dept_staff" ? "Department Staff Portal" : user?.role === "admin" ? "Administration Portal" : "Citizen Services Portal";
 
    return (
       <div
@@ -92,19 +94,19 @@ const Profile = () => {
                <div>
                   <div className="flex items-center gap-2">
                      <span className="text-[11px] font-semibold uppercase tracking-wider text-[#52606D]">
-                        Citizen Services Portal
+                        {portalLabel}
                      </span>
                      <span className="text-[11px] text-[#87919B]">•</span>
                      <span className="inline-flex items-center gap-1 rounded-full bg-[#ECF5F0] border border-[#C6E7D5] px-2 py-0.2 text-[10px] font-semibold uppercase tracking-wider text-[#28704F]">
                         <span className="h-1.5 w-1.5 rounded-full bg-[#28704F]" />
-                        Citizen Account
+                        {roleLabel} Account
                      </span>
                   </div>
                   <h1 className="mt-1 text-2xl font-bold tracking-tight text-[#17202A] sm:text-3xl">
                      Profile & Account Settings
                   </h1>
                   <p className="mt-1 text-sm text-[#52606D]">
-                     Review your citizen account details, manage contact coordinates, and view municipal service credentials.
+                     Review your account details, manage contact coordinates, and view your municipal service credentials.
                   </p>
                </div>
 
@@ -201,7 +203,7 @@ const Profile = () => {
                   <div className="flex flex-col gap-1">
                      <div className="flex flex-wrap items-center gap-2">
                         <h2 className="text-lg sm:text-xl font-bold text-[#17202A]">
-                           {user?.fullname || "Unnamed Resident"}
+                           {user?.fullname || "Unnamed User"}
                         </h2>
                         <span className="rounded-md border border-[#E2E6E4] bg-[#F1F3F2] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#173B5E]">
                            {user?.role || "citizen"}
@@ -220,7 +222,7 @@ const Profile = () => {
 
                <div className="flex sm:flex-col items-center sm:items-end justify-between border-t border-[#E2E6E4] sm:border-t-0 pt-3 sm:pt-0 text-xs text-[#87919B]">
                   <span className="font-medium text-[#52606D]">Municipal Status</span>
-                  <span className="font-semibold text-[#28704F]">Citizen Account</span>
+                  <span className="font-semibold text-[#28704F]">{roleLabel} Account</span>
                </div>
             </div>
 
@@ -457,13 +459,27 @@ const Profile = () => {
                            </span>
                         </div>
                         <div className="flex items-center justify-between pt-1">
-                           <span className="text-[#87919B]">My Complaints</span>
-                           <Link
-                              to="/citizen/complaints"
-                              className="font-semibold text-[#173B5E] hover:underline"
-                           >
-                              View History →
-                           </Link>
+                           {user?.role === "citizen" ? (
+                              <>
+                                 <span className="text-[#87919B]">My Complaints</span>
+                                 <Link
+                                    to="/citizen/complaints"
+                                    className="font-semibold text-[#173B5E] hover:underline"
+                                 >
+                                    View History →
+                                 </Link>
+                              </>
+                           ) : (
+                              <>
+                                 <span className="text-[#87919B]">Workspace</span>
+                                 <Link
+                                    to={user?.role === "admin" ? "/admin" : "/staff"}
+                                    className="font-semibold text-[#173B5E] hover:underline"
+                                 >
+                                    Return to Workspace →
+                                 </Link>
+                              </>
+                           )}
                         </div>
                      </div>
                   </div>

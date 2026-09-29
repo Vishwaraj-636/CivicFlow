@@ -57,6 +57,9 @@ const Navbar = () => {
                            <Link to="/staff/complaints/assigned" className={linkClass('/staff/complaints/assigned')}>
                               Assigned Complaints
                            </Link>
+                           <Link to="/profile" className={linkClass('/profile')}>
+                              Profile
+                           </Link>
                         </div>
                      )}
                      {user?.role === "admin" && (
@@ -66,6 +69,9 @@ const Navbar = () => {
                            </Link>
                            <Link to="/admin/staff-requests" className={linkClass('/admin/staff-requests')}>
                               Staff Requests
+                           </Link>
+                           <Link to="/profile" className={linkClass('/profile')}>
+                              Profile
                            </Link>
                         </div>
                      )}

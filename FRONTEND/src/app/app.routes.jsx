@@ -51,6 +51,14 @@ export const routes = createBrowserRouter([
             )
          },
          {
+            path: "profile",
+            element: (
+               <ProtectedRoute>
+                  <Profile />
+               </ProtectedRoute>
+            )
+         },
+         {
             path: "complete-profile",
             element: <CompleteGoogleProfile />
          },
