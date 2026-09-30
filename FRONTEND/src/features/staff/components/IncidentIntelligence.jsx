@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const api = axios.create({ baseURL: "http://localhost:3000/api", withCredentials: true });
 
@@ -36,6 +37,7 @@ const IncidentIntelligence = () => {
             <span className="text-xs text-[#87919B]">Estimated operational savings</span>
          </div>
          {error ? <p className="rounded-lg border border-[#F3D0D0] bg-[#FBF0F0] p-4 text-sm text-[#A44A4A]">{error}</p> : (
+            <>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                <div className="rounded-xl border border-[#D7E6E1] bg-[#F3F8F6] p-5">
                   <p className="text-xs font-semibold uppercase tracking-wider text-[#39756B]">Active incidents</p>
@@ -53,6 +55,21 @@ const IncidentIntelligence = () => {
                   <p className="mt-1 text-xs text-[#52606D]">Configurable cost model</p>
                </div>
             </div>
+            {incidents.length > 0 && (
+               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {incidents.slice(0, 6).map((incident) => (
+                     <Link key={incident._id} to={`/staff/incidents/${incident._id}`} className="rounded-xl border border-[#E2E6E4] bg-white p-4 transition-colors hover:border-[#39756B]">
+                        <div className="flex items-center justify-between gap-3">
+                           <span className="font-mono text-xs font-semibold text-[#24527A]">{incident.clusterId}</span>
+                           <span className="text-xs capitalize text-[#52606D]">{incident.status?.replaceAll("_", " ")}</span>
+                        </div>
+                        <p className="mt-3 text-sm font-semibold text-[#17202A]">{incident.complaintCount} coordinated reports</p>
+                        <p className="mt-1 text-xs text-[#87919B]">Open incident details →</p>
+                     </Link>
+                  ))}
+               </div>
+            )}
+            </>
          )}
       </section>
    );

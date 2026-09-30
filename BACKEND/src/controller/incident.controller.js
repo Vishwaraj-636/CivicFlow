@@ -46,6 +46,45 @@ export const getIncident = async (req, res) => {
    }
 };
 
+const incidentTransitions = {
+   open: ["in_progress"],
+   in_progress: ["resolved"],
+   resolved: ["closed"],
+   closed: [],
+};
+
+export const updateIncidentStatus = async (req, res) => {
+   try {
+      const incident = await IncidentCluster.findById(req.params.id);
+      if (!incident || !canAccessIncident(incident, req.user)) {
+         return res.status(404).json({ error: "Incident not found" });
+      }
+
+      const { status, note } = req.body;
+      if (!Object.hasOwn(incidentTransitions, status)) {
+         return res.status(400).json({ error: "Invalid incident status" });
+      }
+      if (!incidentTransitions[incident.status].includes(status)) {
+         return res.status(409).json({ error: `Incident cannot transition from ${incident.status} to ${status}` });
+      }
+
+      const previousStatus = incident.status;
+      incident.status = status;
+      await incident.save();
+      await IncidentMessage.create({
+         incidentId: incident._id,
+         senderId: req.user._id,
+         senderDepartmentId: req.user.departmentId ?? null,
+         message: note?.trim() || `Incident status changed from ${previousStatus} to ${status}`,
+         messageType: "status_update",
+      });
+      return res.status(200).json(incident);
+   } catch (error) {
+      if (error.name === "CastError") return res.status(400).json({ error: "Invalid incident ID" });
+      return res.status(500).json({ error: "Unable to update incident status" });
+   }
+};
+
 export const getIncidentCost = async (req, res) => {
    try {
       const incident = await loadIncident(req.params.id);

@@ -47,7 +47,7 @@
         }
       }
     },
-    "processingTimeMs": 5.529
+    "processingTimeMs": 4.942
   },
   "proposed": {
     "split": {
@@ -70,37 +70,37 @@
       {
         "duplicateThreshold": 0.55,
         "duplicateF1": 0.888888888888889,
-        "macroF1": 0.8397958075377431
+        "macroF1": 0.9111507229154289
       },
       {
         "duplicateThreshold": 0.6,
         "duplicateF1": 0.9795918367346939,
-        "macroF1": 0.9133201667763879
+        "macroF1": 0.9752319109461967
       },
       {
         "duplicateThreshold": 0.65,
         "duplicateF1": 0.8837209302325582,
-        "macroF1": 0.8623155788947238
+        "macroF1": 0.9229216395007843
       },
       {
         "duplicateThreshold": 0.7,
         "duplicateF1": 0.45161290322580644,
-        "macroF1": 0.6705183758626223
+        "macroF1": 0.7300626139335816
       },
       {
         "duplicateThreshold": 0.75,
         "duplicateF1": 0.2857142857142857,
-        "macroF1": 0.605837173579109
+        "macroF1": 0.664935064935065
       },
       {
         "duplicateThreshold": 0.78,
         "duplicateF1": 0.15384615384615385,
-        "macroF1": 0.5560610238029593
+        "macroF1": 0.6148416983860022
       },
       {
         "duplicateThreshold": 0.8,
         "duplicateF1": 0.15384615384615385,
-        "macroF1": 0.5560610238029593
+        "macroF1": 0.6148416983860022
       }
     ],
     "finalTest": {
@@ -404,6 +404,6 @@
       "related",
       "independent"
     ],
-    "processingTimeMs": 105.937
+    "processingTimeMs": 104.539
   }
 }

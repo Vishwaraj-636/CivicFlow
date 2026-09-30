@@ -5,12 +5,12 @@ import IncidentCluster from "../model/incidentCluster.model.js";
 export const HISC_CONFIG = {
    radiusInMeters: 1000,
    temporalWindowHours: 24 * 30,
-   duplicateThreshold: 0.78,
-   relatedThreshold: 0.4,
+   duplicateThreshold: 0.6,
+   relatedThreshold: 0.35,
    weights: {
       category: 0.2,
-      geographic: 0.2,
-      lexical: 0.15,
+      geographic: 0.25,
+      lexical: 0.1,
       semantic: 0.3,
       temporal: 0.15,
    },

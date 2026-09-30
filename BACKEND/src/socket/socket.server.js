@@ -14,11 +14,15 @@ const loadAuthorizedIncident = async (incidentId, user) => {
    return incident && canAccess(incident, user) ? incident : null;
 };
 
+const tokenFromCookie = (cookieHeader = "") => cookieHeader.split(";").map((cookie) => cookie.trim()).find((cookie) => cookie.startsWith("token="))?.slice(6);
+
 export const attachSocketServer = (httpServer) => {
    const io = new Server(httpServer, { cors: { origin: "http://localhost:5173", credentials: true } });
    io.use(async (socket, next) => {
       try {
-         const token = socket.handshake.auth?.token || socket.handshake.headers.authorization?.split(" ")[1];
+         const token = socket.handshake.auth?.token
+            || socket.handshake.headers.authorization?.split(" ")[1]
+            || tokenFromCookie(socket.handshake.headers.cookie);
          const decoded = jwt.verify(token, config.JWT_SECRET);
          const user = await User.findById(decoded.id);
          if (!user?.isActive) return next(new Error("Unauthorized"));
