@@ -68,6 +68,7 @@ export const attachSocketServer = (httpServer) => {
          const populated = await saved.populate("senderId", "fullname role");
          const room = `direct:${[String(socket.user._id), String(recipient._id)].sort().join(":")}`;
          io.to(room).emit("direct:new", populated);
+         io.to(`user:${recipient._id}`).emit("direct:new", populated);
          callback({ ok: true, message: populated });
       });
    });

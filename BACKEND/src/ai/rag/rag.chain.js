@@ -6,13 +6,16 @@ import { StringOutputParser } from "@langchain/core/output_parsers";
 import { createModel } from "../llm/model.provider.js";
 
 const knowledgeDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../knowledge");
+let knowledgeCache;
 
 const loadKnowledge = async () => {
+   if (knowledgeCache) return knowledgeCache;
    const files = await fs.readdir(knowledgeDirectory);
-   return Promise.all(files.filter((file) => file.endsWith(".md")).map(async (file) => ({
+   knowledgeCache = Promise.all(files.filter((file) => file.endsWith(".md")).map(async (file) => ({
       name: file,
       content: await fs.readFile(path.join(knowledgeDirectory, file), "utf8"),
    })));
+   return knowledgeCache;
 };
 
 export const retrieveKnowledge = async (query) => {
@@ -48,11 +51,15 @@ export const answerWithKnowledge = async ({ query, incidentContext = "", documen
       ["human", "Question: {query}\nLive incident context: {incidentContext}\nDocuments:\n{documents}"],
    ]);
    try {
-      const answer = await prompt.pipe(model).pipe(new StringOutputParser()).invoke({
+      const answerPromise = prompt.pipe(model).pipe(new StringOutputParser()).invoke({
          query,
          incidentContext,
          documents: documents.map((document) => `${document.name}\n${document.content}`).join("\n\n"),
       });
+      const answer = await Promise.race([
+         answerPromise,
+         new Promise((_, reject) => setTimeout(() => reject(new Error("AI provider timeout")), 6000)),
+      ]);
       return { answer, sources, provider: process.env.LLM_PROVIDER };
    } catch (error) {
       console.error("LLM provider failed; using grounded fallback:", error.message);

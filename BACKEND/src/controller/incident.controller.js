@@ -13,7 +13,14 @@ const canAccessIncident = (incident, user) => {
 };
 
 const loadIncident = (id) => IncidentCluster.findById(id)
-   .populate({ path: "complaintIds", populate: { path: "assignedDepartment", select: "fullname code" } })
+   .populate({
+      path: "complaintIds",
+      select: "complaintId title description category location createdAt status priority assignedDepartment assignedStaff",
+      populate: [
+         { path: "assignedDepartment", select: "fullname code" },
+         { path: "assignedStaff", select: "fullname" },
+      ],
+   })
    .populate("departmentIds", "fullname code");
 
 export const listIncidents = async (req, res) => {
@@ -92,12 +99,30 @@ export const getIncidentSimilarity = async (req, res) => {
       const primary = incident.complaintIds.find((complaint) => String(complaint._id) === String(incident.primaryComplaint))
          ?? incident.complaintIds[0];
       const matches = primary ? await analyzeIncident(primary) : [];
+      const incidentMatches = matches.filter((match) => incident.complaintIds.some((complaint) => String(complaint._id) === String(match.complaint._id)));
+      const strongestMatch = incidentMatches[0];
+      const signalNames = { geographic: "Location", category: "Category", lexical: "Description", semantic: "Similar issue", temporal: "Time" };
+      const signals = Object.entries(strongestMatch?.features ?? {}).map(([key, value]) => ({
+         key,
+         label: signalNames[key] ?? key,
+         score: Math.round(value * 100),
+         meaning: key === "geographic" ? "Reports are in the same area" : key === "category" ? "Reports use compatible civic categories" : key === "lexical" ? "Descriptions share important terms" : key === "semantic" ? "The issues describe a similar real-world problem" : "Reports were submitted within a similar period",
+      }));
+      const classification = strongestMatch?.classification ?? "related";
       return res.status(200).json({
          algorithm: "HISC v1",
          baseline: "category + geographic proximity + lexical Jaccard",
          proposed: "candidate retrieval + spatio-semantic-temporal ranking",
          clusterConfidence: incident.similarityConfidence,
-         matches: matches.filter((match) => incident.complaintIds.some((complaint) => String(complaint._id) === String(match.complaint._id))),
+         classification,
+         signals,
+         explanation: classification === "duplicate"
+            ? "CivicFlow considers these reports likely to describe the same real-world incident."
+            : "CivicFlow considers these reports related enough to coordinate, but not necessarily the exact same issue.",
+         recommendedAction: classification === "duplicate"
+            ? "Review the existing incident and coordinate the involved departments before creating separate field work."
+            : "Coordinate the involved departments and confirm whether the reports require one shared response or separate work orders.",
+         matches: incidentMatches,
       });
    } catch (error) {
       return res.status(500).json({ error: "Unable to explain incident similarity" });

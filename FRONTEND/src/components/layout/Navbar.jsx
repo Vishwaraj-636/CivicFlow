@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../features/auth/hook/useAuth';
 
@@ -6,6 +6,21 @@ const Navbar = () => {
    const { isAuthenticated, user, handleLogout } = useAuth();
    const location = useLocation();
    const navigate = useNavigate();
+   const [unreadCount, setUnreadCount] = useState(0);
+
+   useEffect(() => {
+      const storageKey = user ? `civicflow-chat-${user._id || user.id}` : "";
+      const readUnread = () => {
+         if (!storageKey) return setUnreadCount(0);
+         try {
+            const cache = JSON.parse(localStorage.getItem(storageKey)) || {};
+            setUnreadCount(Object.values(cache.unread || {}).reduce((total, count) => total + Number(count || 0), 0));
+         } catch { setUnreadCount(0); }
+      };
+      readUnread();
+      window.addEventListener('civicflow:unread', readUnread);
+      return () => window.removeEventListener('civicflow:unread', readUnread);
+   }, [user]);
 
    const isActive = (path) => location.pathname === path || location.pathname.startsWith(`${path}/`);
    const linkClass = (path) => `text-xs font-semibold transition-colors ${isActive(path) ? 'text-[#173B5E]' : 'text-[#52606D] hover:text-[#17202A]'}`;
@@ -78,6 +93,10 @@ const Navbar = () => {
                      <span className="hidden max-w-40 truncate text-xs font-semibold text-[#52606D] sm:inline" title={user?.fullname || user?.email}>
                         {user?.fullname || user?.email}
                      </span>
+                     <button type="button" onClick={() => window.dispatchEvent(new CustomEvent('civicflow:open-chat'))} aria-label={unreadCount ? `${unreadCount} unread chat messages` : "Open chat"} className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-[#CBD2CF] bg-white text-[#173B5E] hover:border-[#39756B] hover:bg-[#F3F8F6]" title="Open chat">
+                        <span aria-hidden="true" className="text-lg">●</span>
+                        {unreadCount > 0 && <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#C44747] px-1 text-[10px] font-bold text-white">{unreadCount > 9 ? "9+" : unreadCount}</span>}
+                     </button>
                      <button
                         onClick={onLogout}
                         className="min-h-10 rounded-lg bg-[#173B5E] px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition-colors duration-150 hover:bg-[#122E4A] focus:outline-none focus:ring-2 focus:ring-[#173B5E]/30 cursor-pointer"

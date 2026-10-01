@@ -4,7 +4,7 @@ export const createModel = () => {
    if (process.env.LLM_PROVIDER !== "gemini" || !process.env.LLM_API_KEY) return null;
    return new ChatGoogleGenerativeAI({
       apiKey: process.env.LLM_API_KEY,
-      model: process.env.LLM_MODEL || "gemini-3.8-flash",
+      model: process.env.LLM_MODEL || "gemini-3.5-flash-lite",
       temperature: 0.1,
    });
 };
