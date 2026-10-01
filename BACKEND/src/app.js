@@ -15,6 +15,7 @@ import complaintRouter from "./routes/complaint.routes.js";
 import complaintTimelineRouter from "./routes/complaintTimeline.routes.js";
 import incidentRouter from "./routes/incident.routes.js";
 import aiRouter from "./routes/ai.routes.js";
+import chatRouter from "./routes/chat.routes.js";
 
 
 
@@ -53,6 +54,7 @@ app.use('/api', complaintRouter);
 app.use('/api', complaintTimelineRouter);
 app.use('/api', incidentRouter);
 app.use('/api', aiRouter);
+app.use('/api', chatRouter);
 
 export default app;
 

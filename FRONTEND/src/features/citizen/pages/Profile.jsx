@@ -484,6 +484,15 @@ const Profile = () => {
                      </div>
                   </div>
 
+                  <div className="rounded-2xl border border-[#D7E6E1] bg-[#F3F8F6] p-5 shadow-sm">
+                     <h3 className="text-xs font-bold uppercase tracking-wider text-[#39756B]">Civic identity snapshot</h3>
+                     <div className="mt-3 space-y-3 text-xs text-[#52606D]">
+                        <div className="flex items-start justify-between gap-4"><span>Access profile</span><span className="text-right font-semibold text-[#17202A]">{user?.role === "admin" ? "Municipal governance and priority oversight" : user?.role === "dept_staff" ? "Department triage, routing, and coordination" : "Complaint reporting and progress tracking"}</span></div>
+                        <div className="flex items-start justify-between gap-4"><span>Communication</span><span className="text-right font-semibold text-[#17202A]">AI Assistant and approved civic contacts</span></div>
+                        <div className="flex items-start justify-between gap-4"><span>Member since</span><span className="font-semibold text-[#17202A]">{user?.createdAt ? new Date(user.createdAt).toLocaleDateString("en-IN") : "Current account"}</span></div>
+                     </div>
+                  </div>
+
                   {/* Municipal Data Protection & Trust Card */}
                   <div className="rounded-2xl border border-[#E2E6E4] bg-[#FAFAFA] p-5 shadow-sm">
                      <div className="flex items-center gap-2 text-[#39756B]">

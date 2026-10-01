@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import {
    getDepartments,
    getIncident,
-   getIncidentCost,
    getIncidentMessages,
    getIncidentSimilarity,
    requestIncidentHandoff,
@@ -26,7 +25,6 @@ const IncidentDetails = () => {
    const currentUser = useSelector((state) => state.auth.user);
    const [incident, setIncident] = useState(null);
    const [departments, setDepartments] = useState([]);
-   const [cost, setCost] = useState(null);
    const [similarity, setSimilarity] = useState(null);
    const { connected, messages, setMessages, sendMessage } = useIncidentSocket(id);
    const [loading, setLoading] = useState(true);
@@ -44,14 +42,12 @@ const IncidentDetails = () => {
       let active = true;
       Promise.all([
          getIncident(id),
-         getIncidentCost(id),
          getIncidentSimilarity(id),
          getIncidentMessages(id),
          getDepartments(),
-      ]).then(([incidentData, costData, similarityData, messageData, departmentData]) => {
+      ]).then(([incidentData, similarityData, messageData, departmentData]) => {
          if (!active) return;
          setIncident(incidentData);
-         setCost(costData);
          setSimilarity(similarityData);
          setMessages(Array.isArray(messageData) ? messageData : []);
          setDepartments(Array.isArray(departmentData) ? departmentData : []);
@@ -178,15 +174,6 @@ const IncidentDetails = () => {
                </section>
 
                <aside className="space-y-6">
-                  <Panel title="Cost comparison">
-                     <div className="space-y-3 text-sm">
-                        <Row label="Separate handling" value={`₹${(cost?.individualCost ?? 0).toLocaleString("en-IN")}`} />
-                        <Row label="Clustered handling" value={`₹${(cost?.clusteredCost ?? 0).toLocaleString("en-IN")}`} />
-                        <Row label="Estimated saving" value={`₹${(cost?.estimatedSavings ?? 0).toLocaleString("en-IN")}`} strong />
-                     </div>
-                     <p className="mt-4 text-xs text-[#87919B]">Estimated operational model, not actual government expenditure.</p>
-                  </Panel>
-
                   {currentUser?.role === "dept_staff" && (
                      <Panel title="Request department handoff">
                         <form onSubmit={handleHandoffSubmit} className="space-y-3">

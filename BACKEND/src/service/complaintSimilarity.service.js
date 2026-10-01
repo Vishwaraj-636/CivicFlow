@@ -6,12 +6,15 @@ const SIMILARITY_CLASSIFICATIONS = {
    INDEPENDENT: "independent",
 };
 
+const STOP_WORDS = new Set(["the", "and", "for", "with", "from", "this", "that", "near", "there", "have", "has"]);
+
 const tokenize = (value = "") => new Set(
    String(value)
       .toLowerCase()
       .replace(/[^a-z0-9\s]/g, " ")
       .split(/\s+/)
-      .filter((word) => word.length > 2)
+      .map((word) => word.replace(/ies$/i, "y").replace(/ing$/i, "").replace(/ed$/i, "").replace(/s$/i, ""))
+      .filter((word) => word.length > 2 && !STOP_WORDS.has(word))
 );
 
 const jaccardSimilarity = (source, target) => {
@@ -72,7 +75,7 @@ export const calculateSimilarityScore = ({
 };
 
 export const classifySimilarity = (similarityScore = 0) => {
-   if (similarityScore >= 0.8) {
+   if (similarityScore >= 0.75) {
       return SIMILARITY_CLASSIFICATIONS.DUPLICATE;
    }
 
@@ -114,7 +117,7 @@ export const findSimilarComplaints = async (complaint, options = {}) => {
             classification: classifySimilarity(similarityScore),
          };
       })
-      .filter((match) => match.similarityScore >= 0.5)
+      .filter((match) => match.similarityScore >= 0.45)
       .sort((first, second) => second.similarityScore - first.similarityScore);
 };
 

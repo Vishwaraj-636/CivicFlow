@@ -120,6 +120,10 @@ export const routes = createBrowserRouter([
                {
                   path: "staff-requests",
                   element: <StaffRequests />
+               },
+               {
+                  path: "complaints/:id",
+                  element: <StaffComplaintDetails />
                }
             ]
          }

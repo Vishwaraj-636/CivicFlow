@@ -10,11 +10,6 @@ export async function getIncident(incidentId) {
    return response.data;
 }
 
-export async function getIncidentCost(incidentId) {
-   const response = await incidentApi.get(`/incidents/${incidentId}/cost`);
-   return response.data;
-}
-
 export async function getIncidentSimilarity(incidentId) {
    const response = await incidentApi.get(`/incidents/${incidentId}/similarity`);
    return response.data;

@@ -158,6 +158,7 @@ export const validateComplaintResolution = [
 export const validateComplaintAssignment = [
    body("assignedDepartment").isMongoId().withMessage("A valid department ID is required"),
    body("assignedStaff").optional().isMongoId().withMessage("Assigned staff must be a valid user ID"),
+   body("remark").optional().isString().trim().isLength({ min: 5, max: 500 }).withMessage("Assignment remark must be 5 to 500 characters"),
    validateRequest,
 ];
 

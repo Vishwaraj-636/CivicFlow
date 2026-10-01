@@ -1,17 +1,15 @@
 import IncidentCluster from "../model/incidentCluster.model.js";
 import Complaint from "../model/complaint.model.js";
-import CostRule from "../model/costRule.model.js";
 import { analyzeIncident } from "../service/incidentIntelligence.service.js";
-import { compareIncidentCosts } from "../service/costComparison.service.js";
 import IncidentMessage from "../model/incidentMessage.model.js";
 import IncidentHandoff from "../model/incidentHandoff.model.js";
 
 const canAccessIncident = (incident, user) => {
    if (user.role === "admin") return true;
    if (user.role === "citizen") {
-      return incident.complaintIds.some((complaint) => String(complaint.citizenId) === String(user._id));
+      return incident.complaintIds.some((complaint) => String(complaint.citizenId?._id ?? complaint.citizenId) === String(user._id));
    }
-   return incident.departmentIds.some((departmentId) => String(departmentId) === String(user.departmentId));
+   return incident.departmentIds.some((department) => String(department?._id ?? department) === String(user.departmentId));
 };
 
 const loadIncident = (id) => IncidentCluster.findById(id)
@@ -82,19 +80,6 @@ export const updateIncidentStatus = async (req, res) => {
    } catch (error) {
       if (error.name === "CastError") return res.status(400).json({ error: "Invalid incident ID" });
       return res.status(500).json({ error: "Unable to update incident status" });
-   }
-};
-
-export const getIncidentCost = async (req, res) => {
-   try {
-      const incident = await loadIncident(req.params.id);
-      if (!incident || !canAccessIncident(incident, req.user)) {
-         return res.status(404).json({ error: "Incident not found" });
-      }
-      const rule = await CostRule.findOne({ isActive: true }).lean();
-      return res.status(200).json(compareIncidentCosts(incident.complaintCount, rule ?? {}));
-   } catch (error) {
-      return res.status(500).json({ error: "Unable to calculate incident cost" });
    }
 };
 

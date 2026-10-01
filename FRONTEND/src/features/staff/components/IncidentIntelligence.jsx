@@ -6,7 +6,6 @@ const api = axios.create({ baseURL: "http://localhost:3000/api", withCredentials
 
 const IncidentIntelligence = () => {
    const [incidents, setIncidents] = useState([]);
-   const [savings, setSavings] = useState(0);
    const [error, setError] = useState("");
 
    useEffect(() => {
@@ -15,12 +14,10 @@ const IncidentIntelligence = () => {
          try {
             const response = await api.get("/incidents");
             const list = Array.isArray(response.data) ? response.data : [];
-            const costResponses = await Promise.all(list.slice(0, 10).map((incident) => api.get(`/incidents/${incident._id}/cost`)));
             if (!active) return;
             setIncidents(list);
-            setSavings(costResponses.reduce((total, item) => total + (item.data?.estimatedSavings ?? 0), 0));
          } catch {
-            if (active) setError("Incident intelligence is temporarily unavailable.");
+            if (active) setError("Incident intelligence could not be loaded. Complaint intake and staff operations remain available.");
          }
       };
       load();
@@ -34,41 +31,36 @@ const IncidentIntelligence = () => {
                <p className="text-xs font-semibold uppercase tracking-wider text-[#39756B]">HISC incident intelligence</p>
                <h2 className="mt-1 text-lg font-semibold tracking-tight text-[#17202A]">Coordinated civic incidents</h2>
             </div>
-            <span className="text-xs text-[#87919B]">Estimated operational savings</span>
+            <span className="text-xs text-[#87919B]">Live coordination view</span>
          </div>
          {error ? <p className="rounded-lg border border-[#F3D0D0] bg-[#FBF0F0] p-4 text-sm text-[#A44A4A]">{error}</p> : (
             <>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-               <div className="rounded-xl border border-[#D7E6E1] bg-[#F3F8F6] p-5">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-[#39756B]">Active incidents</p>
-                  <p className="mt-2 text-3xl font-semibold text-[#17202A]">{incidents.length}</p>
-                  <p className="mt-1 text-xs text-[#52606D]">Reports grouped by real-world problem</p>
+               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="rounded-xl border border-[#D7E6E1] bg-[#F3F8F6] p-5">
+                     <p className="text-xs font-semibold uppercase tracking-wider text-[#39756B]">Active incidents</p>
+                     <p className="mt-2 text-3xl font-semibold text-[#17202A]">{incidents.length}</p>
+                     <p className="mt-1 text-xs text-[#52606D]">Reports grouped by real-world problem</p>
+                  </div>
+                  <div className="rounded-xl border border-[#E2E6E4] bg-white p-5">
+                     <p className="text-xs font-semibold uppercase tracking-wider text-[#52606D]">Reports coordinated</p>
+                     <p className="mt-2 text-3xl font-semibold text-[#17202A]">{incidents.reduce((total, incident) => total + (incident.complaintCount ?? 0), 0)}</p>
+                     <p className="mt-1 text-xs text-[#87919B]">Candidate retrieval uses location and time</p>
+                  </div>
                </div>
-               <div className="rounded-xl border border-[#E2E6E4] bg-white p-5">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-[#52606D]">Reports coordinated</p>
-                  <p className="mt-2 text-3xl font-semibold text-[#17202A]">{incidents.reduce((total, incident) => total + (incident.complaintCount ?? 0), 0)}</p>
-                  <p className="mt-1 text-xs text-[#87919B]">Candidate retrieval uses location and time</p>
-               </div>
-               <div className="rounded-xl border border-[#E4DCCF] bg-[#FBF7F0] p-5">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-[#8A6841]">Estimated savings</p>
-                  <p className="mt-2 text-3xl font-semibold text-[#17202A]">₹{savings.toLocaleString("en-IN")}</p>
-                  <p className="mt-1 text-xs text-[#52606D]">Configurable cost model</p>
-               </div>
-            </div>
-            {incidents.length > 0 && (
-               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  {incidents.slice(0, 6).map((incident) => (
-                     <Link key={incident._id} to={`/staff/incidents/${incident._id}`} className="rounded-xl border border-[#E2E6E4] bg-white p-4 transition-colors hover:border-[#39756B]">
-                        <div className="flex items-center justify-between gap-3">
-                           <span className="font-mono text-xs font-semibold text-[#24527A]">{incident.clusterId}</span>
-                           <span className="text-xs capitalize text-[#52606D]">{incident.status?.replaceAll("_", " ")}</span>
-                        </div>
-                        <p className="mt-3 text-sm font-semibold text-[#17202A]">{incident.complaintCount} coordinated reports</p>
-                        <p className="mt-1 text-xs text-[#87919B]">Open incident details →</p>
-                     </Link>
-                  ))}
-               </div>
-            )}
+               {incidents.length > 0 && (
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                     {incidents.slice(0, 6).map((incident) => (
+                        <Link key={incident._id} to={`/staff/incidents/${incident._id}`} className="rounded-xl border border-[#E2E6E4] bg-white p-4 transition-colors hover:border-[#39756B]">
+                           <div className="flex items-center justify-between gap-3">
+                              <span className="font-mono text-xs font-semibold text-[#24527A]">{incident.clusterId}</span>
+                              <span className="text-xs capitalize text-[#52606D]">{incident.status?.replaceAll("_", " ")}</span>
+                           </div>
+                           <p className="mt-3 text-sm font-semibold text-[#17202A]">{incident.complaintCount} coordinated reports</p>
+                           <p className="mt-1 text-xs text-[#87919B]">Open incident details →</p>
+                        </Link>
+                     ))}
+                  </div>
+               )}
             </>
          )}
       </section>

@@ -18,6 +18,7 @@ import {
    acceptComplaint,
    rejectComplaint,
    resolveComplaint,
+   updateComplaintPriority,
 } from "../controller/complaint.controller.js";
 import {
    validateCreateComplaint,
@@ -110,10 +111,12 @@ router.patch(
 router.patch(
    "/staff/complaints/:id/assign",
    authenticate,
-   requireRole("admin"),
+   requireRole("admin", "dept_staff"),
    validateComplaintAssignment,
    assignComplaint
 );
+
+router.patch("/staff/complaints/:id/priority", authenticate, requireRole("admin"), updateComplaintPriority);
 
 router.post(
    "/complaints",

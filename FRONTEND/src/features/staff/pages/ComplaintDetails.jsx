@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import ComplaintStatus from "../../../components/complaint/ComplaintStatus";
 import ComplaintTimeline from "../../../components/complaint/ComplaintTimeline";
 import ComplaintMap from "../../../components/maps/ComplaintMap";
@@ -7,6 +8,10 @@ import {
    acceptComplaint,
    getComplaintById,
    getComplaintTimeline,
+   getDepartments,
+   getDepartmentStaff,
+   reassignComplaint,
+   updateComplaintPriority,
    rejectComplaint,
    resolveComplaint,
    updateComplaintStatus,
@@ -18,14 +23,21 @@ import ResolveComplaintModal from "../components/ResolveComplaintModal";
 
 const ComplaintDetails = () => {
    const { id } = useParams();
+   const currentUser = useSelector((state) => state.auth.user);
    const [complaint, setComplaint] = useState(null);
    const [timeline, setTimeline] = useState([]);
    const [error, setError] = useState("");
+   const [actionError, setActionError] = useState("");
 
    const [isStatusModalOpen, setStatusModalOpen] = useState(false);
    const [isRejectModalOpen, setRejectModalOpen] = useState(false);
    const [isResolveModalOpen, setResolveModalOpen] = useState(false);
    const [isUpdating, setIsUpdating] = useState(false);
+   const [departments, setDepartments] = useState([]);
+   const [departmentStaff, setDepartmentStaff] = useState([]);
+   const [selectedDepartment, setSelectedDepartment] = useState("");
+   const [selectedStaff, setSelectedStaff] = useState("");
+   const [priority, setPriority] = useState("");
 
    useEffect(() => {
       fetchComplaintDetails();
@@ -36,6 +48,9 @@ const ComplaintDetails = () => {
          .then(([item, events]) => {
             setComplaint(item);
             setTimeline(events);
+            setSelectedDepartment(item.assignedDepartment?._id || "");
+            setSelectedStaff(item.assignedStaff?._id || "");
+            setPriority(item.priority || "medium");
             return item;
          })
          .catch((fetchError) => {
@@ -44,8 +59,43 @@ const ComplaintDetails = () => {
          });
    };
 
+   useEffect(() => {
+      getDepartments().then(setDepartments).catch(() => setActionError("Unable to load department controls."));
+   }, []);
+
+   useEffect(() => {
+      if (!selectedDepartment) return;
+      getDepartmentStaff(selectedDepartment).then(setDepartmentStaff).catch(() => setDepartmentStaff([]));
+   }, [selectedDepartment]);
+
+   const handleReassign = async () => {
+      if (!selectedDepartment) return;
+      setIsUpdating(true);
+      try {
+         await reassignComplaint(id, selectedDepartment, selectedStaff || undefined, `Reassigned during triage review on ${new Date().toLocaleString("en-IN")}.`);
+         await fetchComplaintDetails();
+         setActionError("");
+      } catch (actionError) {
+         setActionError(actionError.response?.data?.error || "Unable to reassign complaint.");
+      } finally {
+         setIsUpdating(false);
+      }
+   };
+
+   const handlePriorityChange = async (event) => {
+      const nextPriority = event.target.value;
+      setPriority(nextPriority);
+      try {
+         await updateComplaintPriority(id, nextPriority);
+         await fetchComplaintDetails();
+      } catch (actionError) {
+         setActionError(actionError.response?.data?.error || "Unable to update complaint priority.");
+      }
+   };
+
    const handleAccept = async () => {
       setIsUpdating(true);
+      setActionError("");
       try {
          await acceptComplaint(id);
          await fetchComplaintDetails();
@@ -58,7 +108,7 @@ const ComplaintDetails = () => {
             }
          } catch {
          }
-         alert(err.response?.data?.error ?? "Failed to accept complaint.");
+         setActionError(err.response?.data?.error ?? "Failed to accept complaint.");
       } finally {
          setIsUpdating(false);
       }
@@ -66,11 +116,12 @@ const ComplaintDetails = () => {
 
    const handleStartWork = async () => {
       setIsUpdating(true);
+      setActionError("");
       try {
          await updateComplaintStatus(id, "in_progress");
          fetchComplaintDetails();
       } catch (err) {
-         alert("Failed to start work.");
+         setActionError(err.response?.data?.error ?? "Failed to start work.");
       } finally {
          setIsUpdating(false);
       }
@@ -78,12 +129,13 @@ const ComplaintDetails = () => {
 
    const handleRejectSubmit = async (reason) => {
       setIsUpdating(true);
+      setActionError("");
       try {
          await rejectComplaint(id, reason);
          setRejectModalOpen(false);
          fetchComplaintDetails();
       } catch (err) {
-         alert("Failed to reject complaint.");
+         setActionError(err.response?.data?.error ?? "Failed to reject complaint.");
       } finally {
          setIsUpdating(false);
       }
@@ -91,12 +143,13 @@ const ComplaintDetails = () => {
 
    const handleResolveSubmit = async (data) => {
       setIsUpdating(true);
+      setActionError("");
       try {
          await resolveComplaint(id, data.resolutionDescription, data.resolutionMedia);
          setResolveModalOpen(false);
          fetchComplaintDetails();
       } catch (err) {
-         alert("Failed to resolve complaint.");
+         setActionError(err.response?.data?.error ?? "Failed to resolve complaint.");
       } finally {
          setIsUpdating(false);
       }
@@ -104,11 +157,12 @@ const ComplaintDetails = () => {
 
    const handleClose = async () => {
       setIsUpdating(true);
+      setActionError("");
       try {
          await updateComplaintStatus(id, "closed", { remark: "Complaint closed after resolution" });
          fetchComplaintDetails();
       } catch (err) {
-         alert("Failed to close complaint.");
+         setActionError(err.response?.data?.error ?? "Failed to close complaint.");
       } finally {
          setIsUpdating(false);
       }
@@ -116,12 +170,13 @@ const ComplaintDetails = () => {
 
    const handleStatusUpdateSubmit = async (data) => {
       setIsUpdating(true);
+      setActionError("");
       try {
          await updateComplaintStatus(id, data.newStatus, { remark: data.remark });
          setStatusModalOpen(false);
          fetchComplaintDetails();
       } catch (err) {
-         alert("Failed to update status.");
+         setActionError(err.response?.data?.error ?? "Failed to update status.");
       } finally {
          setIsUpdating(false);
       }
@@ -256,6 +311,17 @@ const ComplaintDetails = () => {
                   onClose={handleClose}
                   disabled={isUpdating}
                />
+               {actionError && <p className="rounded-lg border border-[#F3D0D0] bg-[#FBF0F0] p-3 text-sm text-[#A44A4A]">{actionError}</p>}
+            </section>
+
+            <section aria-label="Assignment controls" className="rounded-xl border border-[#D7E6E1] bg-[#F8FBFA] p-4 sm:p-5 shadow-2xs space-y-4">
+               <div><h2 className="text-sm font-semibold text-[#17202A]">Routing and priority controls</h2><p className="mt-1 text-xs text-[#52606D]">Reassign the operational owner, then record the priority decision. Every change is added to the audit timeline.</p></div>
+               <div className="grid gap-3 md:grid-cols-3">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-[#52606D]">Department<select value={selectedDepartment} onChange={(event) => { setSelectedDepartment(event.target.value); setSelectedStaff(""); }} className="mt-1 w-full rounded-lg border border-[#CBD2CF] bg-white px-3 py-2 text-sm font-normal normal-case text-[#17202A]"><option value="">Choose department</option>{departments.map((department) => <option key={department._id} value={department._id}>{department.fullname}</option>)}</select></label>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-[#52606D]">Staff member<select value={selectedStaff} onChange={(event) => setSelectedStaff(event.target.value)} disabled={!selectedDepartment || departmentStaff.length === 0} className="mt-1 w-full rounded-lg border border-[#CBD2CF] bg-white px-3 py-2 text-sm font-normal normal-case text-[#17202A]"><option value="">Department queue</option>{departmentStaff.map((staff) => <option key={staff._id} value={staff._id}>{staff.fullname}</option>)}</select></label>
+                  <button type="button" onClick={handleReassign} disabled={isUpdating || !selectedDepartment} className="self-end rounded-lg bg-[#173B5E] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">{isUpdating ? "Saving..." : "Save assignment"}</button>
+               </div>
+               <div className="flex flex-wrap items-center gap-3 border-t border-[#D7E6E1] pt-3"><span className="text-xs font-semibold uppercase tracking-wider text-[#52606D]">Priority</span>{currentUser?.role === "admin" ? <select value={priority} onChange={handlePriorityChange} className="rounded-lg border border-[#CBD2CF] bg-white px-3 py-2 text-sm capitalize"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="urgent">Urgent</option></select> : <span className="rounded-full bg-[#EEF4FA] px-3 py-1 text-sm font-semibold capitalize text-[#24527A]">{priority} (automatic)</span>}<span className="text-xs text-[#87919B]">{currentUser?.role === "admin" ? "Administrator override" : "Calculated from category, wording, safety terms, and evidence"}</span></div>
             </section>
 
             {/* Rejection Alert Banner (if applicable) */}
@@ -398,6 +464,7 @@ const ComplaintDetails = () => {
             onClose={() => setStatusModalOpen(false)}
             onSubmit={handleStatusUpdateSubmit}
             loading={isUpdating}
+            error={actionError}
          />
 
          <RejectComplaintModal

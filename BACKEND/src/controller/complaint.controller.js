@@ -5,6 +5,7 @@ import { recordComplaintTimeline } from "./complaintTimeline.controller.js";
 import { findSimilarComplaints } from "../service/complaintSimilarity.service.js";
 import { uploadMedia, validateMediaFile } from "../service/imagekit.service.js";
 import { upsertIncidentCluster } from "../service/incidentIntelligence.service.js";
+import { priorityExplanation, scoreComplaintPriority } from "../service/priorityScoring.service.js";
 
 const citizenQuery = (req) => ({ citizenId: req.user._id });
 
@@ -25,6 +26,7 @@ export const createComplaint = async (req, res) => {
          assignedDepartment: department?._id ?? null,
          complaintId: `CF-${randomUUID()}`,
          citizenId: req.user._id,
+         priority: scoreComplaintPriority(req.body),
       });
 
       const similarComplaints = await findSimilarComplaints(complaint);
@@ -48,6 +50,7 @@ export const createComplaint = async (req, res) => {
          action: "created",
          performedBy: req.user._id,
          newStatus: complaint.status,
+         remark: priorityExplanation(complaint),
       });
 
       return res.status(201).json(complaint);
@@ -354,7 +357,7 @@ export const updateComplaintStatus = async (req, res) => {
       const newStatus = req.body.newStatus;
       if (!allowedTransitions[previousStatus]?.includes(newStatus)) {
          return res.status(409).json({
-            error: `Cannot change complaint status from ${previousStatus} to ${newStatus}`,
+            error: `Cannot change complaint status from ${previousStatus} to ${newStatus}. Valid next statuses: ${allowedTransitions[previousStatus]?.join(", ") || "none"}.`,
          });
       }
       complaint.status = newStatus;
@@ -366,7 +369,7 @@ export const updateComplaintStatus = async (req, res) => {
          performedBy: req.user._id,
          previousStatus,
          newStatus: complaint.status,
-         remark: req.body.remark,
+         remark: req.body.remark || `Status changed from ${previousStatus} to ${newStatus} by ${req.user.fullname}.`,
       });
 
       return res.status(200).json(complaint);
@@ -425,7 +428,7 @@ export const assignComplaint = async (req, res) => {
          action: "assigned",
          performedBy: req.user._id,
          newStatus: complaint.status,
-         remark: req.body.remark,
+         remark: req.body.remark || `Complaint assigned to department ${req.body.assignedDepartment}${req.body.assignedStaff ? ` and staff member ${req.body.assignedStaff}` : ""}.`,
       });
       return res.status(200).json(complaint);
    } catch (error) {
@@ -435,6 +438,15 @@ export const assignComplaint = async (req, res) => {
       }
       return res.status(500).json({ error: "Internal server error" });
    }
+};
+
+export const updateComplaintPriority = async (req, res) => {
+   const { priority } = req.body;
+   if (!["low", "medium", "high", "urgent"].includes(priority)) return res.status(400).json({ error: "Invalid complaint priority" });
+   const complaint = await Complaint.findOneAndUpdate({ _id: req.params.id, status: { $ne: "deleted" } }, { $set: { priority } }, { new: true, runValidators: true });
+   if (!complaint) return res.status(404).json({ error: "Complaint not found" });
+   await recordComplaintTimeline({ complaintId: complaint._id, action: "priority_changed", performedBy: req.user._id, remark: `Priority manually set to ${priority} by administrator.` });
+   return res.status(200).json(complaint);
 };
 
 export const deleteComplaint = async (req, res) => {

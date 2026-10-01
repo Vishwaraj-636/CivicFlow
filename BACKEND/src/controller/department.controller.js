@@ -1,4 +1,5 @@
 import Department from "../model/department.model.js";
+import User from "../model/user.model.js";
 
 export const createDepartment = async (req, res) => {
    const { fullname, code, description, isActive, categories } = req.body;
@@ -55,6 +56,21 @@ export const getDepartments = async (req, res) => {
       res.status(500).json({ error: "Internal server error" });
    }
 }
+
+export const getDepartmentStaff = async (req, res) => {
+   try {
+      const departmentId = req.user.role === "dept_staff" ? req.user.departmentId : req.params.id;
+      if (req.user.role === "dept_staff" && String(req.params.id) !== String(req.user.departmentId)) {
+         return res.status(403).json({ error: "You can only view your department staff" });
+      }
+      const staff = await User.find({ departmentId, role: "dept_staff", isActive: true })
+         .select("fullname email role departmentId profileImage")
+         .sort({ fullname: 1 });
+      return res.status(200).json(staff);
+   } catch (error) {
+      return res.status(500).json({ error: "Unable to load department staff" });
+   }
+};
 
 export const getDepartmentById = async (req, res) => {
    const { id } = req.params;

@@ -8,7 +8,8 @@ import {
    getDepartments,
    getDepartmentById,
    updateDepartment,
-   deleteDepartment
+   deleteDepartment,
+   getDepartmentStaff
 } from "../controller/department.controller.js";
 import { authenticate } from '../middleware/auth.middleware.js';
 import { requireRole } from '../middleware/role.middleware.js';
@@ -30,6 +31,7 @@ router.post(
 router.get("/departments", getDepartments)
 
 router.get("/departments/:id", getDepartmentById)
+router.get("/departments/:id/staff", authenticate, requireRole("admin", "dept_staff"), getDepartmentStaff)
 
 router.patch(
    "/departments/:id",

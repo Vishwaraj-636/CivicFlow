@@ -50,3 +50,23 @@ export async function getComplaintTimeline(complaintId) {
    const response = await staffApiInstance.get(`/complaints/${complaintId}/timeline`);
    return response.data;
 }
+
+export async function reassignComplaint(complaintId, assignedDepartment, assignedStaff, remark) {
+   const response = await staffApiInstance.patch(`/staff/complaints/${complaintId}/assign`, { assignedDepartment, assignedStaff, remark });
+   return response.data;
+}
+
+export async function updateComplaintPriority(complaintId, priority) {
+   const response = await staffApiInstance.patch(`/staff/complaints/${complaintId}/priority`, { priority });
+   return response.data;
+}
+
+export async function getDepartments() {
+   const response = await staffApiInstance.get("/departments");
+   return response.data;
+}
+
+export async function getDepartmentStaff(departmentId) {
+   const response = await staffApiInstance.get(`/departments/${departmentId}/staff`);
+   return response.data;
+}
