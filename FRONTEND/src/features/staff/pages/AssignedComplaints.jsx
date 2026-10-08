@@ -1,3 +1,4 @@
+import ComplaintSlaStatus from "../../../components/complaint/ComplaintSlaStatus";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAssignedComplaints } from "../services/staff.api";
@@ -178,6 +179,7 @@ const AssignedComplaints = () => {
                                  {complaint.assignedAt ? new Date(complaint.assignedAt).toLocaleDateString() : "—"}
                               </span>
                            </div>
+                           <ComplaintSlaStatus complaint={complaint} compact />
 
                            <button
                               type="button"
@@ -203,6 +205,7 @@ const AssignedComplaints = () => {
                            <th className="px-6 py-3.5 font-semibold">Priority</th>
                            <th className="px-6 py-3.5 font-semibold">Status</th>
                            <th className="px-6 py-3.5 font-semibold">Assigned Date</th>
+                           <th className="px-6 py-3.5 font-semibold">Resolution SLA</th>
                            <th className="px-6 py-3.5 font-semibold text-right">Action</th>
                         </tr>
                      </thead>
@@ -219,8 +222,8 @@ const AssignedComplaints = () => {
                                  </td>
                                  <td className="px-6 py-4 capitalize text-xs font-semibold">
                                     <span className={`inline-block px-2 py-0.5 rounded border text-xs ${complaint.priority === 'urgent' || complaint.priority === 'high'
-                                          ? 'border-[#F3D0D0] bg-[#FBF0F0] text-[#A44A4A]'
-                                          : 'border-[#E2E6E4] bg-[#F1F3F2] text-[#52606D]'
+                                       ? 'border-[#F3D0D0] bg-[#FBF0F0] text-[#A44A4A]'
+                                       : 'border-[#E2E6E4] bg-[#F1F3F2] text-[#52606D]'
                                        }`}>
                                        {complaint.priority}
                                     </span>
@@ -232,6 +235,9 @@ const AssignedComplaints = () => {
                                  </td>
                                  <td className="px-6 py-4 text-xs text-[#87919B]">
                                     {complaint.assignedAt ? new Date(complaint.assignedAt).toLocaleDateString() : "—"}
+                                 </td>
+                                 <td className="px-6 py-4">
+                                    <ComplaintSlaStatus complaint={complaint} compact />
                                  </td>
                                  <td className="px-6 py-4 text-right">
                                     <button

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ComplaintStatus from "../../../components/complaint/ComplaintStatus";
+import ComplaintSlaStatus from "../../../components/complaint/ComplaintSlaStatus";
+import ResolutionVerificationPanel from "../../../components/complaint/ResolutionVerificationPanel";
 import ComplaintTimeline from "../../../components/complaint/ComplaintTimeline";
 import GroupedReportsSummary from "../../../components/complaint/GroupedReportsSummary";
 import ComplaintMap from "../../../components/maps/ComplaintMap";
@@ -12,6 +14,8 @@ const CitizenComplaintDetails = () => {
    const [complaint, setComplaint] = useState(null);
    const [error, setError] = useState("");
    const [deleting, setDeleting] = useState(false);
+
+   const handleVerification = (updatedComplaint) => setComplaint(updatedComplaint);
 
    useEffect(() => {
       getComplaintById(id)
@@ -137,6 +141,7 @@ const CitizenComplaintDetails = () => {
                      </span>
                   </div>
                   <ComplaintStatus status={complaint.status} />
+                  <ComplaintSlaStatus complaint={complaint} />
                </div>
 
                <h1 className="mt-1 text-xl font-bold tracking-tight text-[#17202A] sm:text-2xl">
@@ -231,6 +236,8 @@ const CitizenComplaintDetails = () => {
                </div>
             )}
 
+            <ResolutionVerificationPanel complaint={complaint} onVerified={handleVerification} />
+
             {/* ── Metadata Grid ── */}
             <div className="grid gap-3 rounded-2xl border border-[#E2E6E4] bg-white p-5 shadow-sm sm:grid-cols-2 md:grid-cols-3">
                <div>
@@ -278,6 +285,12 @@ const CitizenComplaintDetails = () => {
                   <p className="mt-0.5 text-xs font-semibold capitalize text-[#17202A]">
                      {complaint.status.replaceAll("_", " ")}
                   </p>
+               </div>
+               <div>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#87919B]">
+                     Resolution SLA
+                  </span>
+                  <ComplaintSlaStatus complaint={complaint} />
                </div>
             </div>
 

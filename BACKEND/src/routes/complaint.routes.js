@@ -6,6 +6,10 @@ import {
    createComplaint,
    getComplaintById,
    getMyComplaints,
+   getSupportableComplaints,
+   supportComplaint,
+   getAdminComplaintMapData,
+   getAdminComplaintTrends,
    updateComplaint,
    deleteComplaint,
    listComplaintsForStaff,
@@ -19,6 +23,10 @@ import {
    rejectComplaint,
    resolveComplaint,
    updateComplaintPriority,
+   getEscalatedComplaints,
+   getEscalationSummary,
+   verifyComplaintResolution,
+   getMyNotifications,
 } from "../controller/complaint.controller.js";
 import {
    validateCreateComplaint,
@@ -47,6 +55,9 @@ const parseMediaUpload = (req, res, next) => {
       next();
    });
 };
+
+router.get("/admin/complaints/escalated", authenticate, requireRole("admin"), getEscalatedComplaints);
+router.get("/admin/complaints/escalation-summary", authenticate, requireRole("admin"), getEscalationSummary);
 
 router.post(
    "/complaints/media",
@@ -127,10 +138,52 @@ router.post(
 );
 
 router.get(
+   "/notifications",
+   authenticate,
+   requireRole("citizen"),
+   getMyNotifications
+);
+
+router.get(
+   "/admin/complaints/map",
+   authenticate,
+   requireRole("admin"),
+   getAdminComplaintMapData
+);
+
+router.get(
+   "/admin/complaints/trends",
+   authenticate,
+   requireRole("admin"),
+   getAdminComplaintTrends
+);
+
+router.patch(
+   "/complaints/:id/verification",
+   authenticate,
+   requireRole("citizen"),
+   verifyComplaintResolution
+);
+
+router.get(
    "/complaints/my",
    authenticate,
    requireRole("citizen"),
    getMyComplaints
+);
+
+router.get(
+   "/complaints/community",
+   authenticate,
+   requireRole("citizen"),
+   getSupportableComplaints
+);
+
+router.post(
+   "/complaints/:id/support",
+   authenticate,
+   requireRole("citizen"),
+   supportComplaint
 );
 
 router.get(

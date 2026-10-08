@@ -21,7 +21,7 @@ const complaintTimelineSchema = new mongoose.Schema(
       },
       action: {
          type: String,
-         enum: ["created", "updated", "status_changed", "assigned", "accepted", "resolved", "rejected", "closed", "deleted"],
+         enum: ["created", "updated", "status_changed", "assigned", "accepted", "resolved", "resolution_confirmed", "resolution_rejected", "rejected", "closed", "deleted"],
          required: true,
          trim: true,
       },

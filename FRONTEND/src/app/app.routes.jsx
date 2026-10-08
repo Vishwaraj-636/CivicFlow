@@ -20,6 +20,7 @@ import AssignedComplaints from "../features/staff/pages/AssignedComplaints";
 import ComplaintQueue from "../features/staff/pages/ComplaintQueue";
 import StaffComplaintDetails from "../features/staff/pages/ComplaintDetails";
 import AdminDashboard from "../features/admin/pages/AdminDashboard";
+import EscalatedComplaints from "../features/admin/pages/EscalatedComplaints";
 import IncidentDetails from "../features/incident/pages/IncidentDetails";
 
 export const routes = createBrowserRouter([
@@ -120,6 +121,10 @@ export const routes = createBrowserRouter([
                {
                   path: "staff-requests",
                   element: <StaffRequests />
+               },
+               {
+                  path: "escalations",
+                  element: <EscalatedComplaints />
                },
                {
                   path: "complaints/:id",

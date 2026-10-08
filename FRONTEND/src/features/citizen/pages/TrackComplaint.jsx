@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ComplaintStatus from "../../../components/complaint/ComplaintStatus";
+import ComplaintSlaStatus from "../../../components/complaint/ComplaintSlaStatus";
+import ResolutionVerificationPanel from "../../../components/complaint/ResolutionVerificationPanel";
 import ComplaintTimeline from "../../../components/complaint/ComplaintTimeline";
 import { getComplaintById, getComplaintTimeline } from "../services/complaint.api";
 
@@ -11,6 +13,8 @@ const ACTION_LABELS = {
    assigned: "Staff Dispatched",
    accepted: "Department Intake Accepted",
    resolved: "Fieldwork Completed",
+   resolution_confirmed: "Resolution Confirmed by Citizen",
+   resolution_rejected: "Resolution Reopened by Citizen",
    rejected: "Report Rejected",
    closed: "Report Closed",
    deleted: "Report Withdrawn",
@@ -156,6 +160,7 @@ const TrackComplaint = () => {
                      </span>
                   </div>
                   <ComplaintStatus status={complaint.status} />
+                  <ComplaintSlaStatus complaint={complaint} />
                </div>
 
                <h1 className="mt-3 text-xl font-bold tracking-tight text-[#17202A] sm:text-2xl">
@@ -196,6 +201,8 @@ const TrackComplaint = () => {
                   </div>
                </div>
             )}
+
+            <ResolutionVerificationPanel complaint={complaint} onVerified={setComplaint} />
 
             {/* ── Official Lifecycle Progression Stepper ── */}
             <div className="rounded-2xl border border-[#E2E6E4] bg-white p-5 sm:p-6 shadow-sm">

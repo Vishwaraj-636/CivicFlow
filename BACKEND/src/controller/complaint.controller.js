@@ -6,6 +6,11 @@ import { findSimilarComplaints } from "../service/complaintSimilarity.service.js
 import { uploadMedia, validateMediaFile } from "../service/imagekit.service.js";
 import { upsertIncidentCluster } from "../service/incidentIntelligence.service.js";
 import { priorityExplanation, scoreComplaintPriority } from "../service/priorityScoring.service.js";
+import { calculateResolutionDeadline, getSlaHours } from "../service/sla.service.js";
+import { escalateOverdueComplaints, openComplaintStatuses } from "../service/complaintEscalation.service.js";
+import Notification from "../model/notification.model.js";
+import { createNotification } from "../service/notification.service.js";
+import ComplaintSupport from "../model/complaintSupport.model.js";
 
 const citizenQuery = (req) => ({ citizenId: req.user._id });
 
@@ -27,6 +32,8 @@ export const createComplaint = async (req, res) => {
          complaintId: `CF-${randomUUID()}`,
          citizenId: req.user._id,
          priority: scoreComplaintPriority(req.body),
+         slaDurationHours: getSlaHours(scoreComplaintPriority(req.body)),
+         resolutionDeadline: calculateResolutionDeadline(scoreComplaintPriority(req.body)),
       });
 
       const similarComplaints = await findSimilarComplaints(complaint);
@@ -121,6 +128,140 @@ export const getMyComplaints = async (req, res) => {
    } catch (error) {
       console.error("Error fetching citizen complaints:", error);
       return res.status(500).json({ error: "Internal server error" });
+   }
+};
+
+export const getSupportableComplaints = async (req, res) => {
+   try {
+      const filter = {
+         citizenId: { $ne: req.user._id },
+         status: { $in: ["submitted", "in_review", "assigned", "in_progress"] },
+      };
+      if (req.query.category) filter.category = req.query.category;
+      if (req.query.search?.trim()) {
+         const expression = new RegExp(req.query.search.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+         filter.$or = [{ complaintId: expression }, { title: expression }, { description: expression }, { address: expression }];
+      }
+
+      const complaints = await Complaint.find(filter)
+         .select("complaintId title description category priority status address location createdAt supportCount citizenId")
+         .populate("assignedDepartment", "fullname code")
+         .sort({ supportCount: -1, createdAt: -1 })
+         .limit(50)
+         .lean();
+      const supportedIds = await ComplaintSupport.find({
+         citizenId: req.user._id,
+         complaintId: { $in: complaints.map((complaint) => complaint._id) },
+      }).distinct("complaintId");
+      const supportedSet = new Set(supportedIds.map(String));
+      return res.status(200).json(complaints.map((complaint) => ({
+         ...complaint,
+         supportedByMe: supportedSet.has(String(complaint._id)),
+      })));
+   } catch (error) {
+      console.error("Error fetching supportable complaints:", error);
+      return res.status(500).json({ error: "Unable to load community complaints" });
+   }
+};
+
+export const supportComplaint = async (req, res) => {
+   try {
+      const complaint = await Complaint.findOne({
+         _id: req.params.id,
+         citizenId: { $ne: req.user._id },
+         status: { $in: ["submitted", "in_review", "assigned", "in_progress"] },
+      });
+      if (!complaint) return res.status(404).json({ error: "Complaint is not available for support" });
+
+      try {
+         await ComplaintSupport.create({ complaintId: complaint._id, citizenId: req.user._id });
+      } catch (error) {
+         if (error.code !== 11000) throw error;
+         return res.status(200).json({ complaintId: complaint._id, supportCount: complaint.supportCount, supportedByMe: true });
+      }
+
+      const updatedComplaint = await Complaint.findByIdAndUpdate(
+         complaint._id,
+         { $inc: { supportCount: 1 } },
+         { new: true }
+      ).select("_id supportCount");
+      return res.status(201).json({ complaintId: updatedComplaint._id, supportCount: updatedComplaint.supportCount, supportedByMe: true });
+   } catch (error) {
+      console.error("Error supporting complaint:", error);
+      if (error.name === "CastError") return res.status(400).json({ error: "Invalid complaint ID" });
+      return res.status(500).json({ error: "Unable to support complaint" });
+   }
+};
+
+export const getAdminComplaintMapData = async (req, res) => {
+   try {
+      const complaints = await Complaint.find({
+         status: { $ne: "deleted" },
+         "location.coordinates": { $exists: true, $size: 2 },
+      })
+         .select("complaintId title category priority status location address createdAt")
+         .sort({ createdAt: -1 })
+         .limit(5000)
+         .lean();
+      return res.status(200).json(complaints);
+   } catch (error) {
+      console.error("Error fetching complaint map data:", error);
+      return res.status(500).json({ error: "Unable to load complaint map data" });
+   }
+};
+
+export const getAdminComplaintTrends = async (req, res) => {
+   const period = ["day", "week", "month"].includes(req.query.period) ? req.query.period : "month";
+   const formatByPeriod = { day: "%Y-%m-%d", week: "%G-W%V", month: "%Y-%m" };
+   const toDate = (value, fallback) => {
+      const date = value ? new Date(value) : fallback;
+      return Number.isNaN(date.getTime()) ? fallback : date;
+   };
+   const now = new Date();
+   const defaultFrom = new Date(now);
+   defaultFrom.setFullYear(defaultFrom.getFullYear() - 1);
+   const from = toDate(req.query.from, defaultFrom);
+   const to = toDate(req.query.to, now);
+   const dateMatch = {
+      status: { $ne: "deleted" },
+      createdAt: { $gte: from, $lte: to },
+   };
+   const periodExpression = { $dateToString: { format: formatByPeriod[period], date: "$createdAt" } };
+
+   try {
+      const [trend, categoryTrend, departmentTrend] = await Promise.all([
+         Complaint.aggregate([
+            { $match: dateMatch },
+            { $group: { _id: periodExpression, count: { $sum: 1 } } },
+            { $project: { _id: 0, period: "$_id", count: 1 } },
+            { $sort: { period: 1 } },
+         ]),
+         Complaint.aggregate([
+            { $match: dateMatch },
+            { $group: { _id: { period: periodExpression, category: "$category" }, count: { $sum: 1 } } },
+            { $project: { _id: 0, period: "$_id.period", category: "$_id.category", count: 1 } },
+            { $sort: { period: 1, count: -1 } },
+         ]),
+         Complaint.aggregate([
+            { $match: dateMatch },
+            { $group: { _id: { period: periodExpression, department: "$assignedDepartment" }, count: { $sum: 1 } } },
+            {
+               $lookup: {
+                  from: "departments",
+                  localField: "_id.department",
+                  foreignField: "_id",
+                  as: "departmentInfo",
+               },
+            },
+            { $unwind: { path: "$departmentInfo", preserveNullAndEmptyArrays: true } },
+            { $project: { _id: 0, period: "$_id.period", department: { $ifNull: ["$departmentInfo.fullname", "Unassigned"] }, count: 1 } },
+            { $sort: { period: 1, count: -1 } },
+         ]),
+      ]);
+      return res.status(200).json({ period, from, to, trend, categoryTrend, departmentTrend });
+   } catch (error) {
+      console.error("Error fetching complaint trends:", error);
+      return res.status(500).json({ error: "Unable to load complaint trend analytics" });
    }
 };
 
@@ -350,7 +491,7 @@ export const updateComplaintStatus = async (req, res) => {
          assigned: ["in_review", "in_progress", "rejected"],
          in_review: ["in_progress", "resolved", "rejected"],
          in_progress: ["resolved", "rejected"],
-         resolved: ["closed"],
+         resolved: [],
          rejected: [],
          closed: [],
       };
@@ -359,6 +500,10 @@ export const updateComplaintStatus = async (req, res) => {
          return res.status(409).json({
             error: `Cannot change complaint status from ${previousStatus} to ${newStatus}. Valid next statuses: ${allowedTransitions[previousStatus]?.join(", ") || "none"}.`,
          });
+      }
+      if (!complaint.slaDurationHours || !complaint.resolutionDeadline) {
+         complaint.slaDurationHours = getSlaHours(complaint.priority);
+         complaint.resolutionDeadline = calculateResolutionDeadline(complaint.priority, complaint.createdAt ?? new Date());
       }
       complaint.status = newStatus;
       await complaint.save();
@@ -397,8 +542,19 @@ export const resolveComplaint = async (req, res) => {
       complaint.status = "resolved";
       complaint.resolutionDescription = req.body.resolutionDescription;
       complaint.resolutionMedia = req.body.resolutionMedia ?? [];
+      complaint.resolutionVerificationStatus = "pending";
+      complaint.resolutionVerifiedAt = null;
+      complaint.resolutionVerificationRemark = null;
       await complaint.save();
       await recordStaffStatusChange(complaint, req, previousStatus, "resolved");
+      await createNotification({
+         recipientId: complaint.citizenId,
+         complaintId: complaint._id,
+         type: "resolution_verification",
+         title: "Please verify your complaint resolution",
+         message: `Staff marked ${complaint.complaintId} as resolved. Confirm that the issue is fixed or report that it still exists.`,
+         io: req.app.get("io"),
+      });
       return res.status(200).json(complaint);
    } catch (error) {
       console.error("Error resolving complaint:", error);
@@ -409,6 +565,61 @@ export const resolveComplaint = async (req, res) => {
    }
 };
 
+export const verifyComplaintResolution = async (req, res) => {
+   const confirmed = req.body.confirmed;
+   if (typeof confirmed !== "boolean") {
+      return res.status(400).json({ error: "Confirmation must be true or false" });
+   }
+
+   try {
+      const complaint = await Complaint.findOne({
+         _id: req.params.id,
+         citizenId: req.user._id,
+         status: "resolved",
+         resolutionVerificationStatus: "pending",
+      });
+      if (!complaint) {
+         return res.status(404).json({ error: "No pending resolution verification found" });
+      }
+
+      const previousStatus = complaint.status;
+      complaint.status = confirmed ? "closed" : "in_progress";
+      complaint.resolutionVerificationStatus = confirmed ? "confirmed" : "rejected";
+      complaint.resolutionVerifiedAt = new Date();
+      complaint.resolutionVerificationRemark = typeof req.body.remark === "string" ? req.body.remark.trim() || null : null;
+      await complaint.save();
+
+      await recordComplaintTimeline({
+         complaintId: complaint._id,
+         action: confirmed ? "resolution_confirmed" : "resolution_rejected",
+         performedBy: req.user._id,
+         previousStatus,
+         newStatus: complaint.status,
+         remark: complaint.resolutionVerificationRemark || (confirmed ? "Citizen confirmed the resolution." : "Citizen reported that the issue still exists."),
+      });
+
+      return res.status(200).json(complaint);
+   } catch (error) {
+      console.error("Error verifying complaint resolution:", error);
+      if (error.name === "CastError" || error.name === "ValidationError") {
+         return res.status(400).json({ error: error.message });
+      }
+      return res.status(500).json({ error: "Unable to verify complaint resolution" });
+   }
+};
+
+export const getMyNotifications = async (req, res) => {
+   try {
+      const notifications = await Notification.find({ recipientId: req.user._id })
+         .populate("complaintId", "complaintId title status resolutionVerificationStatus")
+         .sort({ createdAt: -1 })
+         .limit(50);
+      return res.status(200).json(notifications);
+   } catch (error) {
+      console.error("Error fetching notifications:", error);
+      return res.status(500).json({ error: "Unable to load notifications" });
+   }
+};
 export const assignComplaint = async (req, res) => {
    try {
       const complaint = await Complaint.findOneAndUpdate(
@@ -443,10 +654,78 @@ export const assignComplaint = async (req, res) => {
 export const updateComplaintPriority = async (req, res) => {
    const { priority } = req.body;
    if (!["low", "medium", "high", "urgent"].includes(priority)) return res.status(400).json({ error: "Invalid complaint priority" });
-   const complaint = await Complaint.findOneAndUpdate({ _id: req.params.id, status: { $ne: "deleted" } }, { $set: { priority } }, { new: true, runValidators: true });
+   const complaintToUpdate = await Complaint.findOne({ _id: req.params.id, status: { $ne: "deleted" } });
+   if (!complaintToUpdate) return res.status(404).json({ error: "Complaint not found" });
+   const complaint = await Complaint.findOneAndUpdate(
+      { _id: req.params.id, status: { $ne: "deleted" } },
+      {
+         $set: {
+            priority,
+            slaDurationHours: getSlaHours(priority),
+            resolutionDeadline: calculateResolutionDeadline(priority, complaintToUpdate.createdAt),
+         },
+      },
+      { new: true, runValidators: true }
+   );
    if (!complaint) return res.status(404).json({ error: "Complaint not found" });
    await recordComplaintTimeline({ complaintId: complaint._id, action: "priority_changed", performedBy: req.user._id, remark: `Priority manually set to ${priority} by administrator.` });
    return res.status(200).json(complaint);
+};
+
+export const getEscalatedComplaints = async (req, res) => {
+   try {
+      await escalateOverdueComplaints();
+      const complaints = await Complaint.find({ escalated: true, status: { $ne: "deleted" } })
+         .populate("assignedDepartment", "fullname code")
+         .populate("assignedStaff", "fullname email")
+         .sort({ escalatedAt: -1 });
+      return res.status(200).json(complaints);
+   } catch (error) {
+      console.error("Error fetching escalated complaints:", error);
+      return res.status(500).json({ error: "Unable to load escalated complaints" });
+   }
+};
+
+export const getEscalationSummary = async (req, res) => {
+   try {
+      await escalateOverdueComplaints();
+      const summary = await Complaint.aggregate([
+         { $match: { escalated: true, status: { $ne: "deleted" } } },
+         {
+            $group: {
+               _id: "$assignedDepartment",
+               escalatedCount: { $sum: 1 },
+               oldestEscalation: { $min: "$escalatedAt" },
+            },
+         },
+         { $sort: { escalatedCount: -1, oldestEscalation: 1 } },
+         {
+            $lookup: {
+               from: "departments",
+               localField: "_id",
+               foreignField: "_id",
+               as: "department",
+            },
+         },
+         { $unwind: { path: "$department", preserveNullAndEmptyArrays: true } },
+         {
+            $project: {
+               _id: 0,
+               departmentId: "$_id",
+               departmentName: { $ifNull: ["$department.fullname", "Unassigned"] },
+               departmentCode: { $ifNull: ["$department.code", "—"] },
+               escalatedCount: 1,
+               oldestEscalation: 1,
+            },
+         },
+      ]);
+      const total = summary.reduce((count, department) => count + department.escalatedCount, 0);
+      const open = await Complaint.countDocuments({ status: { $in: openComplaintStatuses } });
+      return res.status(200).json({ total, openComplaints: open, departments: summary });
+   } catch (error) {
+      console.error("Error fetching escalation summary:", error);
+      return res.status(500).json({ error: "Unable to load escalation summary" });
+   }
 };
 
 export const deleteComplaint = async (req, res) => {

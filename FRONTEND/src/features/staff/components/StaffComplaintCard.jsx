@@ -1,3 +1,5 @@
+import ComplaintSlaStatus from "../../../components/complaint/ComplaintSlaStatus";
+
 const statusLabel = (status = "") => status.replaceAll("_", " ");
 
 const StaffComplaintCard = ({ complaint, onView, onAction }) => (
@@ -15,6 +17,7 @@ const StaffComplaintCard = ({ complaint, onView, onAction }) => (
          <div><dt className="text-muted-text">Status</dt><dd className="mt-1 capitalize text-primary-text">{statusLabel(complaint.status)}</dd></div>
          <div><dt className="text-muted-text">Category</dt><dd className="mt-1 truncate text-primary-text">{complaint.category}</dd></div>
       </dl>
+      <ComplaintSlaStatus complaint={complaint} compact />
       <div className="mt-4 flex justify-end gap-2">
          <button type="button" onClick={() => onView?.(complaint)} className="rounded border border-border px-3 py-1.5 text-xs font-semibold text-primary-text hover:bg-surface-elevated">
             View

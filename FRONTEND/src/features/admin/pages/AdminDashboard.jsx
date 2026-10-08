@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, Outlet, useOutlet } from "react-router-dom";
 import axios from "axios";
 import { getStaffRequests } from "../services/staffRequest.api";
+import ComplaintHeatmap from "../components/ComplaintHeatmap";
+import ComplaintTrendAnalytics from "../components/ComplaintTrendAnalytics";
 
 // Department API instance configured for Admin credentials
 const departmentApi = axios.create({
@@ -502,6 +504,9 @@ const AdminDashboard = () => {
                </Link>
             </div>
 
+            <ComplaintHeatmap />
+            <ComplaintTrendAnalytics />
+
             {/* Error Banner if staff request metrics failed */}
             {error && (
                <div className="flex items-start gap-3 rounded-xl border border-[#F3C5C5] bg-[#FBF0F0] p-4 text-xs sm:text-sm text-[#A44A4A]">
@@ -696,7 +701,7 @@ const AdminDashboard = () => {
                </Link>
             </section>
 
-            
+
 
             {/* ========================================================================= */}
             {/* 5. APPROVED MUNICIPAL DEPARTMENT ROSTER & GOVERNANCE SECTION (GENERATION 8) */}
@@ -833,7 +838,7 @@ const AdminDashboard = () => {
                   </div>
                )}
 
-              
+
 
                {/* DEPARTMENT ROSTER CONTAINER */}
                <div className="bg-white border border-[#E2E6E4] rounded-xl overflow-hidden shadow-xs">
@@ -1116,7 +1121,7 @@ const AdminDashboard = () => {
                   )}
 
                   {/* Roster Technical Footnote */}
-                  
+
                </div>
             </section>
 

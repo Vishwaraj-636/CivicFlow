@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import locationSchema from "./location.schema.js";
+import { calculateResolutionDeadline, getSlaHours } from "../service/sla.service.js";
 
 const complaintSchema = new mongoose.Schema(
    {
@@ -72,6 +73,33 @@ const complaintSchema = new mongoose.Schema(
          enum: ["low", "medium", "high", "urgent"],
          default: "medium",
       },
+      supportCount: {
+         type: Number,
+         min: 0,
+         default: 0,
+      },
+      slaDurationHours: {
+         type: Number,
+         required: true,
+         min: 1,
+      },
+      resolutionDeadline: {
+         type: Date,
+         required: true,
+      },
+      escalated: {
+         type: Boolean,
+         default: false,
+      },
+      escalatedAt: {
+         type: Date,
+         default: null,
+      },
+      escalationReason: {
+         type: String,
+         trim: true,
+         default: null,
+      },
       assignedDepartment: {
          type: mongoose.Schema.Types.ObjectId,
          ref: "Department",
@@ -106,6 +134,20 @@ const complaintSchema = new mongoose.Schema(
          trim: true,
          default: null,
       },
+      resolutionVerificationStatus: {
+         type: String,
+         enum: ["pending", "confirmed", "rejected", null],
+         default: null,
+      },
+      resolutionVerifiedAt: {
+         type: Date,
+         default: null,
+      },
+      resolutionVerificationRemark: {
+         type: String,
+         trim: true,
+         default: null,
+      },
       rejectionReason: {
          type: String,
          trim: true,
@@ -136,7 +178,22 @@ const complaintSchema = new mongoose.Schema(
    }
 );
 
+complaintSchema.pre("validate", function setSlaDeadline() {
+   if (!this.slaDurationHours || !this.resolutionDeadline) {
+      this.slaDurationHours = getSlaHours(this.priority);
+      this.resolutionDeadline = calculateResolutionDeadline(this.priority, this.createdAt ?? new Date());
+   }
+});
+
+complaintSchema.post("init", function setLegacySlaFields(document) {
+   if (!document.slaDurationHours || !document.resolutionDeadline) {
+      document.slaDurationHours = getSlaHours(document.priority);
+      document.resolutionDeadline = calculateResolutionDeadline(document.priority, document.createdAt ?? new Date());
+   }
+});
+
 complaintSchema.index({ location: "2dsphere" });
+complaintSchema.index({ createdAt: 1, category: 1, assignedDepartment: 1 });
 
 const Complaint = mongoose.model("Complaint", complaintSchema);
 

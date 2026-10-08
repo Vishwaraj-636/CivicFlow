@@ -1,4 +1,5 @@
 import ComplaintStatus from './ComplaintStatus';
+import ComplaintSlaStatus from './ComplaintSlaStatus';
 
 /**
  * CalendarIcon — inline SVG calendar icon
@@ -91,6 +92,7 @@ const ComplaintCard = ({ complaint, onClick }) => {
             <span>Priority</span>
             <span className="font-semibold capitalize text-primary-text">{priority}</span>
          </div>
+         <ComplaintSlaStatus complaint={complaint} compact />
 
          {/* ── Meta: date & location ── */}
          <div className="flex flex-col gap-1.5 pt-0.5">

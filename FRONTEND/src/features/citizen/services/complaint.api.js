@@ -39,8 +39,31 @@ export async function getMyComplaints() {
    return response.data;
 }
 
+export async function getCommunityComplaints() {
+   const response = await complaintApiInstance.get("/complaints/community");
+   return response.data;
+}
+
+export async function supportComplaint(complaintId) {
+   const response = await complaintApiInstance.post(`/complaints/${complaintId}/support`);
+   return response.data;
+}
+
 export async function getComplaintById(complaintId) {
    const response = await complaintApiInstance.get(`/complaints/${complaintId}`);
+   return response.data;
+}
+
+export async function verifyComplaintResolution(complaintId, confirmed, remark = "") {
+   const response = await complaintApiInstance.patch(`/complaints/${complaintId}/verification`, {
+      confirmed,
+      ...(remark.trim() ? { remark: remark.trim() } : {}),
+   });
+   return response.data;
+}
+
+export async function getMyNotifications() {
+   const response = await complaintApiInstance.get("/notifications");
    return response.data;
 }
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ComplaintStatus from "../../../components/complaint/ComplaintStatus";
+import ComplaintSlaStatus from "../../../components/complaint/ComplaintSlaStatus";
 import ComplaintTimeline from "../../../components/complaint/ComplaintTimeline";
 import ComplaintMap from "../../../components/maps/ComplaintMap";
 import {
@@ -280,6 +281,7 @@ const ComplaintDetails = () => {
 
                <div className="flex flex-col items-start sm:items-end gap-2 shrink-0">
                   <ComplaintStatus status={complaint.status} size="lg" />
+                  <ComplaintSlaStatus complaint={complaint} />
                   {["assigned", "in_progress"].includes(complaint.status) && (
                      <button
                         type="button"
@@ -353,6 +355,10 @@ const ComplaintDetails = () => {
                   <div>
                      <p className="text-xs font-semibold uppercase tracking-wider text-[#52606D]">Lifecycle Stage</p>
                      <p className="mt-1 text-sm font-medium capitalize text-[#17202A]">{complaint.status?.replaceAll("_", " ")}</p>
+                  </div>
+                  <div>
+                     <p className="text-xs font-semibold uppercase tracking-wider text-[#52606D]">Resolution SLA</p>
+                     <ComplaintSlaStatus complaint={complaint} />
                   </div>
                </div>
             </section>

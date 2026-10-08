@@ -85,6 +85,9 @@ const Navbar = () => {
                            <Link to="/admin/staff-requests" className={linkClass('/admin/staff-requests')}>
                               Staff Requests
                            </Link>
+                           <Link to="/admin/escalations" className={linkClass('/admin/escalations')}>
+                              Escalations
+                           </Link>
                            <Link to="/profile" className={linkClass('/profile')}>
                               Profile
                            </Link>

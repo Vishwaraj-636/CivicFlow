@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ComplaintCard from "../../../components/complaint/ComplaintCard";
-import { getMyComplaints } from "../services/complaint.api";
+import CommunityComplaintCard from "../../../components/complaint/CommunityComplaintCard";
+import { getCommunityComplaints, getMyComplaints, getMyNotifications, supportComplaint } from "../services/complaint.api";
 
 const STATUS_FILTERS = [
    { id: "all", label: "All Reports" },
@@ -26,15 +27,39 @@ const MyComplaints = () => {
    const [searchTerm, setSearchTerm] = useState("");
    const [activeTab, setActiveTab] = useState("all");
    const [selectedCategory, setSelectedCategory] = useState("All Categories");
+   const [resolutionNotification, setResolutionNotification] = useState(null);
+   const [communityComplaints, setCommunityComplaints] = useState([]);
+   const [supportingId, setSupportingId] = useState("");
+   const [supportError, setSupportError] = useState("");
    const navigate = useNavigate();
 
    const fetchComplaints = () => {
       setLoading(true);
       setError("");
-      getMyComplaints()
-         .then(setComplaints)
+      Promise.all([getMyComplaints(), getMyNotifications(), getCommunityComplaints()])
+         .then(([items, notifications, communityItems]) => {
+            setComplaints(items);
+            setCommunityComplaints(communityItems);
+            setResolutionNotification(notifications.find((notification) => (
+               notification.type === "resolution_verification" &&
+               notification.complaintId?.resolutionVerificationStatus === "pending"
+            )) ?? null);
+         })
          .catch(() => setError("Unable to load your complaints. Please check your connection."))
          .finally(() => setLoading(false));
+   };
+
+   const handleSupport = async (complaint) => {
+      setSupportingId(complaint._id);
+      setSupportError("");
+      try {
+         const result = await supportComplaint(complaint._id);
+         setCommunityComplaints((current) => current.map((item) => item._id === complaint._id ? { ...item, supportCount: result.supportCount, supportedByMe: true } : item));
+      } catch (supportRequestError) {
+         setSupportError(supportRequestError.response?.data?.error ?? "Unable to support this complaint.");
+      } finally {
+         setSupportingId("");
+      }
    };
 
    useEffect(() => {
@@ -149,6 +174,24 @@ const MyComplaints = () => {
                </Link>
             </div>
 
+            {resolutionNotification?.complaintId && (
+               <Link to={`/citizen/complaints/${resolutionNotification.complaintId._id}`} className="block rounded-xl border border-[#D2E3F3] bg-[#EEF4FA] p-4 shadow-sm transition hover:border-[#24527A]">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-[#24527A]">Resolution verification requested</p>
+                  <p className="mt-1 text-sm font-semibold text-[#17202A]">{resolutionNotification.title}</p>
+                  <p className="mt-1 text-xs text-[#52606D]">{resolutionNotification.message} Open the complaint to respond.</p>
+               </Link>
+            )}
+
+            <section aria-labelledby="community-complaints-heading" className="space-y-4 rounded-xl border border-[#D7E6E1] bg-[#F8FBFA] p-5 shadow-sm sm:p-6">
+               <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-[#39756B]">Community reports</p>
+                  <h2 id="community-complaints-heading" className="mt-1 text-lg font-semibold text-[#17202A]">Is someone else reporting your issue?</h2>
+                  <p className="mt-1 text-sm text-[#52606D]">Support an active complaint when you are affected too. Your support strengthens one shared report instead of creating a duplicate.</p>
+               </div>
+               {supportError && <p className="rounded-lg border border-[#F3D0D0] bg-[#FBF0F0] p-3 text-xs font-semibold text-[#A44A4A]">{supportError}</p>}
+               {communityComplaints.length === 0 ? <p className="text-sm text-[#87919B]">No active community complaints are available right now.</p> : <div className="grid gap-3 md:grid-cols-2">{communityComplaints.slice(0, 4).map((complaint) => <CommunityComplaintCard key={complaint._id} complaint={complaint} supporting={supportingId === complaint._id} onSupport={handleSupport} />)}</div>}
+            </section>
+
             {/* ── Operational Metric Summary Strip ── */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
                <div className="rounded-xl border border-[#E2E6E4] bg-white p-4 shadow-sm">
@@ -209,15 +252,15 @@ const MyComplaints = () => {
                               key={tab.id}
                               onClick={() => setActiveTab(tab.id)}
                               className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors duration-150 cursor-pointer ${isSelected
-                                    ? "bg-[#173B5E] text-white shadow-xs"
-                                    : "bg-[#F1F3F2] text-[#52606D] hover:bg-[#E2E6E4] hover:text-[#17202A]"
+                                 ? "bg-[#173B5E] text-white shadow-xs"
+                                 : "bg-[#F1F3F2] text-[#52606D] hover:bg-[#E2E6E4] hover:text-[#17202A]"
                                  }`}
                            >
                               <span>{tab.label}</span>
                               <span
                                  className={`rounded-full px-1.5 py-0.2 text-[10px] ${isSelected
-                                       ? "bg-white/20 text-white"
-                                       : "bg-black/5 text-[#52606D]"
+                                    ? "bg-white/20 text-white"
+                                    : "bg-black/5 text-[#52606D]"
                                     }`}
                               >
                                  {count}
