@@ -1,0 +1,2896 @@
+{
+  "metadata": {
+    "evaluation_harness_version": "2.0.0",
+    "evaluation_date": "2026-10-10T22:30:00.000Z",
+    "seed": 42,
+    "bootstrap_iterations": 1000,
+    "source_dataset": "civicflow_400_labeled_complaint_pairs.csv",
+    "source_checksum_sha256": "b4653ac507f422a3b6f5ffadb291d5440eab0cb07174f2398ad72739e86a33f2",
+    "splits_manifest": "splits.json",
+    "splits_seed": 42,
+    "hisc_baseline_config": {
+      "radiusInMeters": 1000,
+      "temporalWindowHours": 720,
+      "duplicateThreshold": 0.6,
+      "relatedThreshold": 0.35,
+      "weights": {
+        "category": 0.2,
+        "geographic": 0.25,
+        "lexical": 0.1,
+        "semantic": 0.3,
+        "temporal": 0.15
+      }
+    }
+  },
+  "partitions": {
+    "train": {
+      "sample_count": 240,
+      "label_distribution": {
+        "duplicate": 72,
+        "related": 84,
+        "independent": 84
+      },
+      "metrics": {
+        "sample_count": 240,
+        "correct_count": 236,
+        "incorrect_count": 4,
+        "accuracy": 0.9833,
+        "macro_precision": 0.9827,
+        "macro_recall": 0.9841,
+        "macro_f1": 0.9831,
+        "micro_precision": 0.9833,
+        "micro_recall": 0.9833,
+        "micro_f1": 0.9833,
+        "weighted_precision": 0.9839,
+        "weighted_recall": 0.9833,
+        "weighted_f1": 0.9833,
+        "per_class": {
+          "duplicate": {
+            "true_positive": 72,
+            "false_positive": 3,
+            "false_negative": 0,
+            "true_negative": 165,
+            "support": 72,
+            "precision": 0.96,
+            "recall": 1,
+            "f1": 0.9796
+          },
+          "related": {
+            "true_positive": 80,
+            "false_positive": 0,
+            "false_negative": 4,
+            "true_negative": 156,
+            "support": 84,
+            "precision": 1,
+            "recall": 0.9524,
+            "f1": 0.9756
+          },
+          "independent": {
+            "true_positive": 84,
+            "false_positive": 1,
+            "false_negative": 0,
+            "true_negative": 155,
+            "support": 84,
+            "precision": 0.9882,
+            "recall": 1,
+            "f1": 0.9941
+          }
+        },
+        "confusion_matrix": {
+          "duplicate": {
+            "duplicate": 72,
+            "related": 0,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 3,
+            "related": 80,
+            "independent": 1
+          },
+          "independent": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 84
+          }
+        },
+        "misclassified_count": 4,
+        "misclassified_pairs": [
+          {
+            "pair_id": "P0126",
+            "actual_label": "related",
+            "predicted_label": "independent",
+            "score": 0.3446,
+            "features": {
+              "category": 0,
+              "geographic": 0.8198593012853578,
+              "lexical": 0.16666666666666666,
+              "semantic": 0.13333333333333333,
+              "temporal": 0.5534041753980793
+            },
+            "distance_meters": 199,
+            "hours": 426,
+            "category_a": "Roads & Transport",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Complaints are 199 meters apart",
+              "Submitted within 426 hours"
+            ]
+          },
+          {
+            "pair_id": "P0167",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.6083,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.890312216648292,
+              "lexical": 0.3076923076923077,
+              "semantic": 0.3076923076923077,
+              "temporal": 0.951229424500714
+            },
+            "distance_meters": 116,
+            "hours": 36,
+            "category_a": "Roads & Transport",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 116 meters apart",
+              "Submitted within 36 hours"
+            ]
+          },
+          {
+            "pair_id": "P0214",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.6076,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.8926850946744105,
+              "lexical": 0.3333333333333333,
+              "semantic": 0.3333333333333333,
+              "temporal": 0.8739586442636892
+            },
+            "distance_meters": 114,
+            "hours": 97,
+            "category_a": "Roads & Transport",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 114 meters apart",
+              "Submitted within 97 hours"
+            ]
+          },
+          {
+            "pair_id": "P0223",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.6029,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.9963547744793512,
+              "lexical": 0.21428571428571427,
+              "semantic": 0.21428571428571427,
+              "temporal": 0.9875778004938814
+            },
+            "distance_meters": 4,
+            "hours": 9,
+            "category_a": "Water & Utilities",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 4 meters apart",
+              "Submitted within 9 hours"
+            ]
+          }
+        ]
+      },
+      "bootstrap_macro_f1": {
+        "metric": "macro_f1",
+        "mean": 0.9832,
+        "standard_error": 0.0084,
+        "ci_lower": 0.9648,
+        "ci_upper": 0.9961,
+        "confidence_level": 0.95,
+        "iterations": 1000,
+        "seed": 42
+      }
+    },
+    "val": {
+      "sample_count": 80,
+      "label_distribution": {
+        "duplicate": 24,
+        "related": 28,
+        "independent": 28
+      },
+      "metrics": {
+        "sample_count": 80,
+        "correct_count": 79,
+        "incorrect_count": 1,
+        "accuracy": 0.9875,
+        "macro_precision": 0.9885,
+        "macro_recall": 0.9881,
+        "macro_f1": 0.9881,
+        "micro_precision": 0.9875,
+        "micro_recall": 0.9875,
+        "micro_f1": 0.9875,
+        "weighted_precision": 0.9879,
+        "weighted_recall": 0.9875,
+        "weighted_f1": 0.9875,
+        "per_class": {
+          "duplicate": {
+            "true_positive": 24,
+            "false_positive": 0,
+            "false_negative": 0,
+            "true_negative": 56,
+            "support": 24,
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "related": {
+            "true_positive": 27,
+            "false_positive": 0,
+            "false_negative": 1,
+            "true_negative": 52,
+            "support": 28,
+            "precision": 1,
+            "recall": 0.9643,
+            "f1": 0.9818
+          },
+          "independent": {
+            "true_positive": 28,
+            "false_positive": 1,
+            "false_negative": 0,
+            "true_negative": 51,
+            "support": 28,
+            "precision": 0.9655,
+            "recall": 1,
+            "f1": 0.9825
+          }
+        },
+        "confusion_matrix": {
+          "duplicate": {
+            "duplicate": 24,
+            "related": 0,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 0,
+            "related": 27,
+            "independent": 1
+          },
+          "independent": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 28
+          }
+        },
+        "misclassified_count": 1,
+        "misclassified_pairs": [
+          {
+            "pair_id": "P0153",
+            "actual_label": "related",
+            "predicted_label": "independent",
+            "score": 0.333,
+            "features": {
+              "category": 0,
+              "geographic": 0.8087479868560414,
+              "lexical": 0.14285714285714285,
+              "semantic": 0.11764705882352941,
+              "temporal": 0.5412419412678011
+            },
+            "distance_meters": 212,
+            "hours": 442,
+            "category_a": "Roads & Transport",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Complaints are 212 meters apart",
+              "Submitted within 442 hours"
+            ]
+          }
+        ]
+      },
+      "bootstrap_macro_f1": {
+        "metric": "macro_f1",
+        "mean": 0.9881,
+        "standard_error": 0.0121,
+        "ci_lower": 0.9608,
+        "ci_upper": 1,
+        "confidence_level": 0.95,
+        "iterations": 1000,
+        "seed": 42
+      }
+    },
+    "test": {
+      "sample_count": 80,
+      "label_distribution": {
+        "duplicate": 24,
+        "related": 28,
+        "independent": 28
+      },
+      "metrics": {
+        "sample_count": 80,
+        "correct_count": 78,
+        "incorrect_count": 2,
+        "accuracy": 0.975,
+        "macro_precision": 0.9748,
+        "macro_recall": 0.9762,
+        "macro_f1": 0.9752,
+        "micro_precision": 0.975,
+        "micro_recall": 0.975,
+        "micro_f1": 0.975,
+        "weighted_precision": 0.9755,
+        "weighted_recall": 0.975,
+        "weighted_f1": 0.975,
+        "per_class": {
+          "duplicate": {
+            "true_positive": 24,
+            "false_positive": 1,
+            "false_negative": 0,
+            "true_negative": 55,
+            "support": 24,
+            "precision": 0.96,
+            "recall": 1,
+            "f1": 0.9796
+          },
+          "related": {
+            "true_positive": 27,
+            "false_positive": 1,
+            "false_negative": 1,
+            "true_negative": 51,
+            "support": 28,
+            "precision": 0.9643,
+            "recall": 0.9643,
+            "f1": 0.9643
+          },
+          "independent": {
+            "true_positive": 27,
+            "false_positive": 0,
+            "false_negative": 1,
+            "true_negative": 52,
+            "support": 28,
+            "precision": 1,
+            "recall": 0.9643,
+            "f1": 0.9818
+          }
+        },
+        "confusion_matrix": {
+          "duplicate": {
+            "duplicate": 24,
+            "related": 0,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 1,
+            "related": 27,
+            "independent": 0
+          },
+          "independent": {
+            "duplicate": 0,
+            "related": 1,
+            "independent": 27
+          }
+        },
+        "misclassified_count": 2,
+        "misclassified_pairs": [
+          {
+            "pair_id": "P0166",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.6491,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.8175169872516974,
+              "lexical": 0.46153846153846156,
+              "semantic": 0.46153846153846156,
+              "temporal": 0.9342085716593036
+            },
+            "distance_meters": 201,
+            "hours": 49,
+            "category_a": "Water & Utilities",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 201 meters apart",
+              "Submitted within 49 hours"
+            ]
+          },
+          {
+            "pair_id": "P0327",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.3756,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.00488945276332041,
+              "lexical": 0.2857142857142857,
+              "semantic": 0.2857142857142857,
+              "temporal": 0.9342085716593036
+            },
+            "distance_meters": 5321,
+            "hours": 49,
+            "category_a": "Drainage & Flooding",
+            "category_b": "Water & Utilities",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 5321 meters apart",
+              "Submitted within 49 hours"
+            ]
+          }
+        ]
+      },
+      "bootstrap_macro_f1": {
+        "metric": "macro_f1",
+        "mean": 0.975,
+        "standard_error": 0.0175,
+        "ci_lower": 0.9341,
+        "ci_upper": 1,
+        "confidence_level": 0.95,
+        "iterations": 1000,
+        "seed": 42
+      }
+    },
+    "original_all": {
+      "sample_count": 400,
+      "label_distribution": {
+        "duplicate": 120,
+        "related": 140,
+        "independent": 140
+      },
+      "metrics": {
+        "sample_count": 400,
+        "correct_count": 393,
+        "incorrect_count": 7,
+        "accuracy": 0.9825,
+        "macro_precision": 0.9821,
+        "macro_recall": 0.9833,
+        "macro_f1": 0.9825,
+        "micro_precision": 0.9825,
+        "micro_recall": 0.9825,
+        "micro_f1": 0.9825,
+        "weighted_precision": 0.9828,
+        "weighted_recall": 0.9825,
+        "weighted_f1": 0.9824,
+        "per_class": {
+          "duplicate": {
+            "true_positive": 120,
+            "false_positive": 4,
+            "false_negative": 0,
+            "true_negative": 276,
+            "support": 120,
+            "precision": 0.9677,
+            "recall": 1,
+            "f1": 0.9836
+          },
+          "related": {
+            "true_positive": 134,
+            "false_positive": 1,
+            "false_negative": 6,
+            "true_negative": 259,
+            "support": 140,
+            "precision": 0.9926,
+            "recall": 0.9571,
+            "f1": 0.9745
+          },
+          "independent": {
+            "true_positive": 139,
+            "false_positive": 2,
+            "false_negative": 1,
+            "true_negative": 258,
+            "support": 140,
+            "precision": 0.9858,
+            "recall": 0.9929,
+            "f1": 0.9893
+          }
+        },
+        "confusion_matrix": {
+          "duplicate": {
+            "duplicate": 120,
+            "related": 0,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 4,
+            "related": 134,
+            "independent": 2
+          },
+          "independent": {
+            "duplicate": 0,
+            "related": 1,
+            "independent": 139
+          }
+        },
+        "misclassified_count": 7,
+        "misclassified_pairs": [
+          {
+            "pair_id": "P0126",
+            "actual_label": "related",
+            "predicted_label": "independent",
+            "score": 0.3446,
+            "features": {
+              "category": 0,
+              "geographic": 0.8198593012853578,
+              "lexical": 0.16666666666666666,
+              "semantic": 0.13333333333333333,
+              "temporal": 0.5534041753980793
+            },
+            "distance_meters": 199,
+            "hours": 426,
+            "category_a": "Roads & Transport",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Complaints are 199 meters apart",
+              "Submitted within 426 hours"
+            ]
+          },
+          {
+            "pair_id": "P0153",
+            "actual_label": "related",
+            "predicted_label": "independent",
+            "score": 0.333,
+            "features": {
+              "category": 0,
+              "geographic": 0.8087479868560414,
+              "lexical": 0.14285714285714285,
+              "semantic": 0.11764705882352941,
+              "temporal": 0.5412419412678011
+            },
+            "distance_meters": 212,
+            "hours": 442,
+            "category_a": "Roads & Transport",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Complaints are 212 meters apart",
+              "Submitted within 442 hours"
+            ]
+          },
+          {
+            "pair_id": "P0166",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.6491,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.8175169872516974,
+              "lexical": 0.46153846153846156,
+              "semantic": 0.46153846153846156,
+              "temporal": 0.9342085716593036
+            },
+            "distance_meters": 201,
+            "hours": 49,
+            "category_a": "Water & Utilities",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 201 meters apart",
+              "Submitted within 49 hours"
+            ]
+          },
+          {
+            "pair_id": "P0167",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.6083,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.890312216648292,
+              "lexical": 0.3076923076923077,
+              "semantic": 0.3076923076923077,
+              "temporal": 0.951229424500714
+            },
+            "distance_meters": 116,
+            "hours": 36,
+            "category_a": "Roads & Transport",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 116 meters apart",
+              "Submitted within 36 hours"
+            ]
+          },
+          {
+            "pair_id": "P0214",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.6076,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.8926850946744105,
+              "lexical": 0.3333333333333333,
+              "semantic": 0.3333333333333333,
+              "temporal": 0.8739586442636892
+            },
+            "distance_meters": 114,
+            "hours": 97,
+            "category_a": "Roads & Transport",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 114 meters apart",
+              "Submitted within 97 hours"
+            ]
+          },
+          {
+            "pair_id": "P0223",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.6029,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.9963547744793512,
+              "lexical": 0.21428571428571427,
+              "semantic": 0.21428571428571427,
+              "temporal": 0.9875778004938814
+            },
+            "distance_meters": 4,
+            "hours": 9,
+            "category_a": "Water & Utilities",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 4 meters apart",
+              "Submitted within 9 hours"
+            ]
+          },
+          {
+            "pair_id": "P0327",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.3756,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.00488945276332041,
+              "lexical": 0.2857142857142857,
+              "semantic": 0.2857142857142857,
+              "temporal": 0.9342085716593036
+            },
+            "distance_meters": 5321,
+            "hours": 49,
+            "category_a": "Drainage & Flooding",
+            "category_b": "Water & Utilities",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 5321 meters apart",
+              "Submitted within 49 hours"
+            ]
+          }
+        ]
+      },
+      "bootstrap_macro_f1": {
+        "metric": "macro_f1",
+        "mean": 0.9824,
+        "standard_error": 0.0064,
+        "ci_lower": 0.9684,
+        "ci_upper": 0.9949,
+        "confidence_level": 0.95,
+        "iterations": 1000,
+        "seed": 42
+      }
+    },
+    "synthetic_challenge": {
+      "sample_count": 150,
+      "label_distribution": {
+        "duplicate": 50,
+        "related": 43,
+        "independent": 57
+      },
+      "metrics": {
+        "sample_count": 150,
+        "correct_count": 86,
+        "incorrect_count": 64,
+        "accuracy": 0.5733,
+        "macro_precision": 0.7034,
+        "macro_recall": 0.6048,
+        "macro_f1": 0.4956,
+        "micro_precision": 0.5733,
+        "micro_recall": 0.5733,
+        "micro_f1": 0.5733,
+        "weighted_precision": 0.7264,
+        "weighted_recall": 0.5733,
+        "weighted_f1": 0.4735,
+        "per_class": {
+          "duplicate": {
+            "true_positive": 50,
+            "false_positive": 33,
+            "false_negative": 0,
+            "true_negative": 67,
+            "support": 50,
+            "precision": 0.6024,
+            "recall": 1,
+            "f1": 0.7519
+          },
+          "related": {
+            "true_positive": 32,
+            "false_positive": 31,
+            "false_negative": 11,
+            "true_negative": 76,
+            "support": 43,
+            "precision": 0.5079,
+            "recall": 0.7442,
+            "f1": 0.6038
+          },
+          "independent": {
+            "true_positive": 4,
+            "false_positive": 0,
+            "false_negative": 53,
+            "true_negative": 93,
+            "support": 57,
+            "precision": 1,
+            "recall": 0.0702,
+            "f1": 0.1311
+          }
+        },
+        "confusion_matrix": {
+          "duplicate": {
+            "duplicate": 50,
+            "related": 0,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 11,
+            "related": 32,
+            "independent": 0
+          },
+          "independent": {
+            "duplicate": 22,
+            "related": 31,
+            "independent": 4
+          }
+        },
+        "misclassified_count": 64,
+        "misclassified_pairs": [
+          {
+            "pair_id": "CH0013",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.517,
+            "features": {
+              "category": 0,
+              "geographic": 0.9759369129374706,
+              "lexical": 0.3076923076923077,
+              "semantic": 0.3076923076923077,
+              "temporal": 0.9995371441878533
+            },
+            "distance_meters": 24,
+            "hours": 0.3,
+            "category_a": "Street Infrastructure",
+            "category_b": "Waste & Cleanliness",
+            "explanation": [
+              "Complaints are 24 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0014",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.3734,
+            "features": {
+              "category": 1,
+              "geographic": 5.223600500149933e-9,
+              "lexical": 0.058823529411764705,
+              "semantic": 0.058823529411764705,
+              "temporal": 0.9989588756797245
+            },
+            "distance_meters": 19070,
+            "hours": 0.8,
+            "category_a": "Water & Utilities",
+            "category_b": "Water & Utilities",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 19070 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0027",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.3749,
+            "features": {
+              "category": 1,
+              "geographic": 7.778609069936727e-8,
+              "lexical": 0.0625,
+              "semantic": 0.0625,
+              "temporal": 0.9993057966262922
+            },
+            "distance_meters": 16369,
+            "hours": 0.5,
+            "category_a": "Roads & Transport",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 16369 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0028",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.5503,
+            "features": {
+              "category": 0,
+              "geographic": 0.961373636576705,
+              "lexical": 0.4,
+              "semantic": 0.4,
+              "temporal": 0.9994214637129882
+            },
+            "distance_meters": 39,
+            "hours": 0.4,
+            "category_a": "Street Infrastructure",
+            "category_b": "Water & Utilities",
+            "explanation": [
+              "Complaints are 39 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0030",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.534,
+            "features": {
+              "category": 0,
+              "geographic": 0.9544959616956925,
+              "lexical": 0.36363636363636365,
+              "semantic": 0.36363636363636365,
+              "temporal": 0.9993057966262922
+            },
+            "distance_meters": 47,
+            "hours": 0.5,
+            "category_a": "Drainage & Flooding",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Complaints are 47 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0041",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.6243,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.9610032029723805,
+              "lexical": 0.2857142857142857,
+              "semantic": 0.2857142857142857,
+              "temporal": 0.9982653950580322
+            },
+            "distance_meters": 40,
+            "hours": 1.3,
+            "category_a": "Street Infrastructure",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 40 meters apart",
+              "Submitted within 1 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0042",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.4642,
+            "features": {
+              "category": 1,
+              "geographic": 8.165830205490091e-9,
+              "lexical": 0.2857142857142857,
+              "semantic": 0.2857142857142857,
+              "temporal": 0.9993057966262922
+            },
+            "distance_meters": 18623,
+            "hours": 0.5,
+            "category_a": "Roads & Transport",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 18623 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0043",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.4703,
+            "features": {
+              "category": 0,
+              "geographic": 0.9613795779882104,
+              "lexical": 0.2,
+              "semantic": 0.2,
+              "temporal": 0.9995371441878533
+            },
+            "distance_meters": 39,
+            "hours": 0.3,
+            "category_a": "Street Infrastructure",
+            "category_b": "Waste & Cleanliness",
+            "explanation": [
+              "Complaints are 39 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0044",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.3719,
+            "features": {
+              "category": 1,
+              "geographic": 5.223600500149933e-9,
+              "lexical": 0.0625,
+              "semantic": 0.05263157894736842,
+              "temporal": 0.9989588756797245
+            },
+            "distance_meters": 19070,
+            "hours": 0.8,
+            "category_a": "Water & Utilities",
+            "category_b": "Water & Utilities",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 19070 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0053",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.6084,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.9544927290828995,
+              "lexical": 0.3333333333333333,
+              "semantic": 0.2222222222222222,
+              "temporal": 0.9986120751709083
+            },
+            "distance_meters": 47,
+            "hours": 1,
+            "category_a": "Roads & Transport",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 47 meters apart",
+              "Submitted within 1 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0054",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.6121,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.9694291225979269,
+              "lexical": 0.3333333333333333,
+              "semantic": 0.2222222222222222,
+              "temporal": 0.9982653950580322
+            },
+            "distance_meters": 31,
+            "hours": 1.3,
+            "category_a": "Water & Utilities",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 31 meters apart",
+              "Submitted within 1 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0055",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.4921,
+            "features": {
+              "category": 0,
+              "geographic": 0.9694290396716191,
+              "lexical": 0.3333333333333333,
+              "semantic": 0.2222222222222222,
+              "temporal": 0.9986120751709083
+            },
+            "distance_meters": 31,
+            "hours": 1,
+            "category_a": "Waste & Cleanliness",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Complaints are 31 meters apart",
+              "Submitted within 1 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0056",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.6434,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.9613842953460624,
+              "lexical": 0.3333333333333333,
+              "semantic": 0.3333333333333333,
+              "temporal": 0.9983809417209113
+            },
+            "distance_meters": 39,
+            "hours": 1.2,
+            "category_a": "Street Infrastructure",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 39 meters apart",
+              "Submitted within 1 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0057",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.4642,
+            "features": {
+              "category": 1,
+              "geographic": 8.165830205490091e-9,
+              "lexical": 0.2857142857142857,
+              "semantic": 0.2857142857142857,
+              "temporal": 0.9993057966262922
+            },
+            "distance_meters": 18623,
+            "hours": 0.5,
+            "category_a": "Roads & Transport",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 18623 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0058",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.5073,
+            "features": {
+              "category": 0,
+              "geographic": 0.9694254405820284,
+              "lexical": 0.4,
+              "semantic": 0.25,
+              "temporal": 0.9993057966262922
+            },
+            "distance_meters": 31,
+            "hours": 0.5,
+            "category_a": "Street Infrastructure",
+            "category_b": "Waste & Cleanliness",
+            "explanation": [
+              "Complaints are 31 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0059",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.6348,
+            "features": {
+              "category": 1,
+              "geographic": 5.223600500149933e-9,
+              "lexical": 0.6,
+              "semantic": 0.75,
+              "temporal": 0.9989588756797245
+            },
+            "distance_meters": 19070,
+            "hours": 0.8,
+            "category_a": "Water & Utilities",
+            "category_b": "Water & Utilities",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 19070 meters apart",
+              "Submitted within an hour",
+              "High semantic similarity"
+            ]
+          },
+          {
+            "pair_id": "CH0060",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.528,
+            "features": {
+              "category": 0,
+              "geographic": 0.96942725879697,
+              "lexical": 0.5,
+              "semantic": 0.2857142857142857,
+              "temporal": 0.9993057966262922
+            },
+            "distance_meters": 31,
+            "hours": 0.5,
+            "category_a": "Drainage & Flooding",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Complaints are 31 meters apart",
+              "Submitted within an hour",
+              "Shared descriptive terms"
+            ]
+          },
+          {
+            "pair_id": "CH0061",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.6741,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.9694220631017696,
+              "lexical": 0.3076923076923077,
+              "semantic": 0.4375,
+              "temporal": 0.9982653950580322
+            },
+            "distance_meters": 31,
+            "hours": 1.3,
+            "category_a": "Roads & Transport",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 31 meters apart",
+              "Submitted within 1 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0063",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.6483,
+            "features": {
+              "category": 0,
+              "geographic": 0.9544860906732413,
+              "lexical": 0.6,
+              "semantic": 0.6666666666666666,
+              "temporal": 0.9981498617678356
+            },
+            "distance_meters": 47,
+            "hours": 1.3,
+            "category_a": "Waste & Cleanliness",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Complaints are 47 meters apart",
+              "Submitted within 1 hours",
+              "Shared descriptive terms"
+            ]
+          },
+          {
+            "pair_id": "CH0064",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.6054,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.969424008993125,
+              "lexical": 0.26666666666666666,
+              "semantic": 0.2222222222222222,
+              "temporal": 0.9982653950580322
+            },
+            "distance_meters": 31,
+            "hours": 1.3,
+            "category_a": "Street Infrastructure",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 31 meters apart",
+              "Submitted within 1 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0067",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.441,
+            "features": {
+              "category": 0,
+              "geographic": 0.9694220631017696,
+              "lexical": 0.15384615384615385,
+              "semantic": 0.1111111111111111,
+              "temporal": 0.9993057966262922
+            },
+            "distance_meters": 31,
+            "hours": 0.5,
+            "category_a": "Roads & Transport",
+            "category_b": "Waste & Cleanliness",
+            "explanation": [
+              "Complaints are 31 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0068",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.5153,
+            "features": {
+              "category": 0,
+              "geographic": 0.9694254405820284,
+              "lexical": 0.3076923076923077,
+              "semantic": 0.3076923076923077,
+              "temporal": 0.9993057966262922
+            },
+            "distance_meters": 31,
+            "hours": 0.5,
+            "category_a": "Street Infrastructure",
+            "category_b": "Water & Utilities",
+            "explanation": [
+              "Complaints are 31 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0069",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.6722,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.9694224389739887,
+              "lexical": 0.4,
+              "semantic": 0.4,
+              "temporal": 0.9990745026112094
+            },
+            "distance_meters": 31,
+            "hours": 0.7,
+            "category_a": "Roads & Transport",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 31 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0070",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.4715,
+            "features": {
+              "category": 0,
+              "geographic": 0.969424008993125,
+              "lexical": 0.23076923076923078,
+              "semantic": 0.1875,
+              "temporal": 0.9989588756797245
+            },
+            "distance_meters": 31,
+            "hours": 0.8,
+            "category_a": "Waste & Cleanliness",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Complaints are 31 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0071",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.5028,
+            "features": {
+              "category": 0,
+              "geographic": 0.9544932090503017,
+              "lexical": 0.2857142857142857,
+              "semantic": 0.2857142857142857,
+              "temporal": 0.9989588756797245
+            },
+            "distance_meters": 47,
+            "hours": 0.8,
+            "category_a": "Roads & Transport",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Complaints are 47 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0072",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.4512,
+            "features": {
+              "category": 0,
+              "geographic": 0.9544962766907061,
+              "lexical": 0.17647058823529413,
+              "semantic": 0.15,
+              "temporal": 0.9993057966262922
+            },
+            "distance_meters": 47,
+            "hours": 0.5,
+            "category_a": "Street Infrastructure",
+            "category_b": "Waste & Cleanliness",
+            "explanation": [
+              "Complaints are 47 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0073",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.5028,
+            "features": {
+              "category": 0,
+              "geographic": 0.9544840189729317,
+              "lexical": 0.2857142857142857,
+              "semantic": 0.2857142857142857,
+              "temporal": 0.9989588756797245
+            },
+            "distance_meters": 47,
+            "hours": 0.8,
+            "category_a": "Water & Utilities",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Complaints are 47 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0074",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.4474,
+            "features": {
+              "category": 0,
+              "geographic": 0.9613842953460624,
+              "lexical": 0.14285714285714285,
+              "semantic": 0.14285714285714285,
+              "temporal": 0.9990745026112094
+            },
+            "distance_meters": 39,
+            "hours": 0.7,
+            "category_a": "Drainage & Flooding",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Complaints are 39 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0075",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.4352,
+            "features": {
+              "category": 0,
+              "geographic": 0.9544959616956925,
+              "lexical": 0.13333333333333333,
+              "semantic": 0.1111111111111111,
+              "temporal": 0.9991901429262157
+            },
+            "distance_meters": 47,
+            "hours": 0.6,
+            "category_a": "Roads & Transport",
+            "category_b": "Waste & Cleanliness",
+            "explanation": [
+              "Complaints are 47 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0078",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.4345,
+            "features": {
+              "category": 1,
+              "geographic": 0.0744728638922953,
+              "lexical": 0,
+              "semantic": 0.2222222222222222,
+              "temporal": 0.9944598480048967
+            },
+            "distance_meters": 2597,
+            "hours": 4,
+            "category_a": "Waste & Cleanliness",
+            "category_b": "Waste & Cleanliness",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 2597 meters apart",
+              "Submitted within 4 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0079",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.5799,
+            "features": {
+              "category": 1,
+              "geographic": 4.936278368888598e-10,
+              "lexical": 0.5,
+              "semantic": 0.6,
+              "temporal": 0.9996528380524371
+            },
+            "distance_meters": 21429,
+            "hours": 0.3,
+            "category_a": "Roads & Transport",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 21429 meters apart",
+              "Submitted within an hour",
+              "Shared descriptive terms"
+            ]
+          },
+          {
+            "pair_id": "CH0080",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.6611,
+            "features": {
+              "category": 1,
+              "geographic": 9.121756473740549e-8,
+              "lexical": 0.7777777777777778,
+              "semantic": 0.7777777777777778,
+              "temporal": 0.9996528380524371
+            },
+            "distance_meters": 16210,
+            "hours": 0.3,
+            "category_a": "Street Infrastructure",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 16210 meters apart",
+              "Submitted within an hour",
+              "High semantic similarity"
+            ]
+          },
+          {
+            "pair_id": "CH0081",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.6083,
+            "features": {
+              "category": 1,
+              "geographic": 5.1425923207954396e-8,
+              "lexical": 0.5833333333333334,
+              "semantic": 0.6666666666666666,
+              "temporal": 0.9996528380524371
+            },
+            "distance_meters": 16783,
+            "hours": 0.3,
+            "category_a": "Waste & Cleanliness",
+            "category_b": "Waste & Cleanliness",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 16783 meters apart",
+              "Submitted within an hour",
+              "Shared descriptive terms"
+            ]
+          },
+          {
+            "pair_id": "CH0082",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.6176,
+            "features": {
+              "category": 1,
+              "geographic": 0.00023402304912417365,
+              "lexical": 0.6,
+              "semantic": 0.6923076923076923,
+              "temporal": 0.9993057966262922
+            },
+            "distance_meters": 8360,
+            "hours": 0.5,
+            "category_a": "Water & Utilities",
+            "category_b": "Water & Utilities",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 8360 meters apart",
+              "Submitted within an hour",
+              "Shared descriptive terms"
+            ]
+          },
+          {
+            "pair_id": "CH0083",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.5233,
+            "features": {
+              "category": 1,
+              "geographic": 6.400571193872131e-8,
+              "lexical": 0.3333333333333333,
+              "semantic": 0.4666666666666667,
+              "temporal": 0.9995371441878533
+            },
+            "distance_meters": 16564,
+            "hours": 0.3,
+            "category_a": "Drainage & Flooding",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 16564 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0084",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.59,
+            "features": {
+              "category": 1,
+              "geographic": 0.00022135536537788323,
+              "lexical": 0.6,
+              "semantic": 0.6,
+              "temporal": 0.9993057966262922
+            },
+            "distance_meters": 8416,
+            "hours": 0.5,
+            "category_a": "Roads & Transport",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 8416 meters apart",
+              "Submitted within an hour",
+              "Shared descriptive terms"
+            ]
+          },
+          {
+            "pair_id": "CH0085",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.5535,
+            "features": {
+              "category": 1,
+              "geographic": 0.014219387603408084,
+              "lexical": 0.5,
+              "semantic": 0.5,
+              "temporal": 0.9993057966262922
+            },
+            "distance_meters": 4253,
+            "hours": 0.5,
+            "category_a": "Street Infrastructure",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 4253 meters apart",
+              "Submitted within an hour",
+              "Shared descriptive terms"
+            ]
+          },
+          {
+            "pair_id": "CH0086",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.5514,
+            "features": {
+              "category": 1,
+              "geographic": 4.461318411949062e-11,
+              "lexical": 0.4,
+              "semantic": 0.5384615384615384,
+              "temporal": 0.9989588756797245
+            },
+            "distance_meters": 23833,
+            "hours": 0.8,
+            "category_a": "Waste & Cleanliness",
+            "category_b": "Waste & Cleanliness",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 23833 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0087",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.6499,
+            "features": {
+              "category": 1,
+              "geographic": 9.121756473740549e-8,
+              "lexical": 0.75,
+              "semantic": 0.75,
+              "temporal": 0.9993057966262922
+            },
+            "distance_meters": 16210,
+            "hours": 0.5,
+            "category_a": "Water & Utilities",
+            "category_b": "Water & Utilities",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 16210 meters apart",
+              "Submitted within an hour",
+              "High semantic similarity"
+            ]
+          },
+          {
+            "pair_id": "CH0088",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.6498,
+            "features": {
+              "category": 1,
+              "geographic": 5.2471224554829095e-9,
+              "lexical": 0.75,
+              "semantic": 0.75,
+              "temporal": 0.9989588756797245
+            },
+            "distance_meters": 19066,
+            "hours": 0.8,
+            "category_a": "Drainage & Flooding",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 19066 meters apart",
+              "Submitted within an hour",
+              "High semantic similarity"
+            ]
+          },
+          {
+            "pair_id": "CH0089",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.661,
+            "features": {
+              "category": 1,
+              "geographic": 0.00005247170130601022,
+              "lexical": 0.7777777777777778,
+              "semantic": 0.7777777777777778,
+              "temporal": 0.9993057966262922
+            },
+            "distance_meters": 9855,
+            "hours": 0.5,
+            "category_a": "Roads & Transport",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 9855 meters apart",
+              "Submitted within an hour",
+              "High semantic similarity"
+            ]
+          },
+          {
+            "pair_id": "CH0090",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.5499,
+            "features": {
+              "category": 1,
+              "geographic": 3.7010965201759236e-8,
+              "lexical": 0.5,
+              "semantic": 0.5,
+              "temporal": 0.9993057966262922
+            },
+            "distance_meters": 17112,
+            "hours": 0.5,
+            "category_a": "Waste & Cleanliness",
+            "category_b": "Waste & Cleanliness",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 17112 meters apart",
+              "Submitted within an hour",
+              "Shared descriptive terms"
+            ]
+          },
+          {
+            "pair_id": "CH0096",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.5645,
+            "features": {
+              "category": 1,
+              "geographic": 0.9755664520688145,
+              "lexical": 0.2,
+              "semantic": 0.3333333333333333,
+              "temporal": 0.004362446643598146
+            },
+            "distance_meters": 25,
+            "hours": 3913,
+            "category_a": "Roads & Transport",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 25 meters apart",
+              "Submitted within 3913 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0097",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.5239,
+            "features": {
+              "category": 1,
+              "geographic": 0.9755663847222938,
+              "lexical": 0.23076923076923078,
+              "semantic": 0.1875,
+              "temporal": 0.004362446643598146
+            },
+            "distance_meters": 25,
+            "hours": 3913,
+            "category_a": "Waste & Cleanliness",
+            "category_b": "Waste & Cleanliness",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 25 meters apart",
+              "Submitted within 3913 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0098",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.5661,
+            "features": {
+              "category": 1,
+              "geographic": 0.969421036232848,
+              "lexical": 0.3076923076923077,
+              "semantic": 0.3076923076923077,
+              "temporal": 0.004204803243315953
+            },
+            "distance_meters": 31,
+            "hours": 3939.5,
+            "category_a": "Street Infrastructure",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 31 meters apart",
+              "Submitted within 3940 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0099",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.66,
+            "features": {
+              "category": 1,
+              "geographic": 0.9694281221182237,
+              "lexical": 0.45454545454545453,
+              "semantic": 0.5714285714285714,
+              "temporal": 0.004841379609645416
+            },
+            "distance_meters": 31,
+            "hours": 3838,
+            "category_a": "Drainage & Flooding",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 31 meters apart",
+              "Submitted within 3838 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0100",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.5955,
+            "features": {
+              "category": 1,
+              "geographic": 0.9694290396716191,
+              "lexical": 0.21428571428571427,
+              "semantic": 0.4375,
+              "temporal": 0.003234025031416775
+            },
+            "distance_meters": 31,
+            "hours": 4128.5,
+            "category_a": "Water & Utilities",
+            "category_b": "Water & Utilities",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 31 meters apart",
+              "Submitted within 4129 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0101",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.7254,
+            "features": {
+              "category": 1,
+              "geographic": 0.9694220631017696,
+              "lexical": 0.3333333333333333,
+              "semantic": 0.3333333333333333,
+              "temporal": 0.9982653950580322
+            },
+            "distance_meters": 31,
+            "hours": 1.3,
+            "category_a": "Street Infrastructure",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 31 meters apart",
+              "Submitted within 1 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0102",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.812,
+            "features": {
+              "category": 1,
+              "geographic": 0.9544905237343148,
+              "lexical": 0.5,
+              "semantic": 0.5789473684210527,
+              "temporal": 0.9981498617678356
+            },
+            "distance_meters": 47,
+            "hours": 1.3,
+            "category_a": "Drainage & Flooding",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 47 meters apart",
+              "Submitted within 1 hours",
+              "Shared descriptive terms"
+            ]
+          },
+          {
+            "pair_id": "CH0103",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.695,
+            "features": {
+              "category": 1,
+              "geographic": 0.9544860906732413,
+              "lexical": 0.26666666666666666,
+              "semantic": 0.26666666666666666,
+              "temporal": 0.9982653950580322
+            },
+            "distance_meters": 47,
+            "hours": 1.3,
+            "category_a": "Roads & Transport",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 47 meters apart",
+              "Submitted within 1 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0104",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.6803,
+            "features": {
+              "category": 1,
+              "geographic": 0.969424008993125,
+              "lexical": 0.25,
+              "semantic": 0.21052631578947367,
+              "temporal": 0.9982653950580322
+            },
+            "distance_meters": 31,
+            "hours": 1.3,
+            "category_a": "Water & Utilities",
+            "category_b": "Water & Utilities",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 31 meters apart",
+              "Submitted within 1 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0105",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.7847,
+            "features": {
+              "category": 1,
+              "geographic": 0.9397892215562957,
+              "lexical": 0.5,
+              "semantic": 0.5,
+              "temporal": 0.9986120751709083
+            },
+            "distance_meters": 62,
+            "hours": 1,
+            "category_a": "Street Infrastructure",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 62 meters apart",
+              "Submitted within 1 hours",
+              "Shared descriptive terms"
+            ]
+          },
+          {
+            "pair_id": "CH0106",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.8885,
+            "features": {
+              "category": 1,
+              "geographic": 0.875084646992168,
+              "lexical": 0.8,
+              "semantic": 0.8,
+              "temporal": 0.9979188352992993
+            },
+            "distance_meters": 133,
+            "hours": 1.5,
+            "category_a": "Street Infrastructure",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 133 meters apart",
+              "Submitted within 2 hours",
+              "High semantic similarity"
+            ]
+          },
+          {
+            "pair_id": "CH0107",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.7592,
+            "features": {
+              "category": 1,
+              "geographic": 0.9102433607089199,
+              "lexical": 0.45454545454545453,
+              "semantic": 0.45454545454545453,
+              "temporal": 0.9989588756797245
+            },
+            "distance_meters": 94,
+            "hours": 0.8,
+            "category_a": "Drainage & Flooding",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 94 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0108",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.8654,
+            "features": {
+              "category": 1,
+              "geographic": 0.6220992705997074,
+              "lexical": 0.9,
+              "semantic": 0.9,
+              "temporal": 0.9989588756797245
+            },
+            "distance_meters": 475,
+            "hours": 0.8,
+            "category_a": "Water & Utilities",
+            "category_b": "Water & Utilities",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 475 meters apart",
+              "Submitted within an hour",
+              "High semantic similarity"
+            ]
+          },
+          {
+            "pair_id": "CH0109",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.9425,
+            "features": {
+              "category": 1,
+              "geographic": 0.7707027287444754,
+              "lexical": 1,
+              "semantic": 1,
+              "temporal": 0.9989588756797245
+            },
+            "distance_meters": 260,
+            "hours": 0.8,
+            "category_a": "Waste & Cleanliness",
+            "category_b": "Waste & Cleanliness",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 260 meters apart",
+              "Submitted within an hour",
+              "High semantic similarity"
+            ]
+          },
+          {
+            "pair_id": "CH0110",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.8941,
+            "features": {
+              "category": 1,
+              "geographic": 0.8970214102186822,
+              "lexical": 0.8,
+              "semantic": 0.8,
+              "temporal": 0.9989588756797245
+            },
+            "distance_meters": 109,
+            "hours": 0.8,
+            "category_a": "Roads & Transport",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 109 meters apart",
+              "Submitted within an hour",
+              "High semantic similarity"
+            ]
+          },
+          {
+            "pair_id": "CH0111",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.8285,
+            "features": {
+              "category": 1,
+              "geographic": 0.771519573661122,
+              "lexical": 0.7142857142857143,
+              "semantic": 0.7142857142857143,
+              "temporal": 0.9990745026112094
+            },
+            "distance_meters": 259,
+            "hours": 0.7,
+            "category_a": "Street Infrastructure",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 259 meters apart",
+              "Submitted within an hour",
+              "High semantic similarity"
+            ]
+          },
+          {
+            "pair_id": "CH0112",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.7438,
+            "features": {
+              "category": 1,
+              "geographic": 0.5533991074747222,
+              "lexical": 0.5555555555555556,
+              "semantic": 0.6666666666666666,
+              "temporal": 0.9991901429262157
+            },
+            "distance_meters": 592,
+            "hours": 0.6,
+            "category_a": "Roads & Transport",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 592 meters apart",
+              "Submitted within an hour",
+              "Shared descriptive terms"
+            ]
+          },
+          {
+            "pair_id": "CH0113",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.829,
+            "features": {
+              "category": 1,
+              "geographic": 0.6722247804593022,
+              "lexical": 0.7777777777777778,
+              "semantic": 0.7777777777777778,
+              "temporal": 0.9989588756797245
+            },
+            "distance_meters": 397,
+            "hours": 0.8,
+            "category_a": "Water & Utilities",
+            "category_b": "Water & Utilities",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 397 meters apart",
+              "Submitted within an hour",
+              "High semantic similarity"
+            ]
+          },
+          {
+            "pair_id": "CH0117",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.6413,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.9845933201327197,
+              "lexical": 0.35294117647058826,
+              "semantic": 0.3,
+              "temporal": 0.9989588756797245
+            },
+            "distance_meters": 16,
+            "hours": 0.8,
+            "category_a": "Roads & Transport",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 16 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0118",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.6835,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.96942725879697,
+              "lexical": 0.42857142857142855,
+              "semantic": 0.42857142857142855,
+              "temporal": 0.9981498617678356
+            },
+            "distance_meters": 31,
+            "hours": 1.3,
+            "category_a": "Water & Utilities",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 31 meters apart",
+              "Submitted within 1 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0120",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.6079,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.9755638311106618,
+              "lexical": 0.23529411764705882,
+              "semantic": 0.23529411764705882,
+              "temporal": 0.9989588756797245
+            },
+            "distance_meters": 25,
+            "hours": 0.8,
+            "category_a": "Street Infrastructure",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 25 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0128",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.6607,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.9544932090503017,
+              "lexical": 0.38095238095238093,
+              "semantic": 0.38095238095238093,
+              "temporal": 0.9982653950580322
+            },
+            "distance_meters": 47,
+            "hours": 1.3,
+            "category_a": "Roads & Transport",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 47 meters apart",
+              "Submitted within 1 hours"
+            ]
+          }
+        ]
+      },
+      "bootstrap_macro_f1": {
+        "metric": "macro_f1",
+        "mean": 0.4937,
+        "standard_error": 0.0339,
+        "ci_lower": 0.427,
+        "ci_upper": 0.5634,
+        "confidence_level": 0.95,
+        "iterations": 1000,
+        "seed": 42
+      }
+    }
+  },
+  "validation_threshold_sweep": {
+    "evaluated_combinations": 41,
+    "baseline_configuration": {
+      "duplicate_threshold": 0.6,
+      "related_threshold": 0.35,
+      "accuracy": 0.9875,
+      "macro_f1": 0.9881,
+      "per_class_f1": {
+        "duplicate": 1,
+        "related": 0.9818,
+        "independent": 0.9825
+      }
+    },
+    "best_validation_candidate": {
+      "duplicate_threshold": 0.6,
+      "related_threshold": 0.3,
+      "accuracy": 1,
+      "macro_precision": 1,
+      "macro_recall": 1,
+      "macro_f1": 1,
+      "per_class_f1": {
+        "duplicate": 1,
+        "related": 1,
+        "independent": 1
+      }
+    },
+    "sweep_grid": [
+      {
+        "duplicate_threshold": 0.5,
+        "related_threshold": 0.25,
+        "accuracy": 0.8375,
+        "macro_precision": 0.8602,
+        "macro_recall": 0.8452,
+        "macro_f1": 0.8333,
+        "per_class_f1": {
+          "duplicate": 0.8136,
+          "related": 0.7234,
+          "independent": 0.963
+        }
+      },
+      {
+        "duplicate_threshold": 0.5,
+        "related_threshold": 0.3,
+        "accuracy": 0.8625,
+        "macro_precision": 0.8952,
+        "macro_recall": 0.869,
+        "macro_f1": 0.8564,
+        "per_class_f1": {
+          "duplicate": 0.8136,
+          "related": 0.7556,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.5,
+        "related_threshold": 0.35,
+        "accuracy": 0.85,
+        "macro_precision": 0.8837,
+        "macro_recall": 0.8571,
+        "macro_f1": 0.8411,
+        "per_class_f1": {
+          "duplicate": 0.8136,
+          "related": 0.7273,
+          "independent": 0.9825
+        }
+      },
+      {
+        "duplicate_threshold": 0.5,
+        "related_threshold": 0.4,
+        "accuracy": 0.7875,
+        "macro_precision": 0.8364,
+        "macro_recall": 0.7976,
+        "macro_f1": 0.7603,
+        "per_class_f1": {
+          "duplicate": 0.8136,
+          "related": 0.5641,
+          "independent": 0.9032
+        }
+      },
+      {
+        "duplicate_threshold": 0.5,
+        "related_threshold": 0.45,
+        "accuracy": 0.675,
+        "macro_precision": 0.779,
+        "macro_recall": 0.6905,
+        "macro_f1": 0.5785,
+        "per_class_f1": {
+          "duplicate": 0.8136,
+          "related": 0.1333,
+          "independent": 0.7887
+        }
+      },
+      {
+        "duplicate_threshold": 0.55,
+        "related_threshold": 0.25,
+        "accuracy": 0.925,
+        "macro_precision": 0.9267,
+        "macro_recall": 0.9286,
+        "macro_f1": 0.925,
+        "per_class_f1": {
+          "duplicate": 0.9231,
+          "related": 0.8889,
+          "independent": 0.963
+        }
+      },
+      {
+        "duplicate_threshold": 0.55,
+        "related_threshold": 0.3,
+        "accuracy": 0.95,
+        "macro_precision": 0.9524,
+        "macro_recall": 0.9524,
+        "macro_f1": 0.9487,
+        "per_class_f1": {
+          "duplicate": 0.9231,
+          "related": 0.9231,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.55,
+        "related_threshold": 0.35,
+        "accuracy": 0.9375,
+        "macro_precision": 0.9409,
+        "macro_recall": 0.9405,
+        "macro_f1": 0.9358,
+        "per_class_f1": {
+          "duplicate": 0.9231,
+          "related": 0.902,
+          "independent": 0.9825
+        }
+      },
+      {
+        "duplicate_threshold": 0.55,
+        "related_threshold": 0.4,
+        "accuracy": 0.875,
+        "macro_precision": 0.8936,
+        "macro_recall": 0.881,
+        "macro_f1": 0.8696,
+        "per_class_f1": {
+          "duplicate": 0.9231,
+          "related": 0.7826,
+          "independent": 0.9032
+        }
+      },
+      {
+        "duplicate_threshold": 0.55,
+        "related_threshold": 0.45,
+        "accuracy": 0.7625,
+        "macro_precision": 0.8361,
+        "macro_recall": 0.7738,
+        "macro_f1": 0.7328,
+        "per_class_f1": {
+          "duplicate": 0.9231,
+          "related": 0.4865,
+          "independent": 0.7887
+        }
+      },
+      {
+        "duplicate_threshold": 0.55,
+        "related_threshold": 0.5,
+        "accuracy": 0.7375,
+        "macro_precision": 0.8265,
+        "macro_recall": 0.75,
+        "macro_f1": 0.6967,
+        "per_class_f1": {
+          "duplicate": 0.9231,
+          "related": 0.4,
+          "independent": 0.7671
+        }
+      },
+      {
+        "duplicate_threshold": 0.6,
+        "related_threshold": 0.25,
+        "accuracy": 0.975,
+        "macro_precision": 0.9778,
+        "macro_recall": 0.9762,
+        "macro_f1": 0.9762,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 0.9655,
+          "independent": 0.963
+        }
+      },
+      {
+        "duplicate_threshold": 0.6,
+        "related_threshold": 0.3,
+        "accuracy": 1,
+        "macro_precision": 1,
+        "macro_recall": 1,
+        "macro_f1": 1,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 1,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.6,
+        "related_threshold": 0.35,
+        "accuracy": 0.9875,
+        "macro_precision": 0.9885,
+        "macro_recall": 0.9881,
+        "macro_f1": 0.9881,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 0.9818,
+          "independent": 0.9825
+        }
+      },
+      {
+        "duplicate_threshold": 0.6,
+        "related_threshold": 0.4,
+        "accuracy": 0.925,
+        "macro_precision": 0.9412,
+        "macro_recall": 0.9286,
+        "macro_f1": 0.9277,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 0.88,
+          "independent": 0.9032
+        }
+      },
+      {
+        "duplicate_threshold": 0.6,
+        "related_threshold": 0.45,
+        "accuracy": 0.8125,
+        "macro_precision": 0.8837,
+        "macro_recall": 0.8214,
+        "macro_f1": 0.8076,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 0.6341,
+          "independent": 0.7887
+        }
+      },
+      {
+        "duplicate_threshold": 0.6,
+        "related_threshold": 0.5,
+        "accuracy": 0.7875,
+        "macro_precision": 0.8741,
+        "macro_recall": 0.7976,
+        "macro_f1": 0.7771,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 0.5641,
+          "independent": 0.7671
+        }
+      },
+      {
+        "duplicate_threshold": 0.65,
+        "related_threshold": 0.25,
+        "accuracy": 0.9125,
+        "macro_precision": 0.9333,
+        "macro_recall": 0.9067,
+        "macro_f1": 0.9119,
+        "per_class_f1": {
+          "duplicate": 0.8837,
+          "related": 0.8889,
+          "independent": 0.963
+        }
+      },
+      {
+        "duplicate_threshold": 0.65,
+        "related_threshold": 0.3,
+        "accuracy": 0.9375,
+        "macro_precision": 0.9495,
+        "macro_recall": 0.9306,
+        "macro_f1": 0.9339,
+        "per_class_f1": {
+          "duplicate": 0.8837,
+          "related": 0.918,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.65,
+        "related_threshold": 0.35,
+        "accuracy": 0.925,
+        "macro_precision": 0.9364,
+        "macro_recall": 0.9187,
+        "macro_f1": 0.9221,
+        "per_class_f1": {
+          "duplicate": 0.8837,
+          "related": 0.9,
+          "independent": 0.9825
+        }
+      },
+      {
+        "duplicate_threshold": 0.65,
+        "related_threshold": 0.4,
+        "accuracy": 0.8625,
+        "macro_precision": 0.8794,
+        "macro_recall": 0.8591,
+        "macro_f1": 0.8623,
+        "per_class_f1": {
+          "duplicate": 0.8837,
+          "related": 0.8,
+          "independent": 0.9032
+        }
+      },
+      {
+        "duplicate_threshold": 0.65,
+        "related_threshold": 0.45,
+        "accuracy": 0.75,
+        "macro_precision": 0.7911,
+        "macro_recall": 0.752,
+        "macro_f1": 0.7459,
+        "per_class_f1": {
+          "duplicate": 0.8837,
+          "related": 0.5652,
+          "independent": 0.7887
+        }
+      },
+      {
+        "duplicate_threshold": 0.65,
+        "related_threshold": 0.5,
+        "accuracy": 0.725,
+        "macro_precision": 0.7699,
+        "macro_recall": 0.7282,
+        "macro_f1": 0.7169,
+        "per_class_f1": {
+          "duplicate": 0.8837,
+          "related": 0.5,
+          "independent": 0.7671
+        }
+      },
+      {
+        "duplicate_threshold": 0.7,
+        "related_threshold": 0.25,
+        "accuracy": 0.8125,
+        "macro_precision": 0.8837,
+        "macro_recall": 0.7956,
+        "macro_f1": 0.7934,
+        "per_class_f1": {
+          "duplicate": 0.6286,
+          "related": 0.7887,
+          "independent": 0.963
+        }
+      },
+      {
+        "duplicate_threshold": 0.7,
+        "related_threshold": 0.3,
+        "accuracy": 0.8375,
+        "macro_precision": 0.8943,
+        "macro_recall": 0.8194,
+        "macro_f1": 0.8134,
+        "per_class_f1": {
+          "duplicate": 0.6286,
+          "related": 0.8116,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.7,
+        "related_threshold": 0.35,
+        "accuracy": 0.825,
+        "macro_precision": 0.8802,
+        "macro_recall": 0.8075,
+        "macro_f1": 0.8017,
+        "per_class_f1": {
+          "duplicate": 0.6286,
+          "related": 0.7941,
+          "independent": 0.9825
+        }
+      },
+      {
+        "duplicate_threshold": 0.7,
+        "related_threshold": 0.4,
+        "accuracy": 0.7625,
+        "macro_precision": 0.8174,
+        "macro_recall": 0.748,
+        "macro_f1": 0.7434,
+        "per_class_f1": {
+          "duplicate": 0.6286,
+          "related": 0.6984,
+          "independent": 0.9032
+        }
+      },
+      {
+        "duplicate_threshold": 0.7,
+        "related_threshold": 0.45,
+        "accuracy": 0.65,
+        "macro_precision": 0.7171,
+        "macro_recall": 0.6409,
+        "macro_f1": 0.6329,
+        "per_class_f1": {
+          "duplicate": 0.6286,
+          "related": 0.4815,
+          "independent": 0.7887
+        }
+      },
+      {
+        "duplicate_threshold": 0.7,
+        "related_threshold": 0.5,
+        "accuracy": 0.625,
+        "macro_precision": 0.6935,
+        "macro_recall": 0.6171,
+        "macro_f1": 0.6063,
+        "per_class_f1": {
+          "duplicate": 0.6286,
+          "related": 0.4231,
+          "independent": 0.7671
+        }
+      },
+      {
+        "duplicate_threshold": 0.75,
+        "related_threshold": 0.25,
+        "accuracy": 0.775,
+        "macro_precision": 0.8696,
+        "macro_recall": 0.754,
+        "macro_f1": 0.7399,
+        "per_class_f1": {
+          "duplicate": 0.5,
+          "related": 0.7568,
+          "independent": 0.963
+        }
+      },
+      {
+        "duplicate_threshold": 0.75,
+        "related_threshold": 0.3,
+        "accuracy": 0.8,
+        "macro_precision": 0.8788,
+        "macro_recall": 0.7778,
+        "macro_f1": 0.7593,
+        "per_class_f1": {
+          "duplicate": 0.5,
+          "related": 0.7778,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.75,
+        "related_threshold": 0.35,
+        "accuracy": 0.7875,
+        "macro_precision": 0.8645,
+        "macro_recall": 0.7659,
+        "macro_f1": 0.7477,
+        "per_class_f1": {
+          "duplicate": 0.5,
+          "related": 0.7606,
+          "independent": 0.9825
+        }
+      },
+      {
+        "duplicate_threshold": 0.75,
+        "related_threshold": 0.4,
+        "accuracy": 0.725,
+        "macro_precision": 0.8008,
+        "macro_recall": 0.7063,
+        "macro_f1": 0.69,
+        "per_class_f1": {
+          "duplicate": 0.5,
+          "related": 0.6667,
+          "independent": 0.9032
+        }
+      },
+      {
+        "duplicate_threshold": 0.75,
+        "related_threshold": 0.45,
+        "accuracy": 0.6125,
+        "macro_precision": 0.6998,
+        "macro_recall": 0.5992,
+        "macro_f1": 0.5816,
+        "per_class_f1": {
+          "duplicate": 0.5,
+          "related": 0.4561,
+          "independent": 0.7887
+        }
+      },
+      {
+        "duplicate_threshold": 0.75,
+        "related_threshold": 0.5,
+        "accuracy": 0.5875,
+        "macro_precision": 0.6765,
+        "macro_recall": 0.5754,
+        "macro_f1": 0.5557,
+        "per_class_f1": {
+          "duplicate": 0.5,
+          "related": 0.4,
+          "independent": 0.7671
+        }
+      },
+      {
+        "duplicate_threshold": 0.8,
+        "related_threshold": 0.25,
+        "accuracy": 0.7375,
+        "macro_precision": 0.8571,
+        "macro_recall": 0.7123,
+        "macro_f1": 0.6784,
+        "per_class_f1": {
+          "duplicate": 0.3448,
+          "related": 0.7273,
+          "independent": 0.963
+        }
+      },
+      {
+        "duplicate_threshold": 0.8,
+        "related_threshold": 0.3,
+        "accuracy": 0.7625,
+        "macro_precision": 0.8652,
+        "macro_recall": 0.7361,
+        "macro_f1": 0.6972,
+        "per_class_f1": {
+          "duplicate": 0.3448,
+          "related": 0.7467,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.8,
+        "related_threshold": 0.35,
+        "accuracy": 0.75,
+        "macro_precision": 0.8508,
+        "macro_recall": 0.7242,
+        "macro_f1": 0.6857,
+        "per_class_f1": {
+          "duplicate": 0.3448,
+          "related": 0.7297,
+          "independent": 0.9825
+        }
+      },
+      {
+        "duplicate_threshold": 0.8,
+        "related_threshold": 0.4,
+        "accuracy": 0.6875,
+        "macro_precision": 0.7867,
+        "macro_recall": 0.6647,
+        "macro_f1": 0.6286,
+        "per_class_f1": {
+          "duplicate": 0.3448,
+          "related": 0.6377,
+          "independent": 0.9032
+        }
+      },
+      {
+        "duplicate_threshold": 0.8,
+        "related_threshold": 0.45,
+        "accuracy": 0.575,
+        "macro_precision": 0.6858,
+        "macro_recall": 0.5575,
+        "macro_f1": 0.5223,
+        "per_class_f1": {
+          "duplicate": 0.3448,
+          "related": 0.4333,
+          "independent": 0.7887
+        }
+      },
+      {
+        "duplicate_threshold": 0.8,
+        "related_threshold": 0.5,
+        "accuracy": 0.55,
+        "macro_precision": 0.663,
+        "macro_recall": 0.5337,
+        "macro_f1": 0.4971,
+        "per_class_f1": {
+          "duplicate": 0.3448,
+          "related": 0.3793,
+          "independent": 0.7671
+        }
+      }
+    ]
+  },
+  "feature_ablations": {
+    "validation": {
+      "partition": "validation",
+      "full_model": {
+        "macro_f1": 0.9881,
+        "accuracy": 0.9875,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 0.9818,
+          "independent": 0.9825
+        }
+      },
+      "ablations": {
+        "no_category": {
+          "feature_removed": "category",
+          "macro_precision": 0.8797,
+          "macro_recall": 0.8353,
+          "macro_f1": 0.8341,
+          "delta_macro_f1": -0.154,
+          "accuracy": 0.85,
+          "per_class_f1": {
+            "duplicate": 0.6842,
+            "related": 0.8182,
+            "independent": 1
+          }
+        },
+        "no_geographic": {
+          "feature_removed": "geographic",
+          "macro_precision": 0.6943,
+          "macro_recall": 0.6349,
+          "macro_f1": 0.6335,
+          "delta_macro_f1": -0.3546,
+          "accuracy": 0.6375,
+          "per_class_f1": {
+            "duplicate": 0.7368,
+            "related": 0.4314,
+            "independent": 0.7324
+          }
+        },
+        "no_lexical": {
+          "feature_removed": "lexical",
+          "macro_precision": 0.9867,
+          "macro_recall": 0.9881,
+          "macro_f1": 0.9871,
+          "delta_macro_f1": -0.001,
+          "accuracy": 0.9875,
+          "per_class_f1": {
+            "duplicate": 0.9796,
+            "related": 0.9818,
+            "independent": 1
+          }
+        },
+        "no_semantic": {
+          "feature_removed": "semantic",
+          "macro_precision": 0.8602,
+          "macro_recall": 0.8452,
+          "macro_f1": 0.8333,
+          "delta_macro_f1": -0.1548,
+          "accuracy": 0.8375,
+          "per_class_f1": {
+            "duplicate": 0.8136,
+            "related": 0.7234,
+            "independent": 0.963
+          }
+        },
+        "no_temporal": {
+          "feature_removed": "temporal",
+          "macro_precision": 0.8389,
+          "macro_recall": 0.8095,
+          "macro_f1": 0.8119,
+          "delta_macro_f1": -0.1762,
+          "accuracy": 0.8125,
+          "per_class_f1": {
+            "duplicate": 0.8571,
+            "related": 0.717,
+            "independent": 0.8615
+          }
+        }
+      }
+    },
+    "test": {
+      "partition": "test",
+      "full_model": {
+        "macro_f1": 0.9752,
+        "accuracy": 0.975,
+        "per_class_f1": {
+          "duplicate": 0.9796,
+          "related": 0.9643,
+          "independent": 0.9818
+        }
+      },
+      "ablations": {
+        "no_category": {
+          "feature_removed": "category",
+          "macro_precision": 0.8565,
+          "macro_recall": 0.8234,
+          "macro_f1": 0.8222,
+          "delta_macro_f1": -0.153,
+          "accuracy": 0.8375,
+          "per_class_f1": {
+            "duplicate": 0.6667,
+            "related": 0.8,
+            "independent": 1
+          }
+        },
+        "no_geographic": {
+          "feature_removed": "geographic",
+          "macro_precision": 0.7789,
+          "macro_recall": 0.7163,
+          "macro_f1": 0.7205,
+          "delta_macro_f1": -0.2547,
+          "accuracy": 0.725,
+          "per_class_f1": {
+            "duplicate": 0.7027,
+            "related": 0.6333,
+            "independent": 0.8254
+          }
+        },
+        "no_lexical": {
+          "feature_removed": "lexical",
+          "macro_precision": 0.9501,
+          "macro_recall": 0.9524,
+          "macro_f1": 0.9496,
+          "delta_macro_f1": -0.0256,
+          "accuracy": 0.95,
+          "per_class_f1": {
+            "duplicate": 0.9412,
+            "related": 0.9259,
+            "independent": 0.9818
+          }
+        },
+        "no_semantic": {
+          "feature_removed": "semantic",
+          "macro_precision": 0.7802,
+          "macro_recall": 0.75,
+          "macro_f1": 0.7195,
+          "delta_macro_f1": -0.2557,
+          "accuracy": 0.7375,
+          "per_class_f1": {
+            "duplicate": 0.7273,
+            "related": 0.4878,
+            "independent": 0.9434
+          }
+        },
+        "no_temporal": {
+          "feature_removed": "temporal",
+          "macro_precision": 0.8917,
+          "macro_recall": 0.869,
+          "macro_f1": 0.8727,
+          "delta_macro_f1": -0.1025,
+          "accuracy": 0.875,
+          "per_class_f1": {
+            "duplicate": 0.8571,
+            "related": 0.8276,
+            "independent": 0.9333
+          }
+        }
+      }
+    }
+  },
+  "limitations_and_leakage_protection": {
+    "clustering_vs_pairwise_protocol": "The current HISC algorithm implements online graph clustering via MongoDB collections (Complaint and IncidentCluster). The evaluation datasets (400 original pairs, 150 challenge pairs) are pairwise labeled relations. As a result, global partition-level clustering metrics (Adjusted Rand Index, Adjusted Mutual Information, BCubed F1) requiring full connected graph matrices cannot be computed without artificial graph synthesis. Instead, the evaluation rigorously measures pairwise link classification performance (duplicate, related, independent).",
+    "leakage_protection": "Zero incident_id leakage across train, val, and test partitions confirmed. Synthetic challenge set strictly separated from baseline fitting and validation threshold sweeping."
+  }
+}
