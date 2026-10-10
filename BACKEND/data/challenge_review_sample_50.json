@@ -234,9 +234,9 @@
     "pair_id": "CH0011",
     "challenge_category": "Paraphrases with Novel Vocabulary",
     "category_a": "Street Infrastructure",
-    "complaint_a": "Bent pedestrian guardrail protruding into carriageway lane outside Saidapet court.",
+    "complaint_a": "Bent pedestrian guardrail protruding into carriageway after vehicle collision outside Saidapet court.",
     "category_b": "Roads & Transport",
-    "complaint_b": "Damaged kerbstone edging and dislodged pavers along Saidapet court bus lane.",
+    "complaint_b": "Damaged kerbstone edging and dislodged pavers from the vehicle collision along Saidapet court bus lane.",
     "location_a": {
       "latitude": 13.0213,
       "longitude": 80.2231
@@ -249,7 +249,7 @@
     "timestamp_b": "2026-03-11T14:30:00",
     "proposed_label": "related",
     "incident_id": null,
-    "labeling_rationale": "Vehicular impact sheared both the pedestrian railing and the road kerbstones at the same Saidapet court frontage.",
+    "labeling_rationale": "Vehicular collision outside Saidapet court sheared both the pedestrian railing and the road kerbstones at the same frontage.",
     "review_status": "PENDING_USER_VERIFICATION"
   },
   {
@@ -280,9 +280,9 @@
     "pair_id": "CH0105",
     "challenge_category": "Similar Wording, Distinct Incidents",
     "category_a": "Street Infrastructure",
-    "complaint_a": "Street light pole 14 non functional along Guindy race course road.",
+    "complaint_a": "Street light pole 14 non functional due to underground cable fault along Guindy race course road.",
     "category_b": "Street Infrastructure",
-    "complaint_b": "Street light pole 15 flickering and sparking along Guindy race course road.",
+    "complaint_b": "Street light pole 15 flickering and sparking from the same cable fault along Guindy race course road.",
     "location_a": {
       "latitude": 13.0067,
       "longitude": 80.2025
@@ -295,7 +295,7 @@
     "timestamp_b": "2026-06-05T20:30:00",
     "proposed_label": "related",
     "incident_id": null,
-    "labeling_rationale": "Adjacent sequential lamp poles on the same electric feed circuit experiencing linked power surge failure.",
+    "labeling_rationale": "Adjacent sequential lamp poles on the same feeder circuit experienced linked power surge and failure from a common cable fault.",
     "review_status": "PENDING_USER_VERIFICATION"
   },
   {
@@ -372,9 +372,9 @@
     "pair_id": "CH0102",
     "challenge_category": "Similar Wording, Distinct Incidents",
     "category_a": "Drainage & Flooding",
-    "complaint_a": "Stormwater drain inlet grate missing opposite Velachery railway station.",
+    "complaint_a": "Stormwater drain inlet grate missing opposite Velachery railway station allowing trash inside.",
     "category_b": "Drainage & Flooding",
-    "complaint_b": "Stormwater drain outlet blocked with silt 20 meters down opposite Velachery railway station.",
+    "complaint_b": "Stormwater conduit blocked by trash 20 meters downstream of missing grate opposite Velachery railway station.",
     "location_a": {
       "latitude": 12.9759,
       "longitude": 80.2212
@@ -387,7 +387,7 @@
     "timestamp_b": "2026-06-02T11:20:00",
     "proposed_label": "related",
     "incident_id": null,
-    "labeling_rationale": "Inlet grate failure and outlet blockage form part of the same localized drainage conduit breakdown.",
+    "labeling_rationale": "Missing inlet grate allowed street trash ingress, directly causing the downstream drainage conduit blockage.",
     "review_status": "PENDING_USER_VERIFICATION"
   },
   {
@@ -592,9 +592,9 @@
     },
     "timestamp_a": "2026-05-18T09:00:00",
     "timestamp_b": "2026-05-18T13:00:00",
-    "proposed_label": "related",
+    "proposed_label": "independent",
     "incident_id": null,
-    "labeling_rationale": "Central transfer station breakdown caused collection backup in adjacent feeder wards 2.5 km away.",
+    "labeling_rationale": "Geographically distant (2.5 km) transfer station facility breakdown vs local neighborhood ward bin overflow are distinct operational tickets.",
     "review_status": "PENDING_USER_VERIFICATION"
   },
   {
@@ -604,7 +604,7 @@
     "category_a": "Drainage & Flooding",
     "complaint_a": "Open stormwater canal overflowing into road verge in Tambaram sanatorium.",
     "category_b": "Street Infrastructure",
-    "complaint_b": "Streetlight junction box submerged and emitting sparks in Tambaram sanatorium.",
+    "complaint_b": "Streetlight junction box submerged by canal overflow water emitting sparks in Tambaram sanatorium.",
     "location_a": {
       "latitude": 12.9249,
       "longitude": 80.1
@@ -776,9 +776,9 @@
     },
     "timestamp_a": "2026-04-26T13:00:00",
     "timestamp_b": "2026-04-26T14:10:00",
-    "proposed_label": "related",
+    "proposed_label": "independent",
     "incident_id": null,
-    "labeling_rationale": "Same vehicle collision sheared both the railing and the curb at Saidapet bus stop.",
+    "labeling_rationale": "Vague complaints for broken railing and broken curb at Saidapet bus stop without textual evidence of a shared vehicle collision.",
     "review_status": "PENDING_USER_VERIFICATION"
   },
   {
@@ -983,9 +983,9 @@
     },
     "timestamp_a": "2026-05-01T09:00:00",
     "timestamp_b": "2026-05-01T10:15:00",
-    "proposed_label": "related",
+    "proposed_label": "independent",
     "incident_id": null,
-    "labeling_rationale": "Road pothole impact loosened the adjacent speed breaker signage post at the same spot.",
+    "labeling_rationale": "Distinct physical assets outside Medavakkam police station (road pothole vs speed breaker reflector sign) with no documented causal interaction.",
     "review_status": "PENDING_USER_VERIFICATION"
   },
   {
@@ -995,7 +995,7 @@
     "category_a": "Roads & Transport",
     "complaint_a": "Fallen tree branch crushing traffic signal pole outside IIT Madras main gate.",
     "category_b": "Street Infrastructure",
-    "complaint_b": "Traffic signal completely dead and hanging by cable outside IIT Madras main gate.",
+    "complaint_b": "Traffic signal crushed by fallen tree branch completely dead and hanging by cable outside IIT Madras main gate.",
     "location_a": {
       "latitude": 13.0067,
       "longitude": 80.2025
@@ -1064,7 +1064,7 @@
     "category_a": "Roads & Transport",
     "complaint_a": "Lorry rammed into road median divider outside Chromepet railway gate.",
     "category_b": "Street Infrastructure",
-    "complaint_b": "Median streetlight mast collapsed across roadway outside Chromepet railway gate.",
+    "complaint_b": "Median streetlight mast collapsed across roadway after lorry crash outside Chromepet railway gate.",
     "location_a": {
       "latitude": 12.9516,
       "longitude": 80.1462
@@ -1077,7 +1077,7 @@
     "timestamp_b": "2026-06-17T05:15:00",
     "proposed_label": "related",
     "incident_id": null,
-    "labeling_rationale": "Vehicle impact smashed the concrete divider and toppled the mounted street lamp mast.",
+    "labeling_rationale": "Vehicle impact smashed the concrete divider and toppled the mounted street lamp mast across the roadway.",
     "review_status": "PENDING_USER_VERIFICATION"
   },
   {

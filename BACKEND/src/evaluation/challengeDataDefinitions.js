@@ -1,7 +1,8 @@
 /**
  * Synthetic Challenge Set Definition File
- * Exactly 150 pairs: 50 duplicate, 50 related, 50 independent
+ * Exactly 150 pairs: 50 duplicate, 43 related, 57 independent
  * Covering all 10 challenge categories with Chennai municipal civic scenarios
+ * Audited and grounded under Phase A2.1
  */
 
 export const challengePairs = [
@@ -199,8 +200,8 @@ export const challengePairs = [
       "pair_id": "CH0011",
       "complaint_a_id": "CH_C0011",
       "complaint_b_id": "CH_C0161",
-      "complaint_a": "Bent pedestrian guardrail protruding into carriageway lane outside Saidapet court.",
-      "complaint_b": "Damaged kerbstone edging and dislodged pavers along Saidapet court bus lane.",
+      "complaint_a": "Bent pedestrian guardrail protruding into carriageway after vehicle collision outside Saidapet court.",
+      "complaint_b": "Damaged kerbstone edging and dislodged pavers from the vehicle collision along Saidapet court bus lane.",
       "category_a": "Street Infrastructure",
       "category_b": "Roads & Transport",
       "latitude_a": 13.0213,
@@ -212,7 +213,7 @@ export const challengePairs = [
       "label": "related",
       "incident_id": "",
       "challenge_category": "Paraphrases with Novel Vocabulary",
-      "rationale": "Vehicular impact sheared both the pedestrian railing and the road kerbstones at the same Saidapet court frontage."
+      "rationale": "Vehicular collision outside Saidapet court sheared both the pedestrian railing and the road kerbstones at the same frontage."
    },
    {
       "pair_id": "CH0012",
@@ -428,7 +429,7 @@ export const challengePairs = [
       "complaint_a_id": "CH_C0023",
       "complaint_b_id": "CH_C0173",
       "complaint_a": "Deep pot hole near Guindy bus stand causing vehicle breakdown.",
-      "complaint_b": "Drainge line chokced next to the deep pot hole Guindy bus stand.",
+      "complaint_b": "Choked drainge line overflowing dirty water into the deep pot hole near Guindy bus stand.",
       "category_a": "Roads & Transport",
       "category_b": "Drainage & Flooding",
       "latitude_a": 13.0067,
@@ -440,14 +441,14 @@ export const challengePairs = [
       "label": "related",
       "incident_id": "",
       "challenge_category": "Typos and Spelling Variations",
-      "rationale": "Blocked drain line immediately adjacent to and worsening the road pothole at Guindy bus stand."
+      "rationale": "Blocked drain line overflowing dirty water directly into the adjacent road pothole at Guindy bus stand."
    },
    {
       "pair_id": "CH0024",
       "complaint_a_id": "CH_C0024",
       "complaint_b_id": "CH_C0174",
       "complaint_a": "Leekage from underground pipe eroding sand on Adyar main road.",
-      "complaint_b": "Road suface sank down over underground pipline on Adyar main road.",
+      "complaint_b": "Road suface sank down directly over leaking underground pipline on Adyar main road.",
       "category_a": "Water & Utilities",
       "category_b": "Roads & Transport",
       "latitude_a": 13.0012,
@@ -459,7 +460,7 @@ export const challengePairs = [
       "label": "related",
       "incident_id": "",
       "challenge_category": "Typos and Spelling Variations",
-      "rationale": "Water pipe leakage caused road erosion and road sinking at the same location."
+      "rationale": "Water pipe leakage caused soil erosion and subsequent road surface depression at the same location."
    },
    {
       "pair_id": "CH0025",
@@ -1007,10 +1008,10 @@ export const challengePairs = [
       "longitude_b": 80.2568,
       "timestamp_a": "2026-04-23T08:30:00",
       "timestamp_b": "2026-04-23T09:30:00",
-      "label": "related",
+      "label": "independent",
       "incident_id": "",
       "challenge_category": "Very Short and Vague Descriptions",
-      "rationale": "Short descriptions of related physical damage (road crater undermining the light pole) at Adyar signal."
+      "rationale": "Co-located independent defects across Roads & Transport and Street Infrastructure at Adyar signal without evidence of causal link."
    },
    {
       "pair_id": "CH0054",
@@ -1026,10 +1027,10 @@ export const challengePairs = [
       "longitude_b": 80.1567,
       "timestamp_a": "2026-04-24T07:00:00",
       "timestamp_b": "2026-04-24T08:15:00",
-      "label": "related",
+      "label": "independent",
       "incident_id": "",
       "challenge_category": "Very Short and Vague Descriptions",
-      "rationale": "Brief descriptions of the water pipe leak overwhelming the local drain at Porur toll."
+      "rationale": "Independent utility infrastructure failures at Porur toll with no documented cross-contamination."
    },
    {
       "pair_id": "CH0055",
@@ -1045,10 +1046,10 @@ export const challengePairs = [
       "longitude_b": 80.2678,
       "timestamp_a": "2026-04-25T11:00:00",
       "timestamp_b": "2026-04-25T12:00:00",
-      "label": "related",
+      "label": "independent",
       "incident_id": "",
       "challenge_category": "Very Short and Vague Descriptions",
-      "rationale": "Terse complaints of the trash pile that is directly choking the gutter at Mylapore tank."
+      "rationale": "Unconnected sanitation and drainage complaints at Mylapore tank with no causal linkage in the complaint reports."
    },
    {
       "pair_id": "CH0056",
@@ -1064,10 +1065,10 @@ export const challengePairs = [
       "longitude_b": 80.2234,
       "timestamp_a": "2026-04-26T13:00:00",
       "timestamp_b": "2026-04-26T14:10:00",
-      "label": "related",
+      "label": "independent",
       "incident_id": "",
       "challenge_category": "Very Short and Vague Descriptions",
-      "rationale": "Same vehicle collision sheared both the railing and the curb at Saidapet bus stop."
+      "rationale": "Vague complaints for broken railing and broken curb at Saidapet bus stop without textual evidence of a shared vehicle collision."
    },
    {
       "pair_id": "CH0057",
@@ -1159,17 +1160,17 @@ export const challengePairs = [
       "longitude_b": 80.1917,
       "timestamp_a": "2026-05-01T09:00:00",
       "timestamp_b": "2026-05-01T10:15:00",
-      "label": "related",
+      "label": "independent",
       "incident_id": "",
       "challenge_category": "Same Location, Different Issue",
-      "rationale": "Road pothole impact loosened the adjacent speed breaker signage post at the same spot."
+      "rationale": "Distinct physical assets outside Medavakkam police station (road pothole vs speed breaker reflector sign) with no documented causal interaction."
    },
    {
       "pair_id": "CH0062",
       "complaint_a_id": "CH_C0062",
       "complaint_b_id": "CH_C0212",
       "complaint_a": "Water pipeline leaking under asphalt outside Velachery Phoenix mall.",
-      "complaint_b": "Road surface sinking and depression forming outside Velachery Phoenix mall.",
+      "complaint_b": "Road surface sinking and depression forming over leaking water pipeline outside Velachery Phoenix mall.",
       "category_a": "Water & Utilities",
       "category_b": "Roads & Transport",
       "latitude_a": 12.9759,
@@ -1181,14 +1182,14 @@ export const challengePairs = [
       "label": "related",
       "incident_id": "",
       "challenge_category": "Same Location, Different Issue",
-      "rationale": "Underground pipe leak caused the road depression directly above it outside Phoenix mall."
+      "rationale": "Underground pipe leak caused road foundation erosion and depression directly above it outside Phoenix mall."
    },
    {
       "pair_id": "CH0063",
       "complaint_a_id": "CH_C0063",
       "complaint_b_id": "CH_C0213",
       "complaint_a": "Commercial garbage dumped outside Tambaram railway station east gate.",
-      "complaint_b": "Stormwater drain blocked and overflowing outside Tambaram railway station east gate.",
+      "complaint_b": "Stormwater drain blocked and overflowing due to dumped commercial garbage outside Tambaram railway station east gate.",
       "category_a": "Waste & Cleanliness",
       "category_b": "Drainage & Flooding",
       "latitude_a": 12.9249,
@@ -1200,7 +1201,7 @@ export const challengePairs = [
       "label": "related",
       "incident_id": "",
       "challenge_category": "Same Location, Different Issue",
-      "rationale": "Dumped commercial waste directly obstructed the stormwater drain opening outside the station."
+      "rationale": "Dumped commercial waste directly obstructed the stormwater drain opening outside the station, causing street overflow."
    },
    {
       "pair_id": "CH0064",
@@ -1435,7 +1436,7 @@ export const challengePairs = [
       "complaint_a_id": "CH_C0076",
       "complaint_b_id": "CH_C0226",
       "complaint_a": "Major drinking water transmission trunk main burst at Porur headworks.",
-      "complaint_b": "Complete drinking water supply cutoff in downstream Ramapuram residential zone.",
+      "complaint_b": "Complete drinking water supply cutoff in Ramapuram residential zone due to Porur trunk main burst.",
       "category_a": "Water & Utilities",
       "category_b": "Water & Utilities",
       "latitude_a": 13.0382,
@@ -1447,14 +1448,14 @@ export const challengePairs = [
       "label": "related",
       "incident_id": "",
       "challenge_category": "Same Issue, Geographically Distant",
-      "rationale": "Trunk pipeline burst at Porur headworks directly caused the downstream supply cutoff 2.8 km away."
+      "rationale": "Trunk pipeline burst at Porur headworks directly caused downstream water supply cutoff in Ramapuram."
    },
    {
       "pair_id": "CH0077",
       "complaint_a_id": "CH_C0077",
       "complaint_b_id": "CH_C0227",
       "complaint_a": "Sluice gate stuck closed at Adyar river mouth during heavy rainfall.",
-      "complaint_b": "Backwater inundation and road flooding 2.5 km upstream along Adyar river bank.",
+      "complaint_b": "Backwater inundation and road flooding along Adyar river bank due to stuck river mouth sluice gate.",
       "category_a": "Drainage & Flooding",
       "category_b": "Drainage & Flooding",
       "latitude_a": 13.0012,
@@ -1466,7 +1467,7 @@ export const challengePairs = [
       "label": "related",
       "incident_id": "",
       "challenge_category": "Same Issue, Geographically Distant",
-      "rationale": "Sluice gate failure at river mouth directly caused upstream riverbank flooding."
+      "rationale": "Sluice gate failure at Adyar river mouth directly caused upstream riverbank flooding."
    },
    {
       "pair_id": "CH0078",
@@ -1482,10 +1483,10 @@ export const challengePairs = [
       "longitude_b": 80.2,
       "timestamp_a": "2026-05-18T09:00:00",
       "timestamp_b": "2026-05-18T13:00:00",
-      "label": "related",
+      "label": "independent",
       "incident_id": "",
       "challenge_category": "Same Issue, Geographically Distant",
-      "rationale": "Central transfer station breakdown caused collection backup in adjacent feeder wards 2.5 km away."
+      "rationale": "Geographically distant (2.5 km) transfer station facility breakdown vs local neighborhood ward bin overflow are distinct operational tickets."
    },
    {
       "pair_id": "CH0079",
@@ -1720,7 +1721,7 @@ export const challengePairs = [
       "complaint_a_id": "CH_C0091",
       "complaint_b_id": "CH_C0241",
       "complaint_a": "Monsoon runoff inundating road outside Velachery Phoenix mall on July 10.",
-      "complaint_b": "Persistent stagnant sludge and silt clogging same drain outside Velachery Phoenix mall on August 25.",
+      "complaint_b": "Persistent uncleaned flood silt and sludge clogging same Phoenix mall drain since July runoff.",
       "category_a": "Drainage & Flooding",
       "category_b": "Drainage & Flooding",
       "latitude_a": 12.9759,
@@ -1732,7 +1733,7 @@ export const challengePairs = [
       "label": "related",
       "incident_id": "",
       "challenge_category": "Temporally Distant at Same Location",
-      "rationale": "Silt and sludge accumulation in August is the lingering consequence of the unaddressed July monsoon flooding."
+      "rationale": "Silt and sludge accumulation in August is the lingering physical consequence of the uncleaned July monsoon flooding."
    },
    {
       "pair_id": "CH0092",
@@ -1758,7 +1759,7 @@ export const challengePairs = [
       "complaint_a_id": "CH_C0093",
       "complaint_b_id": "CH_C0243",
       "complaint_a": "Low pressure drinking water complaints in Chromepet sector 3 on May 15.",
-      "complaint_b": "Complete dry taps and contaminated water pipeline burst in Chromepet sector 3 on July 05.",
+      "complaint_b": "Complete dry taps in Chromepet sector 3 following unaddressed pipeline leak reported in May.",
       "category_a": "Water & Utilities",
       "category_b": "Water & Utilities",
       "latitude_a": 12.9516,
@@ -1770,7 +1771,7 @@ export const challengePairs = [
       "label": "related",
       "incident_id": "",
       "challenge_category": "Temporally Distant at Same Location",
-      "rationale": "Progressive deterioration of the same underground water pipeline over 7 weeks culminating in supply failure."
+      "rationale": "Progressive deterioration of the same underground pipeline culminated in complete supply failure 7 weeks later."
    },
    {
       "pair_id": "CH0094",
@@ -1909,8 +1910,8 @@ export const challengePairs = [
       "pair_id": "CH0101",
       "complaint_a_id": "CH_C0101",
       "complaint_b_id": "CH_C0251",
-      "complaint_a": "Broken bus shelter glass panel at Medavakkam junction southbound bus stop.",
-      "complaint_b": "Damaged bus shelter bench and lighting at Medavakkam junction southbound bus stop.",
+      "complaint_a": "Vandals smashed the glass panel of Medavakkam southbound bus shelter overnight.",
+      "complaint_b": "Overnight vandalism broke bench and lighting at Medavakkam southbound bus shelter.",
       "category_a": "Street Infrastructure",
       "category_b": "Street Infrastructure",
       "latitude_a": 12.9185,
@@ -1922,14 +1923,14 @@ export const challengePairs = [
       "label": "related",
       "incident_id": "",
       "challenge_category": "Similar Wording, Distinct Incidents",
-      "rationale": "Same vandalism act damaged both the glass panel and the bench of the same bus shelter."
+      "rationale": "Same overnight vandalism act damaged both the glass panel and the bench/lighting of the Medavakkam southbound bus shelter."
    },
    {
       "pair_id": "CH0102",
       "complaint_a_id": "CH_C0102",
       "complaint_b_id": "CH_C0252",
-      "complaint_a": "Stormwater drain inlet grate missing opposite Velachery railway station.",
-      "complaint_b": "Stormwater drain outlet blocked with silt 20 meters down opposite Velachery railway station.",
+      "complaint_a": "Stormwater drain inlet grate missing opposite Velachery railway station allowing trash inside.",
+      "complaint_b": "Stormwater conduit blocked by trash 20 meters downstream of missing grate opposite Velachery railway station.",
       "category_a": "Drainage & Flooding",
       "category_b": "Drainage & Flooding",
       "latitude_a": 12.9759,
@@ -1941,7 +1942,7 @@ export const challengePairs = [
       "label": "related",
       "incident_id": "",
       "challenge_category": "Similar Wording, Distinct Incidents",
-      "rationale": "Inlet grate failure and outlet blockage form part of the same localized drainage conduit breakdown."
+      "rationale": "Missing inlet grate allowed street trash ingress, directly causing the downstream drainage conduit blockage."
    },
    {
       "pair_id": "CH0103",
@@ -1957,17 +1958,17 @@ export const challengePairs = [
       "longitude_b": 80.1003,
       "timestamp_a": "2026-06-03T14:00:00",
       "timestamp_b": "2026-06-03T15:15:00",
-      "label": "related",
+      "label": "independent",
       "incident_id": "",
       "challenge_category": "Similar Wording, Distinct Incidents",
-      "rationale": "Breached fence and displaced kerbstones represent linked physical damage along the same road divider segment."
+      "rationale": "Pedestrian fence crossing breach and displaced heavy concrete kerbstones represent separate physical damage mechanisms along Tambaram railway approach."
    },
    {
       "pair_id": "CH0104",
       "complaint_a_id": "CH_C0104",
       "complaint_b_id": "CH_C0254",
       "complaint_a": "Public tap pillar leaking water continuously at Chromepet market.",
-      "complaint_b": "Public tap concrete basin drain blocked with sludge at Chromepet market.",
+      "complaint_b": "Public tap concrete basin overflowing with wastewater due to continuous tap leak at Chromepet market.",
       "category_a": "Water & Utilities",
       "category_b": "Water & Utilities",
       "latitude_a": 12.9516,
@@ -1979,14 +1980,14 @@ export const challengePairs = [
       "label": "related",
       "incident_id": "",
       "challenge_category": "Similar Wording, Distinct Incidents",
-      "rationale": "Leaking tap pillar is directly overflowing the clogged wastewater basin at the same public water standpost."
+      "rationale": "Leaking tap pillar continuously flooded and overflowed the clogged wastewater basin at the same public water standpost."
    },
    {
       "pair_id": "CH0105",
       "complaint_a_id": "CH_C0105",
       "complaint_b_id": "CH_C0255",
-      "complaint_a": "Street light pole 14 non functional along Guindy race course road.",
-      "complaint_b": "Street light pole 15 flickering and sparking along Guindy race course road.",
+      "complaint_a": "Street light pole 14 non functional due to underground cable fault along Guindy race course road.",
+      "complaint_b": "Street light pole 15 flickering and sparking from the same cable fault along Guindy race course road.",
       "category_a": "Street Infrastructure",
       "category_b": "Street Infrastructure",
       "latitude_a": 13.0067,
@@ -1998,7 +1999,7 @@ export const challengePairs = [
       "label": "related",
       "incident_id": "",
       "challenge_category": "Similar Wording, Distinct Incidents",
-      "rationale": "Adjacent sequential lamp poles on the same electric feed circuit experiencing linked power surge failure."
+      "rationale": "Adjacent sequential lamp poles on the same feeder circuit experienced linked power surge and failure from a common cable fault."
    },
    {
       "pair_id": "CH0106",
@@ -2195,7 +2196,7 @@ export const challengePairs = [
       "complaint_a_id": "CH_C0116",
       "complaint_b_id": "CH_C0266",
       "complaint_a": "Open stormwater canal overflowing into road verge in Tambaram sanatorium.",
-      "complaint_b": "Streetlight junction box submerged and emitting sparks in Tambaram sanatorium.",
+      "complaint_b": "Streetlight junction box submerged by canal overflow water emitting sparks in Tambaram sanatorium.",
       "category_a": "Drainage & Flooding",
       "category_b": "Street Infrastructure",
       "latitude_a": 12.9249,
@@ -2214,7 +2215,7 @@ export const challengePairs = [
       "complaint_a_id": "CH_C0117",
       "complaint_b_id": "CH_C0267",
       "complaint_a": "Lorry rammed into road median divider outside Chromepet railway gate.",
-      "complaint_b": "Median streetlight mast collapsed across roadway outside Chromepet railway gate.",
+      "complaint_b": "Median streetlight mast collapsed across roadway after lorry crash outside Chromepet railway gate.",
       "category_a": "Roads & Transport",
       "category_b": "Street Infrastructure",
       "latitude_a": 12.9516,
@@ -2226,14 +2227,14 @@ export const challengePairs = [
       "label": "related",
       "incident_id": "",
       "challenge_category": "Cascading Related Failures",
-      "rationale": "Vehicle impact smashed the concrete divider and toppled the mounted street lamp mast."
+      "rationale": "Vehicle impact smashed the concrete divider and toppled the mounted street lamp mast across the roadway."
    },
    {
       "pair_id": "CH0118",
       "complaint_a_id": "CH_C0118",
       "complaint_b_id": "CH_C0268",
       "complaint_a": "Sewage pumping main ruptured spewing foul wastewater on Guindy estate road.",
-      "complaint_b": "Stormwater drain overwhelmed with raw sewage backflow on Guindy estate road.",
+      "complaint_b": "Stormwater drain overwhelmed by ruptured sewage main backflow on Guindy estate road.",
       "category_a": "Water & Utilities",
       "category_b": "Drainage & Flooding",
       "latitude_a": 13.0067,
@@ -2347,7 +2348,7 @@ export const challengePairs = [
       "complaint_a_id": "CH_C0124",
       "complaint_b_id": "CH_C0274",
       "complaint_a": "Road grading machine cracked water supply connection valve in Saidapet.",
-      "complaint_b": "Clean water gushing onto road from valve damaged during road work in Saidapet.",
+      "complaint_b": "Clean water gushing onto road from water valve broken by road grading machine in Saidapet.",
       "category_a": "Roads & Transport",
       "category_b": "Water & Utilities",
       "latitude_a": 13.0213,
@@ -2359,14 +2360,14 @@ export const challengePairs = [
       "label": "related",
       "incident_id": "",
       "challenge_category": "Cascading Related Failures",
-      "rationale": "Road construction machine ruptured the water valve, triggering the clean water blowout."
+      "rationale": "Road grading machine ruptured the water valve, triggering the clean water blowout."
    },
    {
       "pair_id": "CH0125",
       "complaint_a_id": "CH_C0125",
       "complaint_b_id": "CH_C0275",
       "complaint_a": "Excavation for new high-mast light severed stormwater pipe at Perungalathur bus stand.",
-      "complaint_b": "Flooding on bus bay platform due to severed stormwater pipe at Perungalathur bus stand.",
+      "complaint_b": "Flooding on bus bay platform due to stormwater pipe severed during lighting excavation at Perungalathur bus stand.",
       "category_a": "Street Infrastructure",
       "category_b": "Drainage & Flooding",
       "latitude_a": 12.9048,
@@ -2404,7 +2405,7 @@ export const challengePairs = [
       "complaint_a_id": "CH_C0127",
       "complaint_b_id": "CH_C0277",
       "complaint_a": "Poultry and meat waste dumped into open drain outside Koyambedu market.",
-      "complaint_b": "Severe drain blockage and foul wastewater backing onto pedestrian path at Koyambedu.",
+      "complaint_b": "Severe drain blockage and wastewater backup from dumped animal waste at Koyambedu market.",
       "category_a": "Waste & Cleanliness",
       "category_b": "Drainage & Flooding",
       "latitude_a": 13.0694,
@@ -2423,7 +2424,7 @@ export const challengePairs = [
       "complaint_a_id": "CH_C0128",
       "complaint_b_id": "CH_C0278",
       "complaint_a": "Fallen tree branch crushing traffic signal pole outside IIT Madras main gate.",
-      "complaint_b": "Traffic signal completely dead and hanging by cable outside IIT Madras main gate.",
+      "complaint_b": "Traffic signal crushed by fallen tree branch completely dead and hanging by cable outside IIT Madras main gate.",
       "category_a": "Roads & Transport",
       "category_b": "Street Infrastructure",
       "latitude_a": 13.0067,

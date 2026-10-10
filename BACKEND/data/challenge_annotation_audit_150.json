@@ -1,0 +1,1352 @@
+[
+  {
+    "pair_id": "CH0001",
+    "challenge_category": "Paraphrases with Novel Vocabulary",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Paraphrases with Novel Vocabulary."
+  },
+  {
+    "pair_id": "CH0002",
+    "challenge_category": "Paraphrases with Novel Vocabulary",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Paraphrases with Novel Vocabulary."
+  },
+  {
+    "pair_id": "CH0003",
+    "challenge_category": "Paraphrases with Novel Vocabulary",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Paraphrases with Novel Vocabulary."
+  },
+  {
+    "pair_id": "CH0004",
+    "challenge_category": "Paraphrases with Novel Vocabulary",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Paraphrases with Novel Vocabulary."
+  },
+  {
+    "pair_id": "CH0005",
+    "challenge_category": "Paraphrases with Novel Vocabulary",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Paraphrases with Novel Vocabulary."
+  },
+  {
+    "pair_id": "CH0006",
+    "challenge_category": "Paraphrases with Novel Vocabulary",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Paraphrases with Novel Vocabulary."
+  },
+  {
+    "pair_id": "CH0007",
+    "challenge_category": "Paraphrases with Novel Vocabulary",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Paraphrases with Novel Vocabulary."
+  },
+  {
+    "pair_id": "CH0008",
+    "challenge_category": "Paraphrases with Novel Vocabulary",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Paraphrases with Novel Vocabulary."
+  },
+  {
+    "pair_id": "CH0009",
+    "challenge_category": "Paraphrases with Novel Vocabulary",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Paraphrases with Novel Vocabulary."
+  },
+  {
+    "pair_id": "CH0010",
+    "challenge_category": "Paraphrases with Novel Vocabulary",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Paraphrases with Novel Vocabulary."
+  },
+  {
+    "pair_id": "CH0011",
+    "challenge_category": "Paraphrases with Novel Vocabulary",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Rewrote complaint descriptions to explicitly ground the shared vehicle collision event that damaged both the railing and kerbstone.",
+    "evidence_basis": "Co-located cascading damage to multiple road assets directly caused by the documented vehicle collision."
+  },
+  {
+    "pair_id": "CH0012",
+    "challenge_category": "Paraphrases with Novel Vocabulary",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Paraphrases with Novel Vocabulary."
+  },
+  {
+    "pair_id": "CH0013",
+    "challenge_category": "Paraphrases with Novel Vocabulary",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Paraphrases with Novel Vocabulary."
+  },
+  {
+    "pair_id": "CH0014",
+    "challenge_category": "Paraphrases with Novel Vocabulary",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Paraphrases with Novel Vocabulary."
+  },
+  {
+    "pair_id": "CH0015",
+    "challenge_category": "Paraphrases with Novel Vocabulary",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Paraphrases with Novel Vocabulary."
+  },
+  {
+    "pair_id": "CH0016",
+    "challenge_category": "Typos and Spelling Variations",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Typos and Spelling Variations."
+  },
+  {
+    "pair_id": "CH0017",
+    "challenge_category": "Typos and Spelling Variations",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Typos and Spelling Variations."
+  },
+  {
+    "pair_id": "CH0018",
+    "challenge_category": "Typos and Spelling Variations",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Typos and Spelling Variations."
+  },
+  {
+    "pair_id": "CH0019",
+    "challenge_category": "Typos and Spelling Variations",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Typos and Spelling Variations."
+  },
+  {
+    "pair_id": "CH0020",
+    "challenge_category": "Typos and Spelling Variations",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Typos and Spelling Variations."
+  },
+  {
+    "pair_id": "CH0021",
+    "challenge_category": "Typos and Spelling Variations",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Typos and Spelling Variations."
+  },
+  {
+    "pair_id": "CH0022",
+    "challenge_category": "Typos and Spelling Variations",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Typos and Spelling Variations."
+  },
+  {
+    "pair_id": "CH0023",
+    "challenge_category": "Typos and Spelling Variations",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Rewrote Complaint B to explicitly state that the choked drain is overflowing into the pothole, grounding the physical link.",
+    "evidence_basis": "Drainage overflow directly exacerbating and filling the roadway pothole at Guindy bus stand."
+  },
+  {
+    "pair_id": "CH0024",
+    "challenge_category": "Typos and Spelling Variations",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Grounded Complaint B to state that the road subsidence occurred directly over the leaking pipeline.",
+    "evidence_basis": "Subsurface pipe leak eroding soil sub-base and causing localized road surface depression."
+  },
+  {
+    "pair_id": "CH0025",
+    "challenge_category": "Typos and Spelling Variations",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Typos and Spelling Variations."
+  },
+  {
+    "pair_id": "CH0026",
+    "challenge_category": "Typos and Spelling Variations",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Typos and Spelling Variations."
+  },
+  {
+    "pair_id": "CH0027",
+    "challenge_category": "Typos and Spelling Variations",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Typos and Spelling Variations."
+  },
+  {
+    "pair_id": "CH0028",
+    "challenge_category": "Typos and Spelling Variations",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Typos and Spelling Variations."
+  },
+  {
+    "pair_id": "CH0029",
+    "challenge_category": "Typos and Spelling Variations",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Typos and Spelling Variations."
+  },
+  {
+    "pair_id": "CH0030",
+    "challenge_category": "Typos and Spelling Variations",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Typos and Spelling Variations."
+  },
+  {
+    "pair_id": "CH0031",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Tanglish and Colloquial Phrasing."
+  },
+  {
+    "pair_id": "CH0032",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Tanglish and Colloquial Phrasing."
+  },
+  {
+    "pair_id": "CH0033",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Tanglish and Colloquial Phrasing."
+  },
+  {
+    "pair_id": "CH0034",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Tanglish and Colloquial Phrasing."
+  },
+  {
+    "pair_id": "CH0035",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Tanglish and Colloquial Phrasing."
+  },
+  {
+    "pair_id": "CH0036",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Tanglish and Colloquial Phrasing."
+  },
+  {
+    "pair_id": "CH0037",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Tanglish and Colloquial Phrasing."
+  },
+  {
+    "pair_id": "CH0038",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Tanglish and Colloquial Phrasing."
+  },
+  {
+    "pair_id": "CH0039",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Tanglish and Colloquial Phrasing."
+  },
+  {
+    "pair_id": "CH0040",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Tanglish and Colloquial Phrasing."
+  },
+  {
+    "pair_id": "CH0041",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Tanglish and Colloquial Phrasing."
+  },
+  {
+    "pair_id": "CH0042",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Tanglish and Colloquial Phrasing."
+  },
+  {
+    "pair_id": "CH0043",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Tanglish and Colloquial Phrasing."
+  },
+  {
+    "pair_id": "CH0044",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Tanglish and Colloquial Phrasing."
+  },
+  {
+    "pair_id": "CH0045",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Tanglish and Colloquial Phrasing."
+  },
+  {
+    "pair_id": "CH0046",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Very Short and Vague Descriptions."
+  },
+  {
+    "pair_id": "CH0047",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Very Short and Vague Descriptions."
+  },
+  {
+    "pair_id": "CH0048",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Very Short and Vague Descriptions."
+  },
+  {
+    "pair_id": "CH0049",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Very Short and Vague Descriptions."
+  },
+  {
+    "pair_id": "CH0050",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Very Short and Vague Descriptions."
+  },
+  {
+    "pair_id": "CH0051",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Very Short and Vague Descriptions."
+  },
+  {
+    "pair_id": "CH0052",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category Very Short and Vague Descriptions."
+  },
+  {
+    "pair_id": "CH0053",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "original_label": "related",
+    "reviewed_label": "independent",
+    "decision": "relabel",
+    "reason": "A road crater and a leaning lamp pole at Adyar signal are separate physical assets and defects. Without documented causal undermining in the text, adjacency does not establish a relationship.",
+    "evidence_basis": "Co-located independent defects across Roads & Transport and Street Infrastructure domains."
+  },
+  {
+    "pair_id": "CH0054",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "original_label": "related",
+    "reviewed_label": "independent",
+    "decision": "relabel",
+    "reason": "A drinking water leak and a stormwater drain overflow at Porur toll are distinct utility failures with no documented cross-contamination.",
+    "evidence_basis": "Independent utility infrastructure failures at the same highway intersection."
+  },
+  {
+    "pair_id": "CH0055",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "original_label": "related",
+    "reviewed_label": "independent",
+    "decision": "relabel",
+    "reason": "A street trash pile and a choked gutter at Mylapore tank are separate complaints with no textual or physical evidence linking them.",
+    "evidence_basis": "Unconnected sanitation and drainage complaints at the same landmark."
+  },
+  {
+    "pair_id": "CH0056",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "original_label": "related",
+    "reviewed_label": "independent",
+    "decision": "relabel",
+    "reason": "Vague complaints for 'Broken railing' and 'Curb broken' at Saidapet bus stop do not establish a shared collision event. Assuming a vehicular accident without textual evidence is ungrounded.",
+    "evidence_basis": "Separate structural assets with no documented common incident trigger."
+  },
+  {
+    "pair_id": "CH0057",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Very Short and Vague Descriptions."
+  },
+  {
+    "pair_id": "CH0058",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Very Short and Vague Descriptions."
+  },
+  {
+    "pair_id": "CH0059",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Very Short and Vague Descriptions."
+  },
+  {
+    "pair_id": "CH0060",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Very Short and Vague Descriptions."
+  },
+  {
+    "pair_id": "CH0061",
+    "challenge_category": "Same Location, Different Issue",
+    "original_label": "related",
+    "reviewed_label": "independent",
+    "decision": "relabel",
+    "reason": "A road pothole and a damaged speed-breaker reflector sign outside Medavakkam police station are independent maintenance items. Claiming pothole impacts loosened the sign is an unsupported inference.",
+    "evidence_basis": "Distinct physical assets and municipal maintenance domains at the same street section."
+  },
+  {
+    "pair_id": "CH0062",
+    "challenge_category": "Same Location, Different Issue",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Grounded Complaint B to explicitly link the road depression to the underlying leaking pipeline.",
+    "evidence_basis": "Underground pipe blowout causing progressive road surface cavity directly above."
+  },
+  {
+    "pair_id": "CH0063",
+    "challenge_category": "Same Location, Different Issue",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Grounded Complaint B to state that the drain blockage was caused by the dumped commercial garbage.",
+    "evidence_basis": "Dumped solid waste directly obstructing adjacent stormwater drain inlet."
+  },
+  {
+    "pair_id": "CH0064",
+    "challenge_category": "Same Location, Different Issue",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Same Location, Different Issue."
+  },
+  {
+    "pair_id": "CH0065",
+    "challenge_category": "Same Location, Different Issue",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Same Location, Different Issue."
+  },
+  {
+    "pair_id": "CH0066",
+    "challenge_category": "Same Location, Different Issue",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Same Location, Different Issue."
+  },
+  {
+    "pair_id": "CH0067",
+    "challenge_category": "Same Location, Different Issue",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Location, Different Issue."
+  },
+  {
+    "pair_id": "CH0068",
+    "challenge_category": "Same Location, Different Issue",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Location, Different Issue."
+  },
+  {
+    "pair_id": "CH0069",
+    "challenge_category": "Same Location, Different Issue",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Location, Different Issue."
+  },
+  {
+    "pair_id": "CH0070",
+    "challenge_category": "Same Location, Different Issue",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Location, Different Issue."
+  },
+  {
+    "pair_id": "CH0071",
+    "challenge_category": "Same Location, Different Issue",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Location, Different Issue."
+  },
+  {
+    "pair_id": "CH0072",
+    "challenge_category": "Same Location, Different Issue",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Location, Different Issue."
+  },
+  {
+    "pair_id": "CH0073",
+    "challenge_category": "Same Location, Different Issue",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Location, Different Issue."
+  },
+  {
+    "pair_id": "CH0074",
+    "challenge_category": "Same Location, Different Issue",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Location, Different Issue."
+  },
+  {
+    "pair_id": "CH0075",
+    "challenge_category": "Same Location, Different Issue",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Location, Different Issue."
+  },
+  {
+    "pair_id": "CH0076",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Grounded Complaint B to explicitly cite the Porur trunk main burst as the direct cause of the downstream supply cutoff.",
+    "evidence_basis": "Upstream transmission main rupture directly causing downstream residential supply failure in hydraulic network."
+  },
+  {
+    "pair_id": "CH0077",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Grounded Complaint B to explicitly cite the stuck river mouth sluice gate as the cause of upstream backwater flooding.",
+    "evidence_basis": "Downstream hydraulic barrier failure directly triggering upstream backwater riverbank inundation."
+  },
+  {
+    "pair_id": "CH0078",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "original_label": "related",
+    "reviewed_label": "independent",
+    "decision": "relabel",
+    "reason": "A central transfer station compactor breakdown in Velachery and local ward collection bins in Madipakkam 2.5 km away are separate operational tickets. Clustering algorithms must not group them.",
+    "evidence_basis": "Geographically distant (2.5 km) operational facility ticket vs neighborhood conservancy route ticket."
+  },
+  {
+    "pair_id": "CH0079",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Issue, Geographically Distant."
+  },
+  {
+    "pair_id": "CH0080",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Issue, Geographically Distant."
+  },
+  {
+    "pair_id": "CH0081",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Issue, Geographically Distant."
+  },
+  {
+    "pair_id": "CH0082",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Issue, Geographically Distant."
+  },
+  {
+    "pair_id": "CH0083",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Issue, Geographically Distant."
+  },
+  {
+    "pair_id": "CH0084",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Issue, Geographically Distant."
+  },
+  {
+    "pair_id": "CH0085",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Issue, Geographically Distant."
+  },
+  {
+    "pair_id": "CH0086",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Issue, Geographically Distant."
+  },
+  {
+    "pair_id": "CH0087",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Issue, Geographically Distant."
+  },
+  {
+    "pair_id": "CH0088",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Issue, Geographically Distant."
+  },
+  {
+    "pair_id": "CH0089",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Issue, Geographically Distant."
+  },
+  {
+    "pair_id": "CH0090",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Same Issue, Geographically Distant."
+  },
+  {
+    "pair_id": "CH0091",
+    "challenge_category": "Temporally Distant at Same Location",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Grounded Complaint B to explicitly reference the uncleaned silt remaining from the July runoff event.",
+    "evidence_basis": "Chronic post-monsoon silt accumulation persisting as direct consequence of uncleaned flood event."
+  },
+  {
+    "pair_id": "CH0092",
+    "challenge_category": "Temporally Distant at Same Location",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Temporally Distant at Same Location."
+  },
+  {
+    "pair_id": "CH0093",
+    "challenge_category": "Temporally Distant at Same Location",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Grounded Complaint B to explicitly link the July dry taps to the unresolved May pipeline leak.",
+    "evidence_basis": "Progressive physical failure of the same underground distribution pipe across consecutive billing cycles."
+  },
+  {
+    "pair_id": "CH0094",
+    "challenge_category": "Temporally Distant at Same Location",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Temporally Distant at Same Location."
+  },
+  {
+    "pair_id": "CH0095",
+    "challenge_category": "Temporally Distant at Same Location",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Temporally Distant at Same Location."
+  },
+  {
+    "pair_id": "CH0096",
+    "challenge_category": "Temporally Distant at Same Location",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Temporally Distant at Same Location."
+  },
+  {
+    "pair_id": "CH0097",
+    "challenge_category": "Temporally Distant at Same Location",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Temporally Distant at Same Location."
+  },
+  {
+    "pair_id": "CH0098",
+    "challenge_category": "Temporally Distant at Same Location",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Temporally Distant at Same Location."
+  },
+  {
+    "pair_id": "CH0099",
+    "challenge_category": "Temporally Distant at Same Location",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Temporally Distant at Same Location."
+  },
+  {
+    "pair_id": "CH0100",
+    "challenge_category": "Temporally Distant at Same Location",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Temporally Distant at Same Location."
+  },
+  {
+    "pair_id": "CH0101",
+    "challenge_category": "Similar Wording, Distinct Incidents",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Grounded both complaints in the shared overnight vandalism incident on the Medavakkam southbound shelter.",
+    "evidence_basis": "Shared intentional vandalism event causing concurrent damage to multiple components of the same bus shelter."
+  },
+  {
+    "pair_id": "CH0102",
+    "challenge_category": "Similar Wording, Distinct Incidents",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Grounded Complaint B to show that the downstream conduit blockage was caused by trash entering through the missing grate.",
+    "evidence_basis": "Missing inlet grate directly enabling street debris ingress that clogged the downstream conduit."
+  },
+  {
+    "pair_id": "CH0103",
+    "challenge_category": "Similar Wording, Distinct Incidents",
+    "original_label": "related",
+    "reviewed_label": "independent",
+    "decision": "relabel",
+    "reason": "Pedestrian fence crossing breaches and heavy concrete kerbstone displacements are distinct physical failure mechanisms along the Tambaram railway approach.",
+    "evidence_basis": "Distinct physical assets along the same corridor with separate causal mechanisms."
+  },
+  {
+    "pair_id": "CH0104",
+    "challenge_category": "Similar Wording, Distinct Incidents",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Grounded Complaint B to state that the basin overflow was directly caused by the continuous tap leak.",
+    "evidence_basis": "Continuous unvalved tap leakage directly overwhelming the wastewater drain basin of the same fixture."
+  },
+  {
+    "pair_id": "CH0105",
+    "challenge_category": "Similar Wording, Distinct Incidents",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Grounded both complaints in the shared underground cable fault affecting sequential poles 14 and 15.",
+    "evidence_basis": "Sequential light poles on the same electric feeder circuit concurrently failing from a common cable fault."
+  },
+  {
+    "pair_id": "CH0106",
+    "challenge_category": "Similar Wording, Distinct Incidents",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Similar Wording, Distinct Incidents."
+  },
+  {
+    "pair_id": "CH0107",
+    "challenge_category": "Similar Wording, Distinct Incidents",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Similar Wording, Distinct Incidents."
+  },
+  {
+    "pair_id": "CH0108",
+    "challenge_category": "Similar Wording, Distinct Incidents",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Similar Wording, Distinct Incidents."
+  },
+  {
+    "pair_id": "CH0109",
+    "challenge_category": "Similar Wording, Distinct Incidents",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Similar Wording, Distinct Incidents."
+  },
+  {
+    "pair_id": "CH0110",
+    "challenge_category": "Similar Wording, Distinct Incidents",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Similar Wording, Distinct Incidents."
+  },
+  {
+    "pair_id": "CH0111",
+    "challenge_category": "Similar Wording, Distinct Incidents",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Similar Wording, Distinct Incidents."
+  },
+  {
+    "pair_id": "CH0112",
+    "challenge_category": "Similar Wording, Distinct Incidents",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Similar Wording, Distinct Incidents."
+  },
+  {
+    "pair_id": "CH0113",
+    "challenge_category": "Similar Wording, Distinct Incidents",
+    "original_label": "independent",
+    "reviewed_label": "independent",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with independent ground-truth definition under category Similar Wording, Distinct Incidents."
+  },
+  {
+    "pair_id": "CH0114",
+    "challenge_category": "Cascading Related Failures",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Cascading Related Failures."
+  },
+  {
+    "pair_id": "CH0115",
+    "challenge_category": "Cascading Related Failures",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Cascading Related Failures."
+  },
+  {
+    "pair_id": "CH0116",
+    "challenge_category": "Cascading Related Failures",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Grounded Complaint B to state that the electrical junction box sparking was caused by canal overflow submersion.",
+    "evidence_basis": "Hydraulic canal overflow directly submerging and short-circuiting adjacent electrical infrastructure."
+  },
+  {
+    "pair_id": "CH0117",
+    "challenge_category": "Cascading Related Failures",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Grounded Complaint B to state that the streetlight mast collapse was caused by the lorry crash into the median.",
+    "evidence_basis": "Heavy vehicular crash into road median toppling the mounted electrical light mast."
+  },
+  {
+    "pair_id": "CH0118",
+    "challenge_category": "Cascading Related Failures",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Grounded Complaint B to explicitly cite the ruptured sewage main as the source of the stormwater drain contamination.",
+    "evidence_basis": "Pressurized sewer main rupture discharging directly into adjacent stormwater drain network."
+  },
+  {
+    "pair_id": "CH0119",
+    "challenge_category": "Cascading Related Failures",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Cascading Related Failures."
+  },
+  {
+    "pair_id": "CH0120",
+    "challenge_category": "Cascading Related Failures",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Cascading Related Failures."
+  },
+  {
+    "pair_id": "CH0121",
+    "challenge_category": "Cascading Related Failures",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Cascading Related Failures."
+  },
+  {
+    "pair_id": "CH0122",
+    "challenge_category": "Cascading Related Failures",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Cascading Related Failures."
+  },
+  {
+    "pair_id": "CH0123",
+    "challenge_category": "Cascading Related Failures",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Cascading Related Failures."
+  },
+  {
+    "pair_id": "CH0124",
+    "challenge_category": "Cascading Related Failures",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Grounded Complaint B to explicitly mention that the broken valve was damaged by the road grading machine.",
+    "evidence_basis": "Heavy road construction grading machine physically rupturing municipal water supply valve."
+  },
+  {
+    "pair_id": "CH0125",
+    "challenge_category": "Cascading Related Failures",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Grounded Complaint B to explicitly state that the flooding was caused by the severed pipe from lighting excavation.",
+    "evidence_basis": "High-mast lighting civil work breached the stormwater conduit, flooding the passenger platform."
+  },
+  {
+    "pair_id": "CH0126",
+    "challenge_category": "Cascading Related Failures",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with related ground-truth definition under category Cascading Related Failures."
+  },
+  {
+    "pair_id": "CH0127",
+    "challenge_category": "Cascading Related Failures",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Grounded Complaint B to cite the dumped animal waste as the cause of the drain blockage and backup.",
+    "evidence_basis": "Commercial slaughterhouse/poultry waste illegally disposed into drain conduit choking municipal outflow."
+  },
+  {
+    "pair_id": "CH0128",
+    "challenge_category": "Cascading Related Failures",
+    "original_label": "related",
+    "reviewed_label": "related",
+    "decision": "rewrite_example",
+    "reason": "Grounded Complaint B to explicitly cite the tree branch impact that crushed the traffic signal.",
+    "evidence_basis": "Heavy storm tree fall physically crushing traffic signal structural mast and electrical wiring."
+  },
+  {
+    "pair_id": "CH0129",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0130",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0131",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0132",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0133",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0134",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0135",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0136",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0137",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0138",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0139",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0140",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0141",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0142",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0143",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0144",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0145",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0146",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0147",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0148",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0149",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  },
+  {
+    "pair_id": "CH0150",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "original_label": "duplicate",
+    "reviewed_label": "duplicate",
+    "decision": "retain",
+    "reason": "Proposed label is fully supported by the complaint descriptions, geographic proximity, and temporal separation.",
+    "evidence_basis": "Consistent with duplicate ground-truth definition under category True Duplicates with Disparate Phrasing."
+  }
+]

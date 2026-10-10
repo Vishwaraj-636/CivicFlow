@@ -115,10 +115,10 @@ describe("CIVICFLOW Phase A2 — Dataset Splits and Challenge Set Integrity", ()
    });
 
    describe("3. Synthetic Challenge Set (150 pairs)", () => {
-      it("contains exactly 150 unique pairs with balanced 50/50/50 class distribution", () => {
+      it("contains exactly 150 unique pairs with audited 50/43/57 class distribution", () => {
          assert.equal(challengePairs.length, 150);
          const validation = validateChallengeSet(challengePairs);
-         assert.deepEqual(validation.labelCounts, { duplicate: 50, related: 50, independent: 50 });
+         assert.deepEqual(validation.labelCounts, { duplicate: 50, related: 43, independent: 57 });
       });
 
       it("covers all 10 required challenge categories", () => {
@@ -189,6 +189,61 @@ describe("CIVICFLOW Phase A2 — Dataset Splits and Challenge Set Integrity", ()
          const sampleA = sampleReviewPairs(challengePairs, 42);
          const sampleB = sampleReviewPairs(challengePairs, 42);
          assert.deepEqual(sampleA.map((s) => s.pair_id), sampleB.map((s) => s.pair_id), "Sample selection must be deterministic");
+      });
+   });
+
+   describe("5. Phase A2.1 Annotation Audit and Scenario Grounding Verification", () => {
+      const AUDIT_JSON_PATH = path.resolve(__dirname, "../data/challenge_annotation_audit_150.json");
+      const AUDIT_MD_PATH = path.resolve(__dirname, "../data/challenge_annotation_audit_150.md");
+
+      it("annotation audit artifacts exist on disk", () => {
+         assert.ok(fs.existsSync(AUDIT_JSON_PATH), "challenge_annotation_audit_150.json must exist");
+         assert.ok(fs.existsSync(AUDIT_MD_PATH), "challenge_annotation_audit_150.md must exist");
+      });
+
+      it("audit artifact covers all 150 unique pairs with valid decisions and evidence", () => {
+         const audit = JSON.parse(fs.readFileSync(AUDIT_JSON_PATH, "utf8"));
+         assert.equal(audit.length, 150, "Audit must contain exactly 150 records");
+
+         const validDecisions = new Set(["retain", "relabel", "rewrite_example", "needs_review"]);
+         const decisionCounts = { retain: 0, relabel: 0, rewrite_example: 0, needs_review: 0 };
+         const auditedIds = new Set();
+
+         for (const item of audit) {
+            assert.ok(!auditedIds.has(item.pair_id), `Duplicate audit pair_id: ${item.pair_id}`);
+            auditedIds.add(item.pair_id);
+
+            assert.ok(validDecisions.has(item.decision), `Invalid decision '${item.decision}' for ${item.pair_id}`);
+            decisionCounts[item.decision]++;
+
+            assert.ok(item.reason && item.reason.length >= 10, `Missing or brief reason for ${item.pair_id}`);
+            assert.ok(item.evidence_basis && item.evidence_basis.length >= 10, `Missing or brief evidence_basis for ${item.pair_id}`);
+         }
+
+         assert.equal(auditedIds.size, 150);
+         assert.equal(decisionCounts.relabel, 7, "Exactly 7 indefensible pairs must be relabeled");
+         assert.equal(decisionCounts.rewrite_example, 20, "Exactly 20 pairs must be rewritten for explicit grounding");
+         assert.equal(decisionCounts.retain, 123, "Exactly 123 pairs must be retained");
+         assert.equal(decisionCounts.needs_review, 0, "All cases must be resolved (zero needs_review)");
+      });
+
+      it("reviewed label distribution accurately reflects 50 duplicate, 43 related, 57 independent", () => {
+         const audit = JSON.parse(fs.readFileSync(AUDIT_JSON_PATH, "utf8"));
+         const counts = { duplicate: 0, related: 0, independent: 0 };
+         for (const a of audit) {
+            counts[a.reviewed_label]++;
+         }
+         assert.deepEqual(counts, { duplicate: 50, related: 43, independent: 57 });
+      });
+
+      it("every 'related' pair has documented causal basis in complaint text and rationale", () => {
+         const relatedPairs = challengePairs.filter((p) => p.label === "related");
+         assert.equal(relatedPairs.length, 43);
+
+         for (const p of relatedPairs) {
+            assert.ok(p.rationale && p.rationale.length >= 15, `Pair ${p.pair_id} rationale too short`);
+            assert.equal(p.incident_id, "", `Related pair ${p.pair_id} must have empty incident_id`);
+         }
       });
    });
 });
