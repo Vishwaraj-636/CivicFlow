@@ -148,7 +148,7 @@ export function loadDatasetPartitions(paths = {}) {
  */
 export function evaluatePair(pair, config = HISC_CONFIG) {
    const analysis = extractIncidentFeatures(pair.complaint_a, pair.complaint_b, config);
-   const predicted = classifyIncidentScore(analysis.score, config);
+   const predicted = classifyIncidentScore(analysis, config);
 
    return {
       pair_id: pair.pair_id,

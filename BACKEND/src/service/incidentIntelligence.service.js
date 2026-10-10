@@ -4,43 +4,152 @@ import IncidentCluster from "../model/incidentCluster.model.js";
 
 export const HISC_CONFIG = {
    radiusInMeters: 1000,
-   temporalWindowHours: 24 * 30,
-   duplicateThreshold: 0.6,
+   temporalWindowHours: 24 * 30, // 720 hours
+   duplicateThreshold: 0.60,
    relatedThreshold: 0.35,
    weights: {
-      category: 0.2,
+      category: 0.20,
       geographic: 0.25,
-      lexical: 0.1,
-      semantic: 0.3,
+      lexical: 0.10,
+      semantic: 0.30,
       temporal: 0.15,
    },
 };
 
-const synonymGroups = [
-   ["pothole", "crater", "road damage", "road defect"],
-   ["streetlight", "street lamp", "lamp post", "light pole"],
-   ["garbage", "waste", "trash", "rubbish"],
-   ["leak", "leakage", "burst", "broken pipe"],
-   ["flood", "flooding", "waterlogging", "inundation"],
-];
+export const CIVIC_CONCEPT_DICTIONARY = {
+   road_defect: [
+      "pothole", "crater", "road damage", "road defect", "damaged road", "broken road",
+      "road surface", "asphalt", "tarmac", "bitumen", "rutting", "pavement damage",
+      "median fence", "kerb stone", "median kerb"
+   ],
+   streetlight: [
+      "streetlight", "street lamp", "lamp post", "light pole", "street light",
+      "luminaire", "lighting", "dark stretch", "lantern", "sodium luminaire"
+   ],
+   traffic_signal: [
+      "traffic signal", "traffic light", "signal pole", "signal box", "signal light",
+      "signal failure", "signal controller", "pedestrian signal", "blinking signal"
+   ],
+   electrical_hazard: [
+      "transformer", "power line", "electric wire", "power cable", "electrical line",
+      "fuse box", "substation", "short circuit", "sparking wire", "power pole",
+      "power outage", "live wire", "hanging wire"
+   ],
+   water_leak: [
+      "leak", "leakage", "burst", "broken pipe", "water pipeline", "water main",
+      "pipe burst", "pipeline leak", "water supply", "drinking water", "leaking pipe",
+      "hydrant valve", "fire hydrant"
+   ],
+   drainage: [
+      "drain", "drainage", "sewer", "sewerage", "manhole", "stormwater", "culvert",
+      "gutter", "catch basin", "gully", "backflow", "waterlogging", "inundation",
+      "flood", "flooding", "overflow", "clogged drain", "blocked drain", "manhole cover"
+   ],
+   garbage: [
+      "garbage", "waste", "trash", "rubbish", "debris", "refuse", "dumping",
+      "litter", "uncollected waste", "dump yard", "construction scrap", "discarded",
+      "dumper bin", "garbage bin"
+   ],
+   fallen_tree: [
+      "fallen tree", "tree branch", "downed tree", "uprooted tree", "broken bough",
+      "hanging branch", "fallen bough", "tree fall", "overhanging branch"
+   ],
+   ground_collapse: [
+      "sinkhole", "cave in", "cave-in", "caved in", "ground collapse",
+      "road collapse", "subsidence", "trench collapse", "deep crater"
+   ],
+   sidewalk_defect: [
+      "sidewalk", "footpath", "pavement", "paver", "pedestrian walkway",
+      "walkway", "curb", "kerb", "loose paver", "broken slab", "bus shelter"
+   ],
+};
 
-const tokenize = (value = "") => String(value).toLowerCase()
+export const CAUSAL_CONCEPT_PAIRS = new Set([
+   "electrical_hazard <-> fallen_tree",
+   "fallen_tree <-> traffic_signal",
+   "fallen_tree <-> road_defect",
+   "fallen_tree <-> streetlight",
+   "ground_collapse <-> water_leak",
+   "drainage <-> water_leak",
+   "road_defect <-> water_leak",
+   "drainage <-> garbage",
+   "drainage <-> road_defect",
+   "ground_collapse <-> road_defect",
+   "electrical_hazard <-> streetlight",
+   "electrical_hazard <-> traffic_signal",
+]);
+
+export const CIVIC_STOP_WORDS = new Set([
+   "the", "and", "near", "close", "along", "around", "road", "street", "area",
+   "junction", "corner", "stretch", "bypass", "lane", "main", "nagar", "salai",
+   "issue", "problem", "reported", "complaint", "urgent", "needs", "repair",
+   "due", "after", "with", "from", "for", "been", "has", "have", "this", "that",
+   "there", "about", "front", "section", "block", "stretch", "place", "market", "signal"
+]);
+
+export const normalizeCivicText = (value = "") => String(value).toLowerCase()
    .replace(/[^a-z0-9\s]/g, " ")
-   .split(/\s+/)
-   .filter((word) => word.length > 2);
+   .replace(/\s+/g, " ")
+   .trim();
 
-const expandedTokens = (value) => new Set(tokenize(value).flatMap((token) => {
-   const group = synonymGroups.find((items) => items.includes(token));
-   return group ? [...group, token] : [token];
-}));
+export const extractCivicConcepts = (normText) => {
+   const concepts = new Set();
+   for (const [conceptKey, phrases] of Object.entries(CIVIC_CONCEPT_DICTIONARY)) {
+      for (const phrase of phrases) {
+         if (normText.includes(phrase)) {
+            concepts.add(conceptKey);
+            break;
+         }
+      }
+   }
+   return concepts;
+};
 
-const intersectionRatio = (first, second) => {
+export const tokenize = (normText = "") => {
+   const normalized = typeof normText === "string" && !normText.includes(" ") && normText.length > 2
+      ? normText.toLowerCase()
+      : normalizeCivicText(normText);
+   return normalized
+      .split(/\s+/)
+      .filter((word) => word.length > 2 && !CIVIC_STOP_WORDS.has(word));
+};
+
+export const intersectionRatio = (first, second) => {
    const union = new Set([...first, ...second]);
    if (!union.size) return 0;
    return [...first].filter((token) => second.has(token)).length / union.size;
 };
 
+export const hasOpposingDirections = (textA, textB) => {
+   const north = /\b(north|northbound|northern)\b/;
+   const south = /\b(south|southbound|southern)\b/;
+   const east = /\b(east|eastbound|eastern)\b/;
+   const west = /\b(west|westbound|western)\b/;
+
+   if ((north.test(textA) && south.test(textB)) || (south.test(textA) && north.test(textB))) return true;
+   if ((east.test(textA) && west.test(textB)) || (west.test(textA) && east.test(textB))) return true;
+   return false;
+};
+
+export const hasCausalOrSharedConcept = (conceptsA, conceptsB) => {
+   for (const c of conceptsA) {
+      if (conceptsB.has(c)) return true;
+   }
+   for (const cA of conceptsA) {
+      for (const cB of conceptsB) {
+         const key = [cA, cB].sort().join(" <-> ");
+         if (CAUSAL_CONCEPT_PAIRS.has(key)) return true;
+      }
+   }
+   return false;
+};
+
 export const distanceInMeters = (first, second) => {
+   if (!first || !second || !Array.isArray(first) || !Array.isArray(second)
+      || first.length < 2 || second.length < 2
+      || Number.isNaN(Number(first[0])) || Number.isNaN(Number(second[0]))) {
+      return Infinity;
+   }
    const [firstLng, firstLat] = first;
    const [secondLng, secondLat] = second;
    const earthRadius = 6371000;
@@ -52,37 +161,67 @@ export const distanceInMeters = (first, second) => {
    return earthRadius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 };
 
-const categoryScore = (first, second) => {
-   if (first === second) return 1;
-   const families = [
-      ["Roads & Transport", "Street Infrastructure"],
-      ["Water & Utilities", "Drainage & Flooding"],
-      ["Waste & Cleanliness"],
-   ];
-   return families.some((family) => family.includes(first) && family.includes(second)) ? 0.6 : 0;
+export const categoryScore = (first, second) => {
+   if (!first || !second || first === "Unknown" || second === "Unknown") return 0.3;
+   if (first === second) return 1.0;
+
+   const pair = [first, second].sort().join(" <-> ");
+   const compatibleFamilies = {
+      "Roads & Transport <-> Street Infrastructure": 0.6,
+      "Drainage & Flooding <-> Water & Utilities": 0.6,
+      "Drainage & Flooding <-> Roads & Transport": 0.4,
+      "Drainage & Flooding <-> Waste & Cleanliness": 0.4,
+      "Roads & Transport <-> Water & Utilities": 0.2,
+   };
+   return compatibleFamilies[pair] ?? 0.0;
 };
 
 const featureExplanation = (features, distance, hours) => [
    features.category >= 1 ? "Same civic category" : features.category > 0 ? "Compatible civic categories" : null,
-   `Complaints are ${Math.round(distance)} meters apart`,
-   `Submitted ${hours < 1 ? "within an hour" : `within ${Math.round(hours)} hours`}`,
+   Number.isFinite(distance) ? `Complaints are ${Math.round(distance)} meters apart` : "Coordinates unavailable",
+   Number.isFinite(hours)
+      ? `Submitted ${hours < 1 ? "within an hour" : `within ${Math.round(hours)} hours`}`
+      : "Timestamps unavailable",
    features.semantic >= 0.7 ? "High semantic similarity" : features.lexical >= 0.5 ? "Shared descriptive terms" : null,
 ].filter(Boolean);
 
 export const extractIncidentFeatures = (complaint, candidate, config = HISC_CONFIG) => {
-   const distance = distanceInMeters(complaint.location.coordinates, candidate.location.coordinates);
-   const hours = Math.abs(new Date(complaint.createdAt) - new Date(candidate.createdAt)) / 3600000;
-   const textA = `${complaint.title} ${complaint.description}`;
-   const textB = `${candidate.title} ${candidate.description}`;
-   const lexical = intersectionRatio(new Set(tokenize(textA)), new Set(tokenize(textB)));
-   const semantic = intersectionRatio(expandedTokens(textA), expandedTokens(textB));
+   const coordsA = complaint?.location?.coordinates;
+   const coordsB = candidate?.location?.coordinates;
+   const distance = distanceInMeters(coordsA, coordsB);
+
+   const dateA = complaint?.createdAt ? new Date(complaint.createdAt).getTime() : NaN;
+   const dateB = candidate?.createdAt ? new Date(candidate.createdAt).getTime() : NaN;
+   const hours = (!Number.isNaN(dateA) && !Number.isNaN(dateB))
+      ? Math.abs(dateA - dateB) / 3600000
+      : Infinity;
+
+   const textA = normalizeCivicText(`${complaint?.title ?? ""} ${complaint?.description ?? ""}`);
+   const textB = normalizeCivicText(`${candidate?.title ?? ""} ${candidate?.description ?? ""}`);
+
+   const tokensA = new Set(tokenize(textA));
+   const tokensB = new Set(tokenize(textB));
+
+   const conceptsA = extractCivicConcepts(textA);
+   const conceptsB = extractCivicConcepts(textB);
+
+   const lexical = intersectionRatio(tokensA, tokensB);
+   const semanticTokensA = new Set([...tokensA, ...conceptsA]);
+   const semanticTokensB = new Set([...tokensB, ...conceptsB]);
+   const semantic = intersectionRatio(semanticTokensA, semanticTokensB);
+
+   const catSim = categoryScore(complaint?.category, candidate?.category);
+   const causallyConnected = hasCausalOrSharedConcept(conceptsA, conceptsB);
+   const opposingDir = hasOpposingDirections(textA, textB);
+
    const features = {
-      category: categoryScore(complaint.category, candidate.category),
-      geographic: Math.exp(-distance / config.radiusInMeters),
+      category: catSim,
+      geographic: Number.isFinite(distance) ? Math.exp(-distance / config.radiusInMeters) : 0,
       lexical,
       semantic,
-      temporal: Math.exp(-hours / config.temporalWindowHours),
+      temporal: Number.isFinite(hours) ? Math.exp(-hours / config.temporalWindowHours) : 0,
    };
+
    const enabledFeatures = config.enabledFeatures ?? {};
    const activeWeights = Object.entries(config.weights ?? HISC_CONFIG.weights)
       .filter(([feature]) => enabledFeatures[feature] !== false);
@@ -90,18 +229,68 @@ export const extractIncidentFeatures = (complaint, candidate, config = HISC_CONF
    const score = Math.min(1, Math.max(0,
       activeWeights.reduce((total, [feature, weight]) => total + features[feature] * weight, 0) / totalWeight
    ));
+
+   const context = {
+      distance,
+      hours,
+      catSim,
+      causallyConnected,
+      opposingDir,
+      semantic,
+      lexical,
+   };
+
    return {
       score,
       features,
       distance,
       hours,
       explanation: featureExplanation(features, distance, hours),
+      context,
    };
 };
 
-export const classifyIncidentScore = (score, config = HISC_CONFIG) => {
-   if (score >= config.duplicateThreshold) return "duplicate";
-   if (score >= config.relatedThreshold) return "related";
+export const classifyIncidentScore = (scoreOrAnalysis, config = HISC_CONFIG, context = null) => {
+   const score = typeof scoreOrAnalysis === "object" ? scoreOrAnalysis.score : scoreOrAnalysis;
+   const ctx = (typeof scoreOrAnalysis === "object" ? scoreOrAnalysis.context : null)
+      ?? context?.analysis?.context ?? context;
+
+   if (ctx) {
+      const {
+         distance = 0,
+         hours = 0,
+         catSim = 1,
+         causallyConnected = false,
+         opposingDir = false,
+         semantic = 0,
+         lexical = 0,
+      } = ctx;
+
+      // Rule 1: Distant boundary (>3000m is never local incident)
+      if (distance > 3000) return "independent";
+      // Rule 2: Temporal boundary (>720h is independent weather/temporal cycle)
+      if (hours > 720) return "independent";
+      // Rule 3: Operational radius (>1000m requires substantive causal/defect connection)
+      if (distance > (config.radiusInMeters ?? 1000) && (!causallyConnected || semantic < 0.20)) return "independent";
+      // Rule 4: Incompatible categories without causal connection
+      if (catSim === 0.0 && !causallyConnected) return "independent";
+
+      // Rule 5: Duplicate requirements
+      if (score >= (config.duplicateThreshold ?? 0.60)) {
+         if (catSim >= 0.9 && distance <= 250 && hours <= 168 && !opposingDir && (semantic > 0 || lexical > 0 || score >= 0.70)) {
+            return "duplicate";
+         }
+         return opposingDir ? "independent" : "related";
+      }
+      if (score >= (config.relatedThreshold ?? 0.35)) {
+         return opposingDir && catSim < 0.9 ? "independent" : "related";
+      }
+      return "independent";
+   }
+
+   // Pure threshold fallback
+   if (score >= (config.duplicateThreshold ?? 0.60)) return "duplicate";
+   if (score >= (config.relatedThreshold ?? 0.35)) return "related";
    return "independent";
 };
 
@@ -116,7 +305,7 @@ export const analyzeIncident = async (complaint, config = HISC_CONFIG) => {
    const candidates = await retrieveIncidentCandidates(complaint, config);
    return candidates.map((candidate) => {
       const analysis = extractIncidentFeatures(complaint, candidate, config);
-      return { complaint: candidate, classification: classifyIncidentScore(analysis.score, config), ...analysis };
+      return { complaint: candidate, classification: classifyIncidentScore(analysis, config), ...analysis };
    }).filter((match) => match.classification !== "independent")
       .sort((first, second) => second.score - first.score);
 };
