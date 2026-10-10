@@ -12,6 +12,7 @@ import {
    distanceInMeters,
    extractIncidentFeatures,
    classifyIncidentScore,
+   resolveConfig,
 } from "../src/service/incidentIntelligence.service.js";
 
 describe("CIVICFLOW Phase A4 — HISC Vocabulary & Cross-Asset Regression Tests", () => {
@@ -284,6 +285,172 @@ describe("CIVICFLOW Phase A4 — HISC Vocabulary & Cross-Asset Regression Tests"
 
          assert.equal(classification, "related", "Causal interaction between fallen tree and electrical hazard must be related");
          assert.ok(analysis.context.causallyConnected);
+      });
+   });
+
+   describe("3. Phase A4.2 Defensive Configuration and Waste-Overflow Alignment", () => {
+      describe("C1: Defensive Configuration Resolution", () => {
+         it("preserves explicitly supplied valid configuration values", () => {
+            const custom = {
+               radiusInMeters: 500,
+               temporalWindowHours: 48,
+               duplicateThreshold: 0.75,
+               relatedThreshold: 0.40,
+               weights: { category: 0.30, geographic: 0.30, lexical: 0.10, semantic: 0.20, temporal: 0.10 },
+            };
+            const resolved = resolveConfig(custom);
+            assert.equal(resolved.radiusInMeters, 500);
+            assert.equal(resolved.temporalWindowHours, 48);
+            assert.equal(resolved.duplicateThreshold, 0.75);
+            assert.equal(resolved.relatedThreshold, 0.40);
+            assert.equal(resolved.weights.category, 0.30);
+         });
+
+         it("safely falls back to production defaults for partial configuration objects", () => {
+            const partial = { duplicateThreshold: 0.55 };
+            const resolved = resolveConfig(partial);
+            assert.equal(resolved.duplicateThreshold, 0.55);
+            assert.equal(resolved.radiusInMeters, HISC_CONFIG.radiusInMeters);
+            assert.equal(resolved.temporalWindowHours, HISC_CONFIG.temporalWindowHours);
+            assert.equal(resolved.relatedThreshold, HISC_CONFIG.relatedThreshold);
+            assert.deepEqual(resolved.weights, HISC_CONFIG.weights);
+         });
+
+         it("gracefully falls back for invalid, negative, or NaN numeric configuration values", () => {
+            const invalidConfigs = [
+               { radiusInMeters: -500, temporalWindowHours: 0 },
+               { radiusInMeters: NaN, temporalWindowHours: "invalid" },
+               { duplicateThreshold: -0.5, relatedThreshold: 1.5 },
+               null,
+               undefined,
+            ];
+
+            for (const cfg of invalidConfigs) {
+               const resolved = resolveConfig(cfg);
+               assert.ok(Number.isFinite(resolved.radiusInMeters) && resolved.radiusInMeters > 0);
+               assert.ok(Number.isFinite(resolved.temporalWindowHours) && resolved.temporalWindowHours > 0);
+               assert.ok(resolved.duplicateThreshold >= 0 && resolved.duplicateThreshold <= 1);
+               assert.ok(resolved.relatedThreshold >= 0 && resolved.relatedThreshold <= 1);
+            }
+         });
+
+         it("prevents NaN score propagation when extractIncidentFeatures is called with partial or empty config", () => {
+            const compA = {
+               category: "Roads & Transport",
+               title: "Pothole on main road",
+               description: "Road damage",
+               location: { coordinates: [80.12, 12.92] },
+               createdAt: "2026-03-15T10:00:00Z",
+            };
+            const compB = {
+               category: "Roads & Transport",
+               title: "Deep pothole defect",
+               description: "Crater on asphalt",
+               location: { coordinates: [80.121, 12.921] },
+               createdAt: "2026-03-15T11:00:00Z",
+            };
+
+            const partialConfig = { duplicateThreshold: 0.65 };
+            const analysis = extractIncidentFeatures(compA, compB, partialConfig);
+            assert.ok(Number.isFinite(analysis.score), "Score must be a finite number, not NaN");
+            assert.ok(!Number.isNaN(analysis.features.geographic), "Geographic feature must not be NaN");
+            assert.ok(!Number.isNaN(analysis.features.temporal), "Temporal feature must not be NaN");
+
+            const classification = classifyIncidentScore(analysis, partialConfig);
+            assert.ok(["duplicate", "related", "independent"].includes(classification));
+         });
+      });
+
+      describe("C2: Waste-Overflow and Cross-Domain Vocabulary Alignment", () => {
+         it("aligns waste and public bin overflow with garbage domain", () => {
+            const wastePhrases = [
+               "The public bin is overflowing near Pallavaram Market",
+               "Rotting municipal refuse bin overflowing outside bus stand",
+               "Uncollected waste overflowing from bin onto pavement",
+               "Stench from overflowing dustbin on road",
+               "Decaying green waste overflowing outside market entrance",
+            ];
+
+            for (const phrase of wastePhrases) {
+               const concepts = extractCivicConcepts(phrase.toLowerCase());
+               assert.ok(concepts.has("garbage"), `Expected 'garbage' concept for phrase: '${phrase}', got: ${[...concepts]}`);
+               assert.ok(!concepts.has("drainage"), `Did NOT expect 'drainage' concept for waste phrase: '${phrase}', got: ${[...concepts]}`);
+            }
+         });
+
+         it("preserves drainage overflow distinctions for stormwater, sewer, and canal incidents", () => {
+            const drainagePhrases = [
+               "Water is overflowing from the drain at Camp Road",
+               "Drain overflow reported close to junction after heavy rainfall",
+               "Stormwater canal overflowing into road carriageway",
+               "Sewage overflow from manhole outside industrial estate",
+               "Blocked culvert drain overflowing dirty water",
+            ];
+
+            for (const phrase of drainagePhrases) {
+               const concepts = extractCivicConcepts(phrase.toLowerCase());
+               assert.ok(concepts.has("drainage"), `Expected 'drainage' concept for phrase: '${phrase}', got: ${[...concepts]}`);
+               assert.ok(!concepts.has("garbage"), `Did NOT expect 'garbage' concept for drainage phrase: '${phrase}', got: ${[...concepts]}`);
+            }
+         });
+
+         it("preserves water-leak pipeline failure concepts distinct from drainage or garbage", () => {
+            const waterLeakPhrases = [
+               "Water supply pipeline valve leaking clean drinking water",
+               "High pressure water main burst flooding street",
+               "Broken potable water pipe leaking near gate",
+            ];
+
+            for (const phrase of waterLeakPhrases) {
+               const concepts = extractCivicConcepts(phrase.toLowerCase());
+               assert.ok(concepts.has("water_leak"), `Expected 'water_leak' concept for phrase: '${phrase}', got: ${[...concepts]}`);
+            }
+         });
+
+         it("evaluates waste-bin overflow duplicate pair (e.g. rubbish pile vs overflowing public bin)", () => {
+            const compA = {
+               category: "Waste & Cleanliness",
+               title: "A large pile of rubbish is present at Pallavaram Market.",
+               description: "",
+               location: { coordinates: [80.1491, 12.9675] },
+               createdAt: "2026-09-17T16:00:00Z",
+            };
+            const compB = {
+               category: "Waste & Cleanliness",
+               title: "The public bin is overflowing near Pallavaram Market.",
+               description: "",
+               location: { coordinates: [80.15053, 12.96817] }, // 172m away
+               createdAt: "2026-09-18T08:00:00Z", // 16h later
+            };
+
+            const analysis = extractIncidentFeatures(compA, compB, HISC_CONFIG);
+            const classification = classifyIncidentScore(analysis, HISC_CONFIG);
+
+            assert.ok(analysis.score >= HISC_CONFIG.duplicateThreshold, `Score ${analysis.score} must reach duplicate threshold ${HISC_CONFIG.duplicateThreshold}`);
+            assert.equal(classification, "duplicate", "Rubbish pile and overflowing public bin 172m / 16h apart should be duplicate");
+         });
+
+         it("prevents cross-domain ambiguity between waste-bin overflow and drainage overflow", () => {
+            const wasteComp = {
+               category: "Waste & Cleanliness",
+               title: "The public bin is overflowing near Chromepet Bus Stand",
+               description: "Trash spilling onto walkway",
+               location: { coordinates: [80.1420, 12.9510] },
+               createdAt: "2026-09-15T10:00:00Z",
+            };
+            const drainageComp = {
+               category: "Drainage & Flooding",
+               title: "Water is overflowing from the drain at Chromepet Bus Stand",
+               description: "Stormwater sewer backed up after monsoon rain",
+               location: { coordinates: [80.1421, 12.9511] }, // ~15m away
+               createdAt: "2026-09-15T10:15:00Z", // 15 mins later
+            };
+
+            const analysis = extractIncidentFeatures(wasteComp, drainageComp, HISC_CONFIG);
+            const classification = classifyIncidentScore(analysis, HISC_CONFIG);
+
+            assert.notEqual(classification, "duplicate", "Waste bin overflow and drain overflow must NOT merge as a duplicate");
+         });
       });
    });
 });

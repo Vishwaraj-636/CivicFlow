@@ -43,12 +43,17 @@ export const CIVIC_CONCEPT_DICTIONARY = {
    drainage: [
       "drain", "drainage", "sewer", "sewerage", "manhole", "stormwater", "culvert",
       "gutter", "catch basin", "gully", "backflow", "waterlogging", "inundation",
-      "flood", "flooding", "overflow", "clogged drain", "blocked drain", "manhole cover"
+      "flood", "flooding", "clogged drain", "blocked drain", "manhole cover", "canal",
+      "drain overflow", "sewer overflow", "sewage overflow", "canal overflow",
+      "stormwater overflow", "water overflow", "overflowing drain", "overflowing sewer",
+      "overflowing canal"
    ],
    garbage: [
       "garbage", "waste", "trash", "rubbish", "debris", "refuse", "dumping",
       "litter", "uncollected waste", "dump yard", "construction scrap", "discarded",
-      "dumper bin", "garbage bin"
+      "dumper bin", "garbage bin", "public bin", "dustbin", "waste bin", "trash bin",
+      "litter bin", "refuse bin", "overflowing bin", "bin overflow", "overflowing waste",
+      "overflowing garbage", "bin"
    ],
    fallen_tree: [
       "fallen tree", "tree branch", "downed tree", "uprooted tree", "broken bough",
@@ -94,9 +99,15 @@ export const normalizeCivicText = (value = "") => String(value).toLowerCase()
 
 export const extractCivicConcepts = (normText) => {
    const concepts = new Set();
+   const words = new Set(normText.split(/\s+/));
    for (const [conceptKey, phrases] of Object.entries(CIVIC_CONCEPT_DICTIONARY)) {
       for (const phrase of phrases) {
-         if (normText.includes(phrase)) {
+         if (phrase.includes(" ") || phrase.length > 3) {
+            if (normText.includes(phrase)) {
+               concepts.add(conceptKey);
+               break;
+            }
+         } else if (words.has(phrase)) {
             concepts.add(conceptKey);
             break;
          }
@@ -185,7 +196,47 @@ const featureExplanation = (features, distance, hours) => [
    features.semantic >= 0.7 ? "High semantic similarity" : features.lexical >= 0.5 ? "Shared descriptive terms" : null,
 ].filter(Boolean);
 
-export const extractIncidentFeatures = (complaint, candidate, config = HISC_CONFIG) => {
+/**
+ * Safely resolves and validates HISC configuration with fallback to HISC_CONFIG defaults.
+ * Prevents NaN propagation from undefined or invalid numeric options.
+ * @param {object} [config={}]
+ * @returns {typeof HISC_CONFIG}
+ */
+export const resolveConfig = (config = {}) => {
+   const radiusInMeters = (typeof config?.radiusInMeters === "number" && config.radiusInMeters > 0 && Number.isFinite(config.radiusInMeters))
+      ? config.radiusInMeters
+      : HISC_CONFIG.radiusInMeters;
+
+   const temporalWindowHours = (typeof config?.temporalWindowHours === "number" && config.temporalWindowHours > 0 && Number.isFinite(config.temporalWindowHours))
+      ? config.temporalWindowHours
+      : HISC_CONFIG.temporalWindowHours;
+
+   const duplicateThreshold = (typeof config?.duplicateThreshold === "number" && Number.isFinite(config.duplicateThreshold) && config.duplicateThreshold >= 0 && config.duplicateThreshold <= 1)
+      ? config.duplicateThreshold
+      : HISC_CONFIG.duplicateThreshold;
+
+   const relatedThreshold = (typeof config?.relatedThreshold === "number" && Number.isFinite(config.relatedThreshold) && config.relatedThreshold >= 0 && config.relatedThreshold <= 1)
+      ? config.relatedThreshold
+      : HISC_CONFIG.relatedThreshold;
+
+   const weights = (config?.weights && typeof config.weights === "object")
+      ? { ...HISC_CONFIG.weights, ...config.weights }
+      : HISC_CONFIG.weights;
+
+   const enabledFeatures = config?.enabledFeatures ?? {};
+
+   return {
+      radiusInMeters,
+      temporalWindowHours,
+      duplicateThreshold,
+      relatedThreshold,
+      weights,
+      enabledFeatures,
+   };
+};
+
+export const extractIncidentFeatures = (complaint, candidate, rawConfig = HISC_CONFIG) => {
+   const config = resolveConfig(rawConfig);
    const coordsA = complaint?.location?.coordinates;
    const coordsB = candidate?.location?.coordinates;
    const distance = distanceInMeters(coordsA, coordsB);
@@ -223,7 +274,7 @@ export const extractIncidentFeatures = (complaint, candidate, config = HISC_CONF
    };
 
    const enabledFeatures = config.enabledFeatures ?? {};
-   const activeWeights = Object.entries(config.weights ?? HISC_CONFIG.weights)
+   const activeWeights = Object.entries(config.weights)
       .filter(([feature]) => enabledFeatures[feature] !== false);
    const totalWeight = activeWeights.reduce((total, [, weight]) => total + weight, 0) || 1;
    const score = Math.min(1, Math.max(0,
@@ -250,7 +301,8 @@ export const extractIncidentFeatures = (complaint, candidate, config = HISC_CONF
    };
 };
 
-export const classifyIncidentScore = (scoreOrAnalysis, config = HISC_CONFIG, context = null) => {
+export const classifyIncidentScore = (scoreOrAnalysis, rawConfig = HISC_CONFIG, context = null) => {
+   const config = resolveConfig(rawConfig);
    const score = typeof scoreOrAnalysis === "object" ? scoreOrAnalysis.score : scoreOrAnalysis;
    const ctx = (typeof scoreOrAnalysis === "object" ? scoreOrAnalysis.context : null)
       ?? context?.analysis?.context ?? context;
@@ -271,37 +323,41 @@ export const classifyIncidentScore = (scoreOrAnalysis, config = HISC_CONFIG, con
       // Rule 2: Temporal boundary (>720h is independent weather/temporal cycle)
       if (hours > 720) return "independent";
       // Rule 3: Operational radius (>1000m requires substantive causal/defect connection)
-      if (distance > (config.radiusInMeters ?? 1000) && (!causallyConnected || semantic < 0.20)) return "independent";
+      if (distance > config.radiusInMeters && (!causallyConnected || semantic < 0.20)) return "independent";
       // Rule 4: Incompatible categories without causal connection
       if (catSim === 0.0 && !causallyConnected) return "independent";
 
       // Rule 5: Duplicate requirements
-      if (score >= (config.duplicateThreshold ?? 0.60)) {
+      if (score >= config.duplicateThreshold) {
          if (catSim >= 0.9 && distance <= 250 && hours <= 168 && !opposingDir && (semantic > 0 || lexical > 0 || score >= 0.70)) {
             return "duplicate";
          }
          return opposingDir ? "independent" : "related";
       }
-      if (score >= (config.relatedThreshold ?? 0.35)) {
+      if (score >= config.relatedThreshold) {
          return opposingDir && catSim < 0.9 ? "independent" : "related";
       }
       return "independent";
    }
 
    // Pure threshold fallback
-   if (score >= (config.duplicateThreshold ?? 0.60)) return "duplicate";
-   if (score >= (config.relatedThreshold ?? 0.35)) return "related";
+   if (score >= config.duplicateThreshold) return "duplicate";
+   if (score >= config.relatedThreshold) return "related";
    return "independent";
 };
 
-export const retrieveIncidentCandidates = async (complaint, config = HISC_CONFIG) => Complaint.find({
-   _id: { $ne: complaint._id },
-   status: { $nin: ["deleted", "closed"] },
-   createdAt: { $gte: new Date(new Date(complaint.createdAt).getTime() - config.temporalWindowHours * 3600000) },
-   location: { $near: { $geometry: complaint.location, $maxDistance: config.radiusInMeters } },
-}).limit(40);
+export const retrieveIncidentCandidates = async (complaint, rawConfig = HISC_CONFIG) => {
+   const config = resolveConfig(rawConfig);
+   return Complaint.find({
+      _id: { $ne: complaint._id },
+      status: { $nin: ["deleted", "closed"] },
+      createdAt: { $gte: new Date(new Date(complaint.createdAt).getTime() - config.temporalWindowHours * 3600000) },
+      location: { $near: { $geometry: complaint.location, $maxDistance: config.radiusInMeters } },
+   }).limit(40);
+};
 
-export const analyzeIncident = async (complaint, config = HISC_CONFIG) => {
+export const analyzeIncident = async (complaint, rawConfig = HISC_CONFIG) => {
+   const config = resolveConfig(rawConfig);
    const candidates = await retrieveIncidentCandidates(complaint, config);
    return candidates.map((candidate) => {
       const analysis = extractIncidentFeatures(complaint, candidate, config);

@@ -63,6 +63,13 @@ Spatial and temporal proximity alone do not establish municipal incident causali
 5. **Directional Transit Protection:** Opposing directional modifiers (e.g., northbound vs. southbound, eastern vs. western carriageway) prevent separate transit stops from merging as duplicates.
 6. **Duplicate Evidence Criteria:** Exact duplicates require identical category ($C \ge 0.9$), local proximity ($d \le 250\text{m}$), submission within 7 days ($h \le 168\text{h}$), and defect evidence.
 
+### C. Defensive Configuration Resolution
+Runtime scoring defensively resolves input configuration parameters through `resolveConfig()`:
+- Omitted or partial configuration properties automatically fall back to established `HISC_CONFIG` defaults (`radiusInMeters = 1000m`, `temporalWindowHours = 720h`, thresholds $0.60/0.35$).
+- Explicit valid configuration values are strictly preserved.
+- Non-finite, non-numeric, or negative configuration values safely fall back to production defaults, preventing `NaN` score propagation.
+- Whole-word matching and prefix handling ensure domain concepts (e.g., waste bin overflow vs. stormwater drain overflow) remain unambiguously assigned.
+
 ---
 
 ## 4. Evaluation and Performance Benchmarks
