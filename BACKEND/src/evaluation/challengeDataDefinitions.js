@@ -745,7 +745,7 @@ export const challengePairs = [
       "label": "related",
       "incident_id": "",
       "challenge_category": "Tanglish and Colloquial Phrasing",
-      "rationale": "Burst water supply pipe is flooding the municipal stormwater canal at Porur toll."
+      "rationale": "Two distinct municipal problems connected by a direct causal flow: an upstream MetroWater pipeline burst (Water & Utilities) is discharging into and overflowing the separate municipal stormwater drain canal (Drainage & Flooding) with clear water at Porur toll."
    },
    {
       "pair_id": "CH0040",
@@ -2423,8 +2423,8 @@ export const challengePairs = [
       "pair_id": "CH0128",
       "complaint_a_id": "CH_C0128",
       "complaint_b_id": "CH_C0278",
-      "complaint_a": "Fallen tree branch crushing traffic signal pole outside IIT Madras main gate.",
-      "complaint_b": "Traffic signal crushed by fallen tree branch completely dead and hanging by cable outside IIT Madras main gate.",
+      "complaint_a": "Heavy fallen tree limb blocking two carriageway lanes outside IIT Madras main gate.",
+      "complaint_b": "Traffic signal mast crushed and wiring severed by the fallen tree limb outside IIT Madras main gate.",
       "category_a": "Roads & Transport",
       "category_b": "Street Infrastructure",
       "latitude_a": 13.0067,
@@ -2436,7 +2436,7 @@ export const challengePairs = [
       "label": "related",
       "incident_id": "",
       "challenge_category": "Cascading Related Failures",
-      "rationale": "Tree fall crushed the traffic signal structure, breaking the signal arm and cables."
+      "rationale": "Two distinct municipal problems caused by the same storm tree fall: the heavy fallen tree limb is obstructing two roadway carriageway lanes (Roads & Transport), while simultaneously having crushed the adjacent traffic signal mast and severed its wiring (Street Infrastructure)."
    },
    {
       "pair_id": "CH0129",

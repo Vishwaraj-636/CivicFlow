@@ -88,7 +88,7 @@
     "timestamp_b": "2026-04-09T08:45:00",
     "proposed_label": "related",
     "incident_id": null,
-    "labeling_rationale": "Burst water supply pipe is flooding the municipal stormwater canal at Porur toll.",
+    "labeling_rationale": "Two distinct municipal problems connected by a direct causal flow: an upstream MetroWater pipeline burst (Water & Utilities) is discharging into and overflowing the separate municipal stormwater drain canal (Drainage & Flooding) with clear water at Porur toll.",
     "review_status": "PENDING_USER_VERIFICATION"
   },
   {
@@ -993,9 +993,9 @@
     "pair_id": "CH0128",
     "challenge_category": "Cascading Related Failures",
     "category_a": "Roads & Transport",
-    "complaint_a": "Fallen tree branch crushing traffic signal pole outside IIT Madras main gate.",
+    "complaint_a": "Heavy fallen tree limb blocking two carriageway lanes outside IIT Madras main gate.",
     "category_b": "Street Infrastructure",
-    "complaint_b": "Traffic signal crushed by fallen tree branch completely dead and hanging by cable outside IIT Madras main gate.",
+    "complaint_b": "Traffic signal mast crushed and wiring severed by the fallen tree limb outside IIT Madras main gate.",
     "location_a": {
       "latitude": 13.0067,
       "longitude": 80.2025
@@ -1008,7 +1008,7 @@
     "timestamp_b": "2026-06-28T17:15:00",
     "proposed_label": "related",
     "incident_id": null,
-    "labeling_rationale": "Tree fall crushed the traffic signal structure, breaking the signal arm and cables.",
+    "labeling_rationale": "Two distinct municipal problems caused by the same storm tree fall: the heavy fallen tree limb is obstructing two roadway carriageway lanes (Roads & Transport), while simultaneously having crushed the adjacent traffic signal mast and severed its wiring (Street Infrastructure).",
     "review_status": "PENDING_USER_VERIFICATION"
   },
   {

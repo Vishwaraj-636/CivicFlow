@@ -216,8 +216,16 @@ export const REWRITTEN_PAIRS = {
    },
    CH0128: {
       decision: "rewrite_example",
-      reason: "Grounded Complaint B to explicitly cite the tree branch impact that crushed the traffic signal.",
-      evidence_basis: "Heavy storm tree fall physically crushing traffic signal structural mast and electrical wiring."
+      reason: "Rewrote Complaint A to describe the roadway carriageway obstruction from the fallen tree limb and Complaint B to describe the crushed traffic signal mast and severed wiring, clearly establishing two distinct but causally connected physical defects.",
+      evidence_basis: "Shared storm tree fall causing two distinct multi-departmental failures: roadway carriageway obstruction (Roads & Transport) and crushed traffic signal infrastructure (Street Infrastructure)."
+   }
+};
+
+export const CUSTOM_AUDIT_DETAILS = {
+   CH0039: {
+      decision: "retain",
+      reason: "Two distinct municipal problems connected by a direct causal flow: an upstream MetroWater pipeline burst (Water & Utilities) is discharging into and overflowing the separate municipal stormwater drain canal (Drainage & Flooding) with clear water at Porur toll.",
+      evidence_basis: "Direct hydraulic flow connecting distinct upstream water utility asset defect and downstream municipal drainage canal overflow."
    }
 };
 
@@ -245,6 +253,13 @@ export function generateAuditRecords(pairs) {
          decision = info.decision;
          original_label = "related";
          reviewed_label = "related";
+         reason = info.reason;
+         evidence_basis = info.evidence_basis;
+      } else if (CUSTOM_AUDIT_DETAILS[p.pair_id]) {
+         const info = CUSTOM_AUDIT_DETAILS[p.pair_id];
+         decision = info.decision;
+         original_label = p.label;
+         reviewed_label = p.label;
          reason = info.reason;
          evidence_basis = info.evidence_basis;
       }
