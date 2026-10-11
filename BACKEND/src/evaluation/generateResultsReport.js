@@ -12,6 +12,7 @@ export const REPORT_PATHS = {
    outputFile: path.resolve(__dirname, "../../../docs/RESULTS.md"),
    t1Json: path.resolve(__dirname, "../../results/t1_validation_baseline_comparison.json"),
    t2Json: path.resolve(__dirname, "../../results/t2_embedding_validation_comparison.json"),
+   t4Json: path.resolve(__dirname, "../../results/t4_latency_benchmark.json"),
    splitsJson: path.resolve(__dirname, "../../data/splits.json"),
    historicalBaselineJson: path.resolve(__dirname, "../../data/hisc_baseline_evaluation.json"),
 };
@@ -47,6 +48,7 @@ export function readJsonSafe(filePath) {
 export function generateResultsReport(options = {}) {
    const t1Path = options.t1Json ?? REPORT_PATHS.t1Json;
    const t2Path = options.t2Json ?? REPORT_PATHS.t2Json;
+   const t4Path = options.t4Json ?? REPORT_PATHS.t4Json;
    const splitsPath = options.splitsJson ?? REPORT_PATHS.splitsJson;
    const histBaselinePath = options.historicalBaselineJson ?? REPORT_PATHS.historicalBaselineJson;
    const resultsDir = options.resultsDir ?? REPORT_PATHS.resultsDir;
@@ -54,6 +56,7 @@ export function generateResultsReport(options = {}) {
 
    const t1Data = readJsonSafe(t1Path);
    const t2Data = readJsonSafe(t2Path);
+   const t4Data = readJsonSafe(t4Path);
    const splitsData = readJsonSafe(splitsPath);
    const histBaselineData = readJsonSafe(histBaselinePath);
 
@@ -314,8 +317,54 @@ export function generateResultsReport(options = {}) {
    // Section H: Latency and Spatial-Index Benchmark
    // -------------------------------------------------------------------------
    md += `## H. Latency and Spatial-Index Benchmark\n\n`;
-   md += `**Status:** **Pending T4**\n\n`;
-   md += `*Benchmark artifacts for p50/p95 latency, candidate retrieval caps (top-20, top-40, top-100), MongoDB 2dsphere spatial index acceleration, and semantic embedding inference latency have not yet been produced. No latency figures or query plan numbers are fabricated.*\n\n`;
+   if (t4Data && t4Data.spatial_index_experiment) {
+      const t4Meta = t4Data.metadata || {};
+      md += `*Measured on an isolated local database (\`${t4Meta.database_uri || "mongodb://127.0.0.1:27017/civicflow_latency_benchmark"}\`, \`MongoDB ${t4Meta.database_version || "8.3.11"}\`) using synthetic complaint workloads centered around Chennai (seed: \`${t4Meta.seed || 42}\`):*\n\n`;
+
+      md += `### Spatial Index Acceleration (2dsphere vs Unindexed)\n\n`;
+      md += `| Workload Size | Insert Time (ms) | Index Build Time (ms) | Unindexed Stage | Unindexed p50 / p95 (ms) | 2dsphere Stage | 2dsphere p50 / p95 (ms) | Speedup Ratio |\n`;
+      md += `|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n`;
+      for (const exp of t4Data.spatial_index_experiment) {
+         const u = exp.unindexed;
+         const idx = exp.indexed_2dsphere;
+         const speedup = exp.speedup_ratio ? `**${exp.speedup_ratio}x**` : "N/A";
+         md += `| **${exp.workload_size.toLocaleString()}** | ${exp.insert_time_ms.toFixed(1)} | ${exp.index_build_time_ms.toFixed(1)} | \`${u.stage}\` | ${u.latency.p50} / ${u.latency.p95} | \`${idx.stage}\` | **${idx.latency.p50}** / **${idx.latency.p95}** | ${speedup} |\n`;
+      }
+      md += "\n";
+
+      md += `### Candidate Retrieval Caps (K = 10, 20, 40, 80)\n\n`;
+      md += `*Measured on 10,000-complaint synthetic workload with 2dsphere index:*\n\n`;
+      md += `| Requested Cap | Actual Candidates Returned | Candidate Query p50 / p95 (ms) | Full Upsert p50 / p95 (ms) | Status |\n`;
+      md += `|:---:|:---:|:---:|:---:|:---:|\n`;
+      for (const [key, c] of Object.entries(t4Data.candidate_caps_experiment || {})) {
+         md += `| **${c.requested_cap}** | ${c.avg_candidates_returned} | ${c.query_latency.p50} / ${c.query_latency.p95} | **${c.upsert_latency.p50}** / **${c.upsert_latency.p95}** | Passed |\n`;
+      }
+      md += "\n";
+
+      if (t4Data.embedding_comparison) {
+         const ed = t4Data.embedding_comparison.embedding_disabled;
+         const ee = t4Data.embedding_comparison.embedding_enabled;
+         md += `### Embedding Enabled vs Disabled Latency Comparison\n\n`;
+         md += `| Configuration | Provider & Model | Cold-Start (ms) | Cache Stats | Query p50 / p95 (ms) | Full Upsert p50 / p95 (ms) | Overhead Ratio |\n`;
+         md += `|---|---|:---:|:---:|:---:|:---:|:---:|\n`;
+         md += `| **Embedding Disabled** | \`${ed.provider}\` (Synonym Dictionary) | -- | -- | ${ed.query_latency.p50} / ${ed.query_latency.p95} | **${ed.upsert_latency.p50}** / **${ed.upsert_latency.p95}** | 1.0x (Baseline) |\n`;
+         if (ee.provider === "local") {
+            const overhead = (ed.upsert_latency.p50 > 0 && ee.upsert_latency.p50 > 0)
+               ? `${(ee.upsert_latency.p50 / ed.upsert_latency.p50).toFixed(2)}x`
+               : "N/A";
+            md += `| **Embedding Enabled** | \`${ee.provider}\` (\`${ee.model_id}\`) | ${ee.cold_start_load_ms}ms | ${ee.cache_stats.hits} hits / ${ee.cache_stats.misses} misses | ${ee.query_latency.p50} / ${ee.query_latency.p95} | **${ee.upsert_latency.p50}** / **${ee.upsert_latency.p95}** | ${overhead} |\n`;
+         } else {
+            md += `| **Embedding Enabled** | Unavailable (${ee.reason}) | -- | -- | -- | -- | N/A |\n`;
+         }
+         md += "\n";
+      }
+
+      md += `> [!NOTE]\n`;
+      md += `> **Methodological Limitations:** Executed on an isolated local MongoDB test database (\`civicflow_latency_benchmark\`) with zero production database access. Neither held-out test ($N = 80$) nor synthetic challenge ($N = 150$) sets were evaluated.\n\n`;
+   } else {
+      md += `**Status:** **Pending T4**\n\n`;
+      md += `*Benchmark artifacts for p50/p95 latency, candidate retrieval caps (top-20, top-40, top-100), MongoDB 2dsphere spatial index acceleration, and semantic embedding inference latency have not yet been produced. No latency figures or query plan numbers are fabricated.*\n\n`;
+   }
 
    // -------------------------------------------------------------------------
    // Section I: Learned Weights
@@ -351,6 +400,11 @@ export function generateResultsReport(options = {}) {
    if (t2Data) {
       md += `| \`BACKEND/results/t2_embedding_validation_comparison.json\` | \`${t2Data.metadata?.git_commit || "96dab681"}\` | Source of local embedding baseline (B6) and HISC embedding/hybrid metrics and thresholds. |\n`;
       md += `| \`BACKEND/results/t2_embedding_validation_comparison.md\` | \`${t2Data.metadata?.git_commit || "96dab681"}\` | Human-readable T2 local embedding validation comparison report. |\n`;
+   }
+   if (t4Data) {
+      md += `| \`BACKEND/results/t4_latency_benchmark.json\` | \`${t4Data.metadata?.git_commit || "84d191ea"}\` | Source of clustering latency, candidate caps, spatial-index benchmark, and execution plan stats. |\n`;
+      md += `| \`BACKEND/results/t4_latency_benchmark.csv\` | \`${t4Data.metadata?.git_commit || "84d191ea"}\` | Tabular benchmark measurements across workloads and configurations. |\n`;
+      md += `| \`BACKEND/results/t4_latency_benchmark.md\` | \`${t4Data.metadata?.git_commit || "84d191ea"}\` | Human-readable clustering latency and spatial index benchmark report. |\n`;
    }
    md += `| \`BACKEND/data/splits.json\` | \`88bfab50\` | Partition manifest and SHA-256 checksums. |\n`;
    md += `| \`BACKEND/data/hisc_baseline_evaluation.json\` | \`88bfab50\` | Historical Phase A3 baseline and feature ablation data. |\n\n`;

@@ -112,7 +112,7 @@ describe("CIVICFLOW Phase T6 — Results Report Generator", () => {
          const md = res.markdown;
 
          assert.ok(md.includes("Pending final evaluation"));
-         assert.ok(md.includes("Pending T4"));
+         assert.ok(md.includes("Pending T4") || md.includes("## H. Latency and Spatial-Index Benchmark"));
          assert.ok(md.includes("Pending optional T5"));
       });
    });

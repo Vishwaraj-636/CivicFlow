@@ -9,6 +9,7 @@
       "start": "node server.js",
       "evaluate:incidents": "node src/evaluation/incidentAlgorithmEvaluation.js",
       "evaluate:embeddings": "node src/evaluation/embeddingEvaluationRunner.js",
+      "benchmark:latency": "node src/evaluation/clusteringLatencyBenchmark.js",
       "results:report": "node src/evaluation/generateResultsReport.js"
    },
    "keywords": [],

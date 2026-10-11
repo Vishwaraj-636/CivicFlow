@@ -200,9 +200,36 @@ When the final evaluation freeze is executed, all methods on the frozen roster w
 
 ## H. Latency and Spatial-Index Benchmark
 
-**Status:** **Pending T4**
+*Measured on an isolated local database (`mongodb://127.0.0.1:27017/civicflow_latency_benchmark`, `MongoDB 8.3.11`) using synthetic complaint workloads centered around Chennai (seed: `42`):*
 
-*Benchmark artifacts for p50/p95 latency, candidate retrieval caps (top-20, top-40, top-100), MongoDB 2dsphere spatial index acceleration, and semantic embedding inference latency have not yet been produced. No latency figures or query plan numbers are fabricated.*
+### Spatial Index Acceleration (2dsphere vs Unindexed)
+
+| Workload Size | Insert Time (ms) | Index Build Time (ms) | Unindexed Stage | Unindexed p50 / p95 (ms) | 2dsphere Stage | 2dsphere p50 / p95 (ms) | Speedup Ratio |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **1,000** | 56.7 | 33.4 | `LIMIT` | 4.388 / 5.161 | `LIMIT` | **2.947** / **4.089** | **1.49x** |
+| **10,000** | 135.1 | 57.8 | `LIMIT` | 5.989 / 24.941 | `LIMIT` | **2.866** / **3.318** | **2.09x** |
+| **50,000** | 556.2 | 219.1 | `LIMIT` | 6.255 / 31.303 | `LIMIT` | **2.869** / **3.723** | **2.18x** |
+
+### Candidate Retrieval Caps (K = 10, 20, 40, 80)
+
+*Measured on 10,000-complaint synthetic workload with 2dsphere index:*
+
+| Requested Cap | Actual Candidates Returned | Candidate Query p50 / p95 (ms) | Full Upsert p50 / p95 (ms) | Status |
+|:---:|:---:|:---:|:---:|:---:|
+| **10** | 10 | 2.104 / 2.407 | **3.041** / **3.196** | Passed |
+| **20** | 20 | 2.309 / 2.762 | **5.067** / **5.882** | Passed |
+| **40** | 36.6 | 2.861 / 3.23 | **8.736** / **9.266** | Passed |
+| **80** | 63.3 | 3.106 / 3.927 | **15.944** / **17.626** | Passed |
+
+### Embedding Enabled vs Disabled Latency Comparison
+
+| Configuration | Provider & Model | Cold-Start (ms) | Cache Stats | Query p50 / p95 (ms) | Full Upsert p50 / p95 (ms) | Overhead Ratio |
+|---|---|:---:|:---:|:---:|:---:|:---:|
+| **Embedding Disabled** | `none` (Synonym Dictionary) | -- | -- | 2.744 / 3.746 | **8.609** / **8.995** | 1.0x (Baseline) |
+| **Embedding Enabled** | `local` (`Xenova/all-MiniLM-L6-v2`) | 461.34ms | 23 hits / 541 misses | 6.426 / 12.349 | **3186.149** / **4053.491** | 370.10x |
+
+> [!NOTE]
+> **Methodological Limitations:** Executed on an isolated local MongoDB test database (`civicflow_latency_benchmark`) with zero production database access. Neither held-out test ($N = 80$) nor synthetic challenge ($N = 150$) sets were evaluated.
 
 ## I. Learned Weights
 
@@ -233,6 +260,9 @@ When the final evaluation freeze is executed, all methods on the frozen roster w
 | `BACKEND/results/error_analysis_validation_*.md` | `6694cda7` | Per-method detailed error analysis reports. |
 | `BACKEND/results/t2_embedding_validation_comparison.json` | `96dab68126197b506f401501adb893ccb4464d47` | Source of local embedding baseline (B6) and HISC embedding/hybrid metrics and thresholds. |
 | `BACKEND/results/t2_embedding_validation_comparison.md` | `96dab68126197b506f401501adb893ccb4464d47` | Human-readable T2 local embedding validation comparison report. |
+| `BACKEND/results/t4_latency_benchmark.json` | `84d191ea` | Source of clustering latency, candidate caps, spatial-index benchmark, and execution plan stats. |
+| `BACKEND/results/t4_latency_benchmark.csv` | `84d191ea` | Tabular benchmark measurements across workloads and configurations. |
+| `BACKEND/results/t4_latency_benchmark.md` | `84d191ea` | Human-readable clustering latency and spatial index benchmark report. |
 | `BACKEND/data/splits.json` | `88bfab50` | Partition manifest and SHA-256 checksums. |
 | `BACKEND/data/hisc_baseline_evaluation.json` | `88bfab50` | Historical Phase A3 baseline and feature ablation data. |
 
