@@ -41,6 +41,14 @@ describe("SECURITY HARDENING TEST SUITE", () => {
          assert.equal(res.headers.get("x-content-type-options"), "nosniff");
          assert.equal(res.headers.get("x-dns-prefetch-control"), "off");
       });
+
+      it("presents Content-Security-Policy with required image and connect sources", async () => {
+         const res = await fetch(`${baseUrl}/health`);
+         const csp = res.headers.get("content-security-policy");
+         assert.ok(csp, "CSP header should be present");
+         assert.ok(csp.includes("ik.imagekit.io"), "CSP should include ImageKit host");
+         assert.ok(csp.includes("nominatim.openstreetmap.org"), "CSP should include Nominatim host");
+      });
    });
 
    describe("2. Operator-Injection ($ Key) Guard", () => {

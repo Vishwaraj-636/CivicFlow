@@ -29,7 +29,40 @@ const app = express();
 
 app.set("trust proxy", Number(process.env.TRUST_PROXY ?? (process.env.NODE_ENV === "production" ? 1 : 0)));
 
-app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
+app.use(helmet({
+   crossOriginResourcePolicy: { policy: "cross-origin" },
+   contentSecurityPolicy: {
+      directives: {
+         defaultSrc: ["'self'"],
+         scriptSrc: ["'self'"],
+         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+         fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
+         imgSrc: [
+            "'self'",
+            "data:",
+            "blob:",
+            "https://ik.imagekit.io",
+            "https://*.tile.jawg.io",
+            "https://*.tile.openstreetmap.org",
+            "https://placehold.co",
+         ],
+         mediaSrc: [
+            "'self'",
+            "data:",
+            "blob:",
+            "https://ik.imagekit.io",
+         ],
+         connectSrc: [
+            "'self'",
+            "ws:",
+            "wss:",
+            "https://nominatim.openstreetmap.org",
+            "https://*.tile.jawg.io",
+         ],
+         workerSrc: ["'self'", "blob:"],
+      },
+   },
+}));
 app.use(generalLimiter);
 
 app.use(morgan('dev'));
