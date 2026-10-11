@@ -375,7 +375,12 @@ export async function runFinalEvaluationFreeze(options = {}) {
       if (partitionName === "synthetic_challenge") {
          const catMap = {};
          for (const item of predictions) {
-            const cat = item.challenge_category || "standard";
+            if (!item.challenge_category || item.challenge_category === "standard") {
+               throw new Error(
+                  `[FAIL-FAST] Missing or invalid challenge_category for pair_id '${item.pair_id}'. Missing categories cannot silently default to 'standard'.`
+               );
+            }
+            const cat = item.challenge_category;
             if (!catMap[cat]) {
                catMap[cat] = { total: 0, correct: 0 };
             }
@@ -537,16 +542,16 @@ export function formatFinalEvaluationMarkdown(data) {
 
    md += `## 6. Synthetic Challenge Category Breakdown\n\n`;
    const challengeCategories = [
-      "cross_infrastructure_cascade",
-      "spatial_boundary_edge",
-      "temporal_decay_edge",
-      "synonym_paraphrase",
-      "same_location_different_defect",
-      "co_occurring_independent",
-      "negation_and_false_lexical",
-      "multi_lingual_mixed",
-      "typo_and_ocr_noise",
-      "adversarial_distractor",
+      "Paraphrases with Novel Vocabulary",
+      "Typos and Spelling Variations",
+      "Tanglish and Colloquial Phrasing",
+      "Very Short and Vague Descriptions",
+      "Same Location, Different Issue",
+      "Same Issue, Geographically Distant",
+      "Temporally Distant at Same Location",
+      "Similar Wording, Distinct Incidents",
+      "Cascading Related Failures",
+      "True Duplicates with Disparate Phrasing",
    ];
 
    md += `| Challenge Category | N | HISC Acc | B1 Acc | B2 Acc | B3 Acc | B4 Acc | B5 Acc | B6 Acc | HISC-hybrid-max Acc |\n`;
