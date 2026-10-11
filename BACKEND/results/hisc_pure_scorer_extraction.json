@@ -1,0 +1,56 @@
+{
+  "timestamp": "2026-10-11T04:31:04.258Z",
+  "git_commit": "25f684c0e0bd35e0566d74a778a7bff9a775b432",
+  "seed": 42,
+  "all_matched": true,
+  "results": [
+    {
+      "case": "Duplicate: Co-located road defect",
+      "old": {
+        "score": 0.6712100752719918,
+        "label": "duplicate"
+      },
+      "new": {
+        "score": 0.6712100752719918,
+        "label": "duplicate"
+      },
+      "matches": true
+    },
+    {
+      "case": "Related: Causal cross-infrastructure (tree & wire)",
+      "old": {
+        "score": 0.3922877767648786,
+        "label": "related"
+      },
+      "new": {
+        "score": 0.3922877767648786,
+        "label": "related"
+      },
+      "matches": true
+    },
+    {
+      "case": "Independent: Opposing directional transit corridors",
+      "old": {
+        "score": 0.7889540094506455,
+        "label": "independent"
+      },
+      "new": {
+        "score": 0.7889540094506455,
+        "label": "independent"
+      },
+      "matches": true
+    },
+    {
+      "case": "Independent: Incompatible co-located assets (light & trash)",
+      "old": {
+        "score": 0.3922877767648786,
+        "label": "independent"
+      },
+      "new": {
+        "score": 0.3922877767648786,
+        "label": "independent"
+      },
+      "matches": true
+    }
+  ]
+}
