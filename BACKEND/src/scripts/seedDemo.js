@@ -200,7 +200,7 @@ const SINGLE_TEMPLATES = {
 /**
  * Pure deterministic data generator.
  */
-export function generateDemoDataset({ seed = 42 } = {}) {
+export function generateDemoDataset({ seed = 42, baseTime = 1760000000000 } = {}) {
    const rand = createPrng(seed);
 
    // Users
@@ -279,7 +279,7 @@ export function generateDemoDataset({ seed = 42 } = {}) {
 
    const complaints = [];
    let complaintIndex = 0;
-   const now = Date.now();
+   const now = baseTime;
 
    // 1. Generate 30 clustered complaints
    CLUSTER_SEEDS.forEach((cluster, cIdx) => {

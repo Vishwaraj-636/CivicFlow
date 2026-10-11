@@ -25,8 +25,10 @@ HEAD at start: fba5d5d251fc120d1ed98ae31384a5a87e77eed6
 | 2.4 | DONE | e15134a | Duplicate-warning UI with debounced 600ms similar search, expandable signals, support, and silent fallback |
 | 2.5 | DONE | c27773f | Reproducible demo data seeder with PRNG seed 42, 120 complaints, 11 clusters, and DEMO_CREDENTIALS.md |
 | 2.6 | DONE | ce27fff | Lazy SLA escalation helper with 60s per-process throttle called from staff and admin controllers |
-| 3.1 | DONE | [pending commit] | Process and import env matrix created in docs/ENV_MATRIX.md; .env.example updated |
-| 3.2 | DONE | [pending commit] | Transformers dynamic import confirmed lazy; startup memory RSS verified at 122.26 MB (<512MB) |
-| 3.3 | DONE | [pending commit] | Production-mode local run checks (a)-(e) all passed (health, CORS, cookies, helmet, websocket) |
-| 3.4 | DONE | [pending commit] | Smoke test script scripts/smoke.mjs created with markdown table output and exit codes |
-| 3.5 | DONE | [pending commit] | Deployment documents verified: engines Node >=20, branch documented, rollback section added |
+| 3.1 | DONE | 5cb4ada | Process and import env matrix created in docs/ENV_MATRIX.md; .env.example updated |
+| 3.2 | DONE | 5cb4ada | Transformers dynamic import confirmed lazy; startup memory RSS verified at 122.26 MB (<512MB) |
+| 3.3 | DONE | 5cb4ada | Production-mode local run checks (a)-(e) all passed (health, CORS, cookies, helmet, websocket) |
+| 3.4 | DONE | 5cb4ada | Smoke test script scripts/smoke.mjs created with markdown table output and exit codes |
+| 3.5 | DONE | 5cb4ada | Deployment documents verified: engines Node >=20, branch documented, rollback section added |
+| 3.6 | DONE | [pending commit] | Secret scan clean (0 secrets, 0 tracked .env); all localhost/127.0.0.1 hits are config defaults/fallbacks |
+| 3.7 | DONE | [pending commit] | Phase 3 gate: 245/247 tests passed (only known spatial benchmark), Vite build passed, 4 protected hashes match |
