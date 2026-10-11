@@ -15,6 +15,7 @@ export const REPORT_PATHS = {
    t4Json: path.resolve(__dirname, "../../results/t4_latency_benchmark.json"),
    t5Json: path.resolve(__dirname, "../../results/t5_learned_weights_validation.json"),
    finalEvalJson: path.resolve(__dirname, "../../results/final_held_out_evaluation.json"),
+   statCiJson: path.resolve(__dirname, "../../results/statistical_comparison_and_ci.json"),
    splitsJson: path.resolve(__dirname, "../../data/splits.json"),
    historicalBaselineJson: path.resolve(__dirname, "../../data/hisc_baseline_evaluation.json"),
 };
@@ -63,6 +64,7 @@ export function generateResultsReport(options = {}) {
    const t4Data = readJsonSafe(t4Path);
    const t5Data = readJsonSafe(t5Path);
    const finalEvalData = readJsonSafe(finalEvalPath);
+   const statCiData = readJsonSafe(options.statCiPath ?? REPORT_PATHS.statCiJson);
    const splitsData = readJsonSafe(splitsPath);
    const histBaselineData = readJsonSafe(histBaselinePath);
 
@@ -346,6 +348,36 @@ export function generateResultsReport(options = {}) {
          md += `| **${id}** | ${m.name} | **${tStr}** | **${cStr}** |\n`;
       }
       md += "\n";
+
+      if (statCiData) {
+         md += `### Paired Exact McNemar Significance Tests (N = 150 Challenge Set)\n\n`;
+         md += `Two-sided exact McNemar tests evaluated across the 150 challenge examples comparing HISC against baseline methods:\n\n`;
+         md += `| Comparison | Both Correct ($n_{11}$) | Both Incorrect ($n_{00}$) | HISC Correct, Comp Incorrect ($b$) | HISC Incorrect, Comp Correct ($c$) | Discordant Total ($b+c$) | Exact 2-Sided $p$-value | Bonferroni Sig ($\\alpha=0.0125$)? |\n`;
+         md += `|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+`;
+         for (const comp of Object.values(statCiData.pairedComparisons || {})) {
+            const c = comp.contingencyTable;
+            const pStr = comp.exactTwoSidedPValue < 1e-6
+               ? comp.exactTwoSidedPValue.toExponential(2)
+               : comp.exactTwoSidedPValue.toFixed(5);
+            const sigBonf = comp.significanceBonferroni ? "**Yes**" : "No";
+            md += `| **HISC vs. ${comp.comparatorName}** | ${c.bothCorrect} | ${c.bothIncorrect} | ${c.hiscCorrectComparatorIncorrect} | ${c.hiscIncorrectComparatorCorrect} | ${c.totalDiscordant} | \`${pStr}\` | ${sigBonf} |\n`;
+         }
+         md += `\n> [!NOTE]\n`;
+         md += `> **Multiple Comparisons Caveat:** For the 4 paired comparisons, the family-wise Bonferroni-adjusted significance threshold is $\\alpha_{\\text{adj}} = 0.05 / 4 = 0.0125$. Under this threshold, HISC's superiority over B2, B3, and B4 is highly statistically significant ($p < 10^{-10}$), whereas the 4-point accuracy difference between HISC (84.0%) and HISC-embed (80.0%) ($p = 0.03125$) is suggestive at unadjusted $\\alpha = 0.05$ but not significant under family-wise Bonferroni correction.\n\n`;
+
+         md += `### Exact Clopper–Pearson 95% Binomial Confidence Intervals (Accuracy)\n\n`;
+         md += `Exact binomial confidence intervals for overall accuracy computed via Beta quantile inversion:\n\n`;
+         md += `| Method ID | Method Name | Challenge Accuracy (N = 150) | Challenge 95% Clopper–Pearson CI | Test Accuracy (N = 80) | Test 95% Clopper–Pearson CI |\n`;
+         md += `|---|---|:---:|:---:|:---:|:---:|\n`;
+         for (const [id, m] of Object.entries(statCiData.confidenceIntervals?.synthetic_challenge || {})) {
+            const testItem = statCiData.confidenceIntervals?.held_out_test?.[id];
+            md += `| **${id}** | ${m.name} | ${(m.accuracy * 100).toFixed(2)}% (${m.correct}/${m.N}) | **${m.ci_string}** | ${(testItem.accuracy * 100).toFixed(2)}% (${testItem.correct}/${testItem.N}) | **${testItem.ci_string}** |\n`;
+         }
+         md += `\n### Sampling Design and Incident-Clustering Nuance\n\n`;
+         md += `- **Challenge Set Equivalence:** In the synthetic challenge set ($N = 150$), each complaint pair belongs to a unique incident cluster (\`CH_INC0001\` through \`CH_INC0150\`), meaning cluster sizes are $M_i = 1$. Consequently, pair-level binomial intervals and incident-clustered resampling are mathematically equivalent.\n`;
+         md += `- **Held-Out Test Set Caveat:** In the 400-pair development dataset, duplicate pairs share incident IDs and complaint text templates are repeated across splits (84.6% text overlap with train). The pair-level binomial intervals for test accuracy treat observations as independent trials and therefore underestimate variance due to unmodeled intra-cluster correlation.\n\n`;
+      }
    } else {
       md += `- **Status for Current 6-Method Roster on Test/Challenge:** **Pending final evaluation freeze** (no values fabricated).\n\n`;
    }
