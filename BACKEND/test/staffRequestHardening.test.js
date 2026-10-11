@@ -7,7 +7,7 @@ import Department from "../src/model/department.model.js";
 import deptStaffRequestModel from "../src/model/deptStaffRequest.model.js";
 import { approveStaffRequest, rejectStaffRequest } from "../src/controller/deptStaffRequest.controller.js";
 
-const TEST_DB_URI = "mongodb://127.0.0.1:27017/civicflow_automated_test";
+const TEST_DB_URI = "mongodb://127.0.0.1:27017/civicflow_staff_request_test";
 
 describe("Staff Request Approval and Rejection Hardening", () => {
    let adminUser;
@@ -16,7 +16,7 @@ describe("Staff Request Approval and Rejection Hardening", () => {
 
    before(async () => {
       await mongoose.connect(TEST_DB_URI);
-      if (mongoose.connection.name !== "civicflow_automated_test") {
+      if (mongoose.connection.name !== "civicflow_staff_request_test") {
          throw new Error(`Connected to non-test database "${mongoose.connection.name}". Aborting.`);
       }
    });
