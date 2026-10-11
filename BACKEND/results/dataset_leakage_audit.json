@@ -1019,5 +1019,89 @@
     "identifierLeakage": "ZERO incident or complaint ID leakage detected across splits. Grouping by incident_id perfectly isolated incident IDs.",
     "templateTextLeakageIn400Dataset": "SEVERE template text leakage within the 400-pair dataset. 87.7% of validation texts and 84.6% of test texts appear in training. 97.5% of validation pairs and 95.0% of test pairs reuse at least one training complaint text.",
     "syntheticChallengeIntegrity": "PRISTINE ZERO LEAKAGE. 0 exact text matches and 0 near-duplicate matches (>0.80 Jaccard) between the 400-pair dataset and the 150-pair challenge set."
+  },
+  "overlapStratifiedAccuracy": {
+    "sentence": "Overlap was measured; a causal effect on the test-to-challenge performance gap is not established.",
+    "testSampleCount": 80,
+    "overlapRange": [
+      0.6154,
+      1
+    ],
+    "highOverlapCountGt08": 72,
+    "exactOverlap100Count": 57,
+    "degenerateDistribution": true,
+    "tertiles": [
+      {
+        "name": "Tertile 1 (Low Overlap)",
+        "N": 27,
+        "range": [
+          0.6154,
+          1
+        ],
+        "HISC_acc": 1,
+        "B1_acc": 0.6667,
+        "B3_acc": 1,
+        "B4_acc": 0.6667,
+        "B6_acc": 0.8519
+      },
+      {
+        "name": "Tertile 2 (Mid Overlap)",
+        "N": 27,
+        "range": [
+          1,
+          1
+        ],
+        "HISC_acc": 1,
+        "B1_acc": 0.3704,
+        "B3_acc": 1,
+        "B4_acc": 0.5926,
+        "B6_acc": 0.7778
+      },
+      {
+        "name": "Tertile 3 (High Overlap)",
+        "N": 26,
+        "range": [
+          1,
+          1
+        ],
+        "HISC_acc": 1,
+        "B1_acc": 0.7692,
+        "B3_acc": 1,
+        "B4_acc": 0.8462,
+        "B6_acc": 0.7308
+      }
+    ],
+    "medianSplit": [
+      {
+        "name": "Lower 50% (< Median)",
+        "N": 40,
+        "range": [
+          0.6154,
+          1
+        ],
+        "HISC_acc": 1,
+        "B1_acc": 0.525,
+        "B3_acc": 1,
+        "B4_acc": 0.575,
+        "B6_acc": 0.8
+      },
+      {
+        "name": "Upper 50% (>= Median)",
+        "N": 40,
+        "range": [
+          1,
+          1
+        ],
+        "HISC_acc": 1,
+        "B1_acc": 0.675,
+        "B3_acc": 1,
+        "B4_acc": 0.825,
+        "B6_acc": 0.775
+      }
+    ],
+    "correlations": {
+      "HISC_vs_overlap": "undefined (zero variance)",
+      "B4_vs_overlap": 0.0479
+    }
   }
 }

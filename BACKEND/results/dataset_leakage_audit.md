@@ -116,3 +116,36 @@
 
 1. In scientific publications and internal reports, explicitly disclose that the 400-pair held-out test split exhibits high template text redundancy (84.6% text overlap with train), making the Synthetic Challenge Set (0.0% overlap) the authoritative benchmark for genuine out-of-distribution generalization.
 2. In future iterations of dataset synthesis (Task G prerequisites), enforce global text-template deduplication prior to split generation.
+
+---
+
+## 8. Overlap-Stratified Accuracy
+
+Overlap was measured; a causal effect on the test-to-challenge performance gap is not established.
+
+### 8.1 Methodology and Distribution Characteristics
+For every pair in the held-out test split ($N = 80$), each complaint text was tokenized using the audit's conservative normalization, and its maximum token-Jaccard similarity against all training complaints was computed. The pair overlap is defined as the arithmetic mean of the two maxima:
+$$\text{Pair Overlap} = \frac{\max_{t \in \text{Train}} J(A, t) + \max_{t \in \text{Train}} J(B, t)}{2}$$
+
+- **Range:** $[0.6154, 1.0000]$ (mean: $0.9493$, median: $1.0000$)
+- **High Overlap Count:** **72 / 80 pairs (90.0%)** have pair overlap $> 0.80$.
+- **Distribution Degeneracy:** **57 of 80 test pairs (71.25%)** have an exact pair overlap of $1.00$ (both complaint texts identical to training templates). Because more than two-thirds of pairs share the identical maximum overlap value, both tertile and median splits are reported below.
+
+### 8.2 Tertile Stratification ($N = 27, 27, 26$)
+
+| Tertile | N | Overlap Range | HISC Acc | B1 (Jaccard) | B3 (Cat+Dist) | B4 (TF-IDF) | B6 (Embedding) |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Tertile 1 (Low Overlap)** | 27 | $[0.6154, 1.0000]$ | **100.00%** | 66.67% | **100.00%** | 66.67% | 85.19% |
+| **Tertile 2 (Mid Overlap)** | 27 | $[1.0000, 1.0000]$ | **100.00%** | 37.04% | **100.00%** | 59.26% | 77.78% |
+| **Tertile 3 (High Overlap)**| 26 | $[1.0000, 1.0000]$ | **100.00%** | 76.92% | **100.00%** | 84.62% | 73.08% |
+
+### 8.3 Median Split Stratification ($N = 40, 40$)
+
+| Split Group | N | Overlap Range | HISC Acc | B1 (Jaccard) | B3 (Cat+Dist) | B4 (TF-IDF) | B6 (Embedding) |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Lower 50% ($< \text{Median}$)** | 40 | $[0.6154, 1.0000]$ | **100.00%** | 52.50% | **100.00%** | 57.50% | 80.00% |
+| **Upper 50% ($\ge \text{Median}$)** | 40 | $[1.0000, 1.0000]$ | **100.00%** | 67.50% | **100.00%** | 82.50% | 77.50% |
+
+### 8.4 Correlation Statistics
+- **HISC vs. Pair Overlap:** *Undefined* (zero variance: HISC achieves 100.00% accuracy on all 80 test pairs).
+- **B4 (TF-IDF) vs. Pair Overlap:** Point-biserial correlation $r = 0.0479$ (weak positive association between lexical template overlap and TF-IDF accuracy).
