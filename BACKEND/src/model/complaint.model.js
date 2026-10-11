@@ -78,6 +78,10 @@ const complaintSchema = new mongoose.Schema(
          min: 0,
          default: 0,
       },
+      submittedDespiteSimilar: {
+         type: Boolean,
+         default: false,
+      },
       slaDurationHours: {
          type: Number,
          required: true,
