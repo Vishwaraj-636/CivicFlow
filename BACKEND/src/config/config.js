@@ -71,8 +71,9 @@ export const config = {
    COOKIE_OPTIONS: resolveCookieOptions(),
 };
 
-export const isOriginAllowed = (origin, allowedOrigins = config.ALLOWED_ORIGINS) => {
+export const isOriginAllowed = (origin, allowedOrigins = null) => {
    if (!origin) return true; // Requests without origin header (e.g. mobile apps, curl, server-to-server health checks)
    const normalized = origin.trim().replace(/\/+$/, "");
-   return (allowedOrigins || ["http://localhost:5173"]).includes(normalized);
+   const currentAllowed = allowedOrigins || parseAllowedOrigins();
+   return currentAllowed.includes(normalized);
 };
