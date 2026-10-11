@@ -1,0 +1,209 @@
+{
+  "timestamp": "2026-10-11T12:42:56.586Z",
+  "gitDiffStat_c1a4cdd_HEAD": "BACKEND/src/hisc/scorePair.js | 54 +++++++++++++++++++++++++++++++++++++++++++\n 1 file changed, 54 insertions(+)",
+  "rules": [
+    {
+      "id": "rule_1_distant_boundary",
+      "codeLine": "if (distance > 3000) return \"independent\";",
+      "determineRuleLine": "if (distance > 3000) return \"rule_1_distant_boundary\";",
+      "forcedLabel": "independent",
+      "inputFieldsRead": [
+        "a.location.coordinates",
+        "b.location.coordinates"
+      ],
+      "derivedSignals": [
+        "distanceInMeters(coordsA, coordsB) > 3000"
+      ],
+      "isGroundTruthLeak": false
+    },
+    {
+      "id": "rule_2_temporal_boundary",
+      "codeLine": "if (hours > 720) return \"independent\";",
+      "determineRuleLine": "if (hours > 720) return \"rule_2_temporal_boundary\";",
+      "forcedLabel": "independent",
+      "inputFieldsRead": [
+        "a.createdAt",
+        "b.createdAt"
+      ],
+      "derivedSignals": [
+        "Math.abs(dateA - dateB) / 3600000 > 720"
+      ],
+      "isGroundTruthLeak": false
+    },
+    {
+      "id": "rule_3_operational_radius",
+      "codeLine": "if (distance > config.radiusInMeters && (!causallyConnected || semantic < 0.20)) return \"independent\";",
+      "determineRuleLine": "if (distance > config.radiusInMeters && (!causallyConnected || semantic < 0.20)) return \"rule_3_operational_radius\";",
+      "forcedLabel": "independent",
+      "inputFieldsRead": [
+        "a.location.coordinates",
+        "b.location.coordinates",
+        "a.text/title/desc",
+        "b.text/title/desc"
+      ],
+      "derivedSignals": [
+        "distance",
+        "causallyConnected (from concept dictionary matching on text)",
+        "semantic (text lexical/synonym affinity)"
+      ],
+      "isGroundTruthLeak": false
+    },
+    {
+      "id": "rule_4_incompatible_categories",
+      "codeLine": "if (catSim === 0.0 && !causallyConnected) return \"independent\";",
+      "determineRuleLine": "if (catSim === 0.0 && !causallyConnected) return \"rule_4_incompatible_categories\";",
+      "forcedLabel": "independent",
+      "inputFieldsRead": [
+        "a.category",
+        "b.category",
+        "a.text/title/desc",
+        "b.text/title/desc"
+      ],
+      "derivedSignals": [
+        "catSim (category compatibility score)",
+        "causallyConnected (concept dictionary matching on text)"
+      ],
+      "isGroundTruthLeak": false
+    },
+    {
+      "id": "rule_5_duplicate",
+      "codeLine": "if (catSim >= 0.9 && distance <= 250 && hours <= 168 && !opposingDir && (semantic > 0 || lexical > 0 || score >= 0.70)) return \"duplicate\";",
+      "determineRuleLine": "if (catSim >= 0.9 && distance <= 250 && hours <= 168 && !opposingDir && (semantic > 0 || lexical > 0 || score >= 0.70)) return \"rule_5_duplicate\";",
+      "forcedLabel": "duplicate",
+      "inputFieldsRead": [
+        "a.category",
+        "b.category",
+        "a.location.coordinates",
+        "b.location.coordinates",
+        "a.createdAt",
+        "b.createdAt",
+        "a.text/title/desc",
+        "b.text/title/desc"
+      ],
+      "derivedSignals": [
+        "score >= duplicateThreshold",
+        "catSim >= 0.9",
+        "distance <= 250",
+        "hours <= 168",
+        "!opposingDir",
+        "semantic/lexical affinity"
+      ],
+      "isGroundTruthLeak": false
+    },
+    {
+      "id": "rule_5_opposing_direction",
+      "codeLine": "return opposingDir ? \"independent\" : \"related\";",
+      "determineRuleLine": "return opposingDir ? \"rule_5_opposing_direction\" : \"rule_5_downgraded_related\";",
+      "forcedLabel": "independent",
+      "inputFieldsRead": [
+        "a.text/title/desc",
+        "b.text/title/desc"
+      ],
+      "derivedSignals": [
+        "hasOpposingDirections(textA, textB) === true",
+        "score >= duplicateThreshold"
+      ],
+      "isGroundTruthLeak": false
+    },
+    {
+      "id": "rule_5_downgraded_related",
+      "codeLine": "return opposingDir ? \"independent\" : \"related\";",
+      "determineRuleLine": "return opposingDir ? \"rule_5_opposing_direction\" : \"rule_5_downgraded_related\";",
+      "forcedLabel": "related",
+      "inputFieldsRead": [
+        "a.category",
+        "b.category",
+        "a.location.coordinates",
+        "b.location.coordinates",
+        "a.createdAt",
+        "b.createdAt",
+        "a.text/title/desc",
+        "b.text/title/desc"
+      ],
+      "derivedSignals": [
+        "score >= duplicateThreshold",
+        "fails tight duplicate bounds (distance > 250m or hours > 168h or catSim < 0.9)"
+      ],
+      "isGroundTruthLeak": false
+    },
+    {
+      "id": "rule_opposing_direction_related",
+      "codeLine": "return opposingDir && catSim < 0.9 ? \"independent\" : \"related\";",
+      "determineRuleLine": "return opposingDir && catSim < 0.9 ? \"rule_opposing_direction_related\" : \"threshold\";",
+      "forcedLabel": "independent",
+      "inputFieldsRead": [
+        "a.text/title/desc",
+        "b.text/title/desc",
+        "a.category",
+        "b.category"
+      ],
+      "derivedSignals": [
+        "opposingDir === true",
+        "catSim < 0.9",
+        "score >= relatedThreshold"
+      ],
+      "isGroundTruthLeak": false
+    },
+    {
+      "id": "threshold",
+      "codeLine": "return \"independent\"; / return \"related\"; / return \"duplicate\";",
+      "determineRuleLine": "return \"threshold\";",
+      "forcedLabel": "score-dependent",
+      "inputFieldsRead": [
+        "active weights * features"
+      ],
+      "derivedSignals": [
+        "score >= relatedThreshold ? \"related\" : \"independent\""
+      ],
+      "isGroundTruthLeak": false
+    }
+  ],
+  "reconciliation": {
+    "reportedSixRuleList": [
+      "distant boundary (>3000m -> independent)",
+      "temporal boundary (>720h -> independent)",
+      "operational radius (>1000m without causal/semantic -> independent)",
+      "incompatible categories (catSim 0.0 without causal -> independent)",
+      "duplicate gate (score >= 0.60 requiring tight dist<=250m, hours<=168h, catSim>=0.9, no opposing dir)",
+      "related opposing direction (score >= 0.10 with opposing dir and catSim < 0.9 -> independent)"
+    ],
+    "taskECatalog": [
+      "rule_1_distant_boundary",
+      "rule_2_temporal_boundary",
+      "rule_3_operational_radius",
+      "rule_4_incompatible_categories",
+      "rule_5_duplicate",
+      "rule_5_opposing_direction",
+      "rule_5_downgraded_related",
+      "rule_opposing_direction_related",
+      "threshold"
+    ],
+    "inaccuraciesInEarlierReports": [
+      "The closeout text in Task E colloquially misnamed/misattributed rule names: it listed \"rule_4_same_incident_cluster (17 pairs, forces duplicate)\", which does NOT exist anywhere in scorePair.js or the codebase.",
+      "In scorePair.js, Rule 4 is actually \"rule_4_incompatible_categories\" (catSim === 0.0 && !causallyConnected -> independent).",
+      "Pairs categorized as duplicate are governed by rule_5_duplicate (score >= 0.60 && distance <= 250m && hours <= 168h && catSim >= 0.9 && !opposingDir) or numerical thresholding, NOT by any ground-truth cluster id."
+    ]
+  },
+  "rule_4_trace": {
+    "ruleIdentifier": "rule_4_incompatible_categories",
+    "fieldsRead": [
+      "a.category",
+      "b.category",
+      "conceptsA (from a.text)",
+      "conceptsB (from b.text)"
+    ],
+    "harnessPopulationTrace": "runFinalEvaluationFreeze.js and hiscEvaluationHarness.js load dataset CSV rows and pass { text: row.text_1, category: row.category_1, location: { coordinates: [lng, lat] }, createdAt: row.created_at_1 } to scorePair.js. No incident_id, cluster_id, or label column is passed to scorePair.js.",
+    "decision": "LEAK = false",
+    "evidence": "No rule in scorePair.js reads incident_id, cluster_id, group_id, pair_id, or ground truth labels. All inputs are observable features (text, category, location, timestamp) present in production for any incoming complaint."
+  },
+  "leakFreeMetrics": {
+    "leakFree": true,
+    "leakFreeChallengeAcc": 0.84,
+    "leakFreeChallengeMacroF1": 0.8343,
+    "exactClopperPearsonCI": [
+      0.7714,
+      0.8947
+    ],
+    "note": "Because LEAK = false, leak-free metrics match the frozen evaluation numbers exactly."
+  }
+}
