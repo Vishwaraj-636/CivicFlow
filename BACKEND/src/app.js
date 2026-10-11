@@ -1,4 +1,7 @@
 import express from 'express';
+import path from 'node:path';
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
@@ -53,13 +56,9 @@ passport.use(new GoogleStrategy({
    return done(null, profile)
 }))
 
-app.get('/', (req, res) => {
-   res.status(200).json({ message: "server is running" })
-})
-
 app.get('/health', (req, res) => {
    res.status(200).json({ status: "ok" });
-})
+});
 
 app.use('/api/auth', authLimiter, authRouter);
 app.use('/api', requestRouter);
@@ -69,5 +68,42 @@ app.use('/api', complaintTimelineRouter);
 app.use('/api', incidentRouter);
 app.use('/api', aiRouter);
 app.use('/api', chatRouter);
+
+// Return JSON 404 for any unhandled /api route
+app.use('/api', (req, res) => {
+   res.status(404).json({ error: "API route not found" });
+});
+
+// Production Frontend Static File Serving & SPA Fallback
+const frontendDist = process.env.FRONTEND_DIST || path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../FRONTEND/dist');
+const indexHtml = path.join(frontendDist, 'index.html');
+
+if (process.env.NODE_ENV === 'production') {
+   if (fs.existsSync(indexHtml)) {
+      app.use(express.static(frontendDist));
+      app.use((req, res, next) => {
+         if (req.method !== 'GET' && req.method !== 'HEAD') {
+            return next();
+         }
+         if (
+            req.path.startsWith('/api') ||
+            req.path.startsWith('/socket.io') ||
+            req.path === '/health'
+         ) {
+            return next();
+         }
+         res.sendFile(indexHtml);
+      });
+   } else {
+      console.warn(`[SPA] Frontend production assets not found at ${frontendDist}. Run 'npm run build' in FRONTEND.`);
+      app.get('/', (req, res) => {
+         res.status(200).json({ message: "server is running (frontend dist not found)" });
+      });
+   }
+} else {
+   app.get('/', (req, res) => {
+      res.status(200).json({ message: "server is running" });
+   });
+}
 
 export default app;
