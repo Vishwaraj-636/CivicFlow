@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "_comment": "OBSOLETE: Vercel deployment is deprecated. CivicFlow uses a single-origin Render deployment serving both frontend and Express backend from the same origin.",
   "rewrites": [
     {
       "source": "/(.*)",
