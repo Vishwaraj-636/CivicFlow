@@ -77,52 +77,67 @@ HISC ($N=150$) compared pairwise against key comparators using exact two-sided b
 - **Leak-Free Challenge Macro F1:** **0.8343**
 - **Exact Clopper-Pearson 95% CI:** `[0.7714, 0.8947]`
 
-### Contextual Rule Definitions and Challenge Activations
-| Rule Key | Rule Name | Action Override | Challenge Activations | Validation Activations |
-|---|---|:---:|:---:|:---:|
-| **0** | 0 | `override` | N/A | N/A |
-| **1** | 1 | `override` | N/A | N/A |
-| **2** | 2 | `override` | N/A | N/A |
-| **3** | 3 | `override` | N/A | N/A |
-| **4** | 4 | `override` | N/A | N/A |
-| **5** | 5 | `override` | N/A | N/A |
-| **6** | 6 | `override` | N/A | N/A |
-| **7** | 7 | `override` | N/A | N/A |
-| **8** | 8 | `override` | N/A | N/A |
+### Contextual Rule Definitions and Dataset Activations
+| Rule Identifier | Rule Name | Trigger Condition | Forced Label | Challenge Activations (N=150) | Validation Activations (N=80) |
+|---|---|---|:---:|:---:|:---:|
+| **rule_1_distant_boundary** | Rule 1: Distant Boundary (>3000m) | `distance > 3000` | `independent` | 22 | 26 |
+| **rule_2_temporal_boundary** | Rule 2: Temporal Boundary (>720h / 30d) | `hours > 720` | `independent` | 10 | 0 |
+| **rule_3_operational_radius** | Rule 3: Operational Radius (>1000m Radius Gate) | `distance > radiusInMeters && (!causallyConnected || semantic < 0.20)` | `independent` | 2 | 2 |
+| **rule_4_incompatible_categories** | Rule 4: Incompatible Categories Without Causal Link | `catSim === 0.0 && !causallyConnected` | `independent` | 12 | 0 |
+| **rule_5_duplicate** | Rule 5a: Duplicate Spatial/Temporal Constraints | `score >= duplicateThreshold && catSim >= 0.9 && distance <= 250 && hours <= 168 && !opposingDir && (semantic > 0 || lexical > 0 || score >= 0.70)` | `duplicate` | 55 | 24 |
+| **rule_5_opposing_direction** | Rule 5b: Opposing Direction Override on High Score | `score >= duplicateThreshold && opposingDir` | `independent` | 5 | 0 |
+| **rule_5_downgraded_related** | Rule 5c: Duplicate Downgrade to Related | `score >= duplicateThreshold && (distance > 250 || hours > 168 || catSim < 0.9)` | `related` | 18 | 1 |
+| **rule_opposing_direction_related** | Rule 6: Opposing Direction Override on Moderate Score | `score >= relatedThreshold && opposingDir && catSim < 0.9` | `independent` | 0 | 0 |
+| **threshold** | Pure Threshold Classification | `No contextual rule overrode classification; outcome decided strictly by duplicate/related thresholds` | `score-dependent (duplicate / related / independent)` | 26 | 27 |
 
-### Leave-One-Rule-Out Ablation (Synthetic Challenge Set)
-| Ablation State | Rules Active | Challenge Accuracy | Challenge Macro F1 | Accuracy Delta vs HISC |
-|---|:---:|:---:|:---:|:---:|
-| **validation** | All | N/A | N/A | 0.00% |
-| **challenge** | All | N/A | N/A | 0.00% |
+### Leave-One-Rule-Out Ablation (Synthetic Challenge Set, N=150)
+| Ablation State | Description | Challenge Accuracy | Challenge Macro F1 | Accuracy Delta vs HISC |
+|---|---|:---:|:---:|:---:|
+| **full_hisc** | Full HISC Baseline (All Rules) | 84.00% | 0.8343 | +0.00% |
+| **ablate_rule_1** | Ablate Rule 1 (Distant Boundary >3000m) | 76.67% | 0.7620 | -7.33% |
+| **ablate_rule_2** | Ablate Rule 2 (Temporal Boundary >720h) | 84.00% | 0.8371 | +0.00% |
+| **ablate_rule_3** | Ablate Rule 3 (Operational Radius >1000m) | 84.00% | 0.8351 | +0.00% |
+| **ablate_rule_4** | Ablate Rule 4 (Incompatible Categories) | 77.33% | 0.7688 | -6.67% |
+| **ablate_rule_5** | Ablate Rule 5 (Duplicate Tight Constraints) | 73.33% | 0.7157 | -10.67% |
+| **ablate_all_rules** | Ablate All Rules (Pure Score Thresholds) | 52.00% | 0.4198 | -32.00% |
 
 ## 6. Synthetic Challenge Breakdown by Category
 
-Per-category accuracy on the 150 synthetic challenge pairs (reporting N, correct, and accuracy without ill-defined per-category F1):
+Per-category accuracy on the 150 synthetic challenge pairs across all 10 categories from `challengeDataDefinitions.js`:
 
-| Category | Total Pairs (N) | HISC Correct | HISC Accuracy | B3 Correct | B3 Accuracy | B4 Correct | B4 Accuracy |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Paraphrases with Novel Vocabulary** | 15 | N/A | N/A | N/A | N/A | N/A | N/A |
-| **Typos and Spelling Variations** | 15 | N/A | N/A | N/A | N/A | N/A | N/A |
-| **Tanglish and Colloquial Phrasing** | 15 | N/A | N/A | N/A | N/A | N/A | N/A |
-| **Very Short and Vague Descriptions** | 15 | N/A | N/A | N/A | N/A | N/A | N/A |
-| **Same Location, Different Issue** | 15 | N/A | N/A | N/A | N/A | N/A | N/A |
-| **Same Issue, Geographically Distant** | 15 | N/A | N/A | N/A | N/A | N/A | N/A |
-| **Temporally Distant at Same Location** | 10 | N/A | N/A | N/A | N/A | N/A | N/A |
-| **Similar Wording, Distinct Incidents** | 13 | N/A | N/A | N/A | N/A | N/A | N/A |
-| **Cascading Related Failures** | 15 | N/A | N/A | N/A | N/A | N/A | N/A |
-| **True Duplicates with Disparate Phrasing** | 22 | N/A | N/A | N/A | N/A | N/A | N/A |
+> **Category Distribution Note:** While an earlier document colloquially described the challenge set as "10 categories x 15 pairs = 150", the audited ground-truth definitions in `challengeDataDefinitions.js` contain: 6 categories with 15 pairs, 1 category with 10 pairs (Temporally Distant), 1 category with 13 pairs (Similar Wording), and 1 category with 22 pairs (True Duplicates with Disparate Phrasing), summing to exactly 150 pairs (6 × 15 + 10 + 13 + 22 = 150).
+
+| Category | Total Pairs (N) | HISC Correct | HISC Accuracy | B3 Correct | B3 Accuracy | B4 Correct | B4 Accuracy | HISC-embed Correct | HISC-embed Accuracy |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Paraphrases with Novel Vocabulary** | 15 | 15 | 100.00% | 11 | 73.33% | 6 | 40.00% | 15 | 100.00% |
+| **Typos and Spelling Variations** | 15 | 15 | 100.00% | 11 | 73.33% | 7 | 46.67% | 14 | 93.33% |
+| **Tanglish and Colloquial Phrasing** | 15 | 15 | 100.00% | 12 | 80.00% | 9 | 60.00% | 12 | 80.00% |
+| **Very Short and Vague Descriptions** | 15 | 11 | 73.33% | 7 | 46.67% | 8 | 53.33% | 11 | 73.33% |
+| **Same Location, Different Issue** | 15 | 9 | 60.00% | 5 | 33.33% | 2 | 13.33% | 9 | 60.00% |
+| **Same Issue, Geographically Distant** | 15 | 14 | 93.33% | 2 | 13.33% | 2 | 13.33% | 13 | 86.67% |
+| **Temporally Distant at Same Location** | 10 | 5 | 50.00% | 0 | 0.00% | 4 | 40.00% | 5 | 50.00% |
+| **Similar Wording, Distinct Incidents** | 13 | 5 | 38.46% | 0 | 0.00% | 0 | 0.00% | 5 | 38.46% |
+| **Cascading Related Failures** | 15 | 15 | 100.00% | 15 | 100.00% | 2 | 13.33% | 15 | 100.00% |
+| **True Duplicates with Disparate Phrasing** | 22 | 22 | 100.00% | 22 | 100.00% | 11 | 50.00% | 21 | 95.45% |
 
 ## 7. Dataset Overlap Audit and Stratification
 
-> **Finding:** Overlap was measured; a causal effect on the test-to-challenge performance gap is not established.
+> **Diagnostic Finding:** Binary overlap stratification is uninformative where HISC and B3 are 100% in every group.
 
 - **Test Sample Count ($N$):** 80
 - **Pairwise Overlap Range:** [0.6154, 1.0000]
 - **Exact 100% Template Overlap Count:** 57 of 80 (71.25%)
 - **HISC vs Overlap Correlation:** `undefined (zero variance)`
 
-### Tertile Stratification Table
+### Binary Overlap Split (< 1.00 vs = 1.00)
+| Overlap Stratum | Sample Count ($N$) | Jaccard Overlap Range | HISC Accuracy | B1 (Jaccard) | B3 (Cat+Dist) | B4 (TF-IDF) | B6 (Embedding) |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Overlap < 1.00** | 23 | [0.6154, 0.9091] | 100.00% | 69.57% | 100.00% | 69.57% | 86.96% |
+| **Overlap = 1.00** | 57 | [1.0000, 1.0000] | 100.00% | 56.14% | 100.00% | 70.18% | 75.44% |
+
+### Tertile Stratification Table (Tie-Ordered / Degenerate Cut)
+> **Note on Tertiles:** Because 57 of 80 test pairs (71.25%) tie at identical overlap 1.0000, tertiles 2 and 3 represent an arbitrary cut across tied pairs.
+
 | Overlap Stratum | Sample Count ($N$) | Jaccard Range | HISC Accuracy | B1 (Jaccard) | B3 (Cat+Dist) | B4 (TF-IDF) | B6 (Embedding) |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | **Tertile 1 (Low Overlap)** | 27 | [0.6154, 1.0000] | 100.00% | 66.67% | 100.00% | 66.67% | 85.19% |
@@ -141,7 +156,7 @@ Benchmark comparing unindexed `$geoWithin`, indexed `$geoWithin` (2dsphere), and
 
 > **Spatial Note:** `$near` automatically sorts candidates by spherical distance, eliminating application-tier coordinate distance sort overhead.
 
-## 9. Simplex Weight Optimization (Task E)
+## 9. Simplex Weight Optimization (Task T5)
 
 - **Optimization Status:** `experimental_evaluated`
 - **Selected for Production:** `false`
