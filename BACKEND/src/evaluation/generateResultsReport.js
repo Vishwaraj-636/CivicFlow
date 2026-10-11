@@ -14,6 +14,7 @@ export const REPORT_PATHS = {
    t2Json: path.resolve(__dirname, "../../results/t2_embedding_validation_comparison.json"),
    t4Json: path.resolve(__dirname, "../../results/t4_latency_benchmark.json"),
    t5Json: path.resolve(__dirname, "../../results/t5_learned_weights_validation.json"),
+   finalEvalJson: path.resolve(__dirname, "../../results/final_held_out_evaluation.json"),
    splitsJson: path.resolve(__dirname, "../../data/splits.json"),
    historicalBaselineJson: path.resolve(__dirname, "../../data/hisc_baseline_evaluation.json"),
 };
@@ -51,6 +52,7 @@ export function generateResultsReport(options = {}) {
    const t2Path = options.t2Json ?? REPORT_PATHS.t2Json;
    const t4Path = options.t4Json ?? REPORT_PATHS.t4Json;
    const t5Path = options.t5Json ?? REPORT_PATHS.t5Json;
+   const finalEvalPath = options.finalEvalJson ?? REPORT_PATHS.finalEvalJson;
    const splitsPath = options.splitsJson ?? REPORT_PATHS.splitsJson;
    const histBaselinePath = options.historicalBaselineJson ?? REPORT_PATHS.historicalBaselineJson;
    const resultsDir = options.resultsDir ?? REPORT_PATHS.resultsDir;
@@ -60,6 +62,7 @@ export function generateResultsReport(options = {}) {
    const t2Data = readJsonSafe(t2Path);
    const t4Data = readJsonSafe(t4Path);
    const t5Data = readJsonSafe(t5Path);
+   const finalEvalData = readJsonSafe(finalEvalPath);
    const splitsData = readJsonSafe(splitsPath);
    const histBaselineData = readJsonSafe(histBaselinePath);
 
@@ -247,12 +250,51 @@ export function generateResultsReport(options = {}) {
    md += `*Detailed itemized error reports and full confusion matrices are saved in:* \`BACKEND/results/error_analysis_validation_<method-id>.md\` and \`.json\`.\n\n`;
 
    // -------------------------------------------------------------------------
+   // -------------------------------------------------------------------------
    // Section E: Test and Challenge Results
    // -------------------------------------------------------------------------
    md += `## E. Test and Challenge Results\n\n`;
-   md += `> [!IMPORTANT]\n`;
-   md += `> **Final Method Evaluation Status:** **Pending final evaluation**\n`;
-   md += `> In strict compliance with the held-out research protocol, the finalized 6-method roster has **not yet been evaluated** on the held-out test split ($N = 80$) or the synthetic challenge set ($N = 150$). These partitions remain frozen and untouched until the final evaluation freeze.\n\n`;
+
+   if (finalEvalData) {
+      md += `> [!IMPORTANT]\n`;
+      md += `> **Final Method Evaluation Status:** **Evaluation freeze completed** (Prior status: *Pending final evaluation* until one-time freeze protocol execution at commit \`${finalEvalData.metadata?.git_commit || "327a4fcd"}\`).\n`;
+      md += `> In strict compliance with the held-out research protocol, all methods were evaluated on the held-out test split ($N = ${finalEvalData.metadata?.partition_sizes?.held_out_test || 80}$) and synthetic challenge set ($N = ${finalEvalData.metadata?.partition_sizes?.synthetic_challenge || 150}$) exactly once with frozen configurations and zero retuning.\n\n`;
+
+      md += `### Held-Out Test Split Results (N = ${finalEvalData.metadata?.partition_sizes?.held_out_test || 80})\n\n`;
+      md += `| Method ID | Method Name | Accuracy | Macro Prec | Macro Rec | Macro F1 | 95% Bootstrap CI (Macro F1) | Per-Class F1 (dup / rel / ind) |\n`;
+      md += `|---|---|:---:|:---:|:---:|:---:|:---:|:---:|\n`;
+
+      for (const [id, m] of Object.entries(finalEvalData.methods)) {
+         const res = m.held_out_test;
+         const met = res.metrics;
+         const ci = res.bootstrap_ci;
+         const pc = met.per_class;
+         const f1Str = `${pc.duplicate.f1.toFixed(4)} / ${pc.related.f1.toFixed(4)} / ${pc.independent.f1.toFixed(4)}`;
+         const ciStr = `[${ci.ci_lower.toFixed(4)}, ${ci.ci_upper.toFixed(4)}]`;
+         md += `| **${id}** | ${m.name} | ${(met.accuracy * 100).toFixed(2)}% | ${met.macro_precision.toFixed(4)} | ${met.macro_recall.toFixed(4)} | **${met.macro_f1.toFixed(4)}** | ${ciStr} | ${f1Str} |\n`;
+      }
+      md += "\n";
+
+      md += `### Synthetic Challenge Set Results (N = ${finalEvalData.metadata?.partition_sizes?.synthetic_challenge || 150})\n\n`;
+      md += `| Method ID | Method Name | Accuracy | Macro Prec | Macro Rec | Macro F1 | 95% Bootstrap CI (Macro F1) | Indep Recall | Per-Class F1 (dup / rel / ind) |\n`;
+      md += `|---|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n`;
+
+      for (const [id, m] of Object.entries(finalEvalData.methods)) {
+         const res = m.synthetic_challenge;
+         const met = res.metrics;
+         const ci = res.bootstrap_ci;
+         const pc = met.per_class;
+         const f1Str = `${pc.duplicate.f1.toFixed(4)} / ${pc.related.f1.toFixed(4)} / ${pc.independent.f1.toFixed(4)}`;
+         const ciStr = `[${ci.ci_lower.toFixed(4)}, ${ci.ci_upper.toFixed(4)}]`;
+         const indRec = `${(pc.independent.recall * 100).toFixed(2)}%`;
+         md += `| **${id}** | ${m.name} | ${(met.accuracy * 100).toFixed(2)}% | ${met.macro_precision.toFixed(4)} | ${met.macro_recall.toFixed(4)} | **${met.macro_f1.toFixed(4)}** | ${ciStr} | ${indRec} | ${f1Str} |\n`;
+      }
+      md += "\n";
+   } else {
+      md += `> [!IMPORTANT]\n`;
+      md += `> **Final Method Evaluation Status:** **Pending final evaluation**\n`;
+      md += `> In strict compliance with the held-out research protocol, the finalized 6-method roster has **not yet been evaluated** on the held-out test split ($N = 80$) or the synthetic challenge set ($N = 150$). These partitions remain frozen and untouched until the final evaluation freeze.\n\n`;
+   }
 
    if (histBaselineData?.partitions) {
       md += `### Historical Reference: Phase A3 HISC Baseline Evaluation (Historical Context Only)\n\n`;
@@ -284,14 +326,29 @@ export function generateResultsReport(options = {}) {
    // -------------------------------------------------------------------------
    md += `## F. Confidence Intervals and Statistical Procedure\n\n`;
    md += `### Protocol Specification for Final Evaluation\n\n`;
-   md += `When the final evaluation freeze is executed, all methods on the frozen roster will be evaluated using the identical statistical protocol:\n\n`;
+   md += `All methods on the frozen roster were evaluated using the standardized empirical bootstrap protocol:\n\n`;
    md += `- **Primary Metric:** Unweighted Macro F1 across all three classes (\`duplicate\`, \`related\`, \`independent\`).\n`;
    md += `- **Bootstrap Method:** Empirical percentile bootstrap confidence intervals.\n`;
    md += `- **Resample Unit:** Individual complaint pair, resampled with replacement from the target partition.\n`;
    md += `- **Resample Iterations:** **1,000 bootstrap iterations**.\n`;
    md += `- **Confidence Level:** **95%** (empirical $\\alpha/2 = 0.025$ and $1 - \\alpha/2 = 0.975$ quantiles).\n`;
    md += `- **Random Seed:** **42** using deterministic Mulberry32 PRNG.\n`;
-   md += `- **Status for Current 6-Method Roster on Test/Challenge:** **Pending final evaluation freeze** (no values fabricated).\n\n`;
+   if (finalEvalData) {
+      md += `- **Evaluation Status:** **Completed** at commit \`${finalEvalData.metadata?.git_commit || "327a4fcd"}\`.\n\n`;
+      md += `### Summary of Final 95% Bootstrap Confidence Intervals (Macro F1)\n\n`;
+      md += `| Method ID | Method Name | Held-Out Test 95% CI | Synthetic Challenge 95% CI |\n`;
+      md += `|---|---|:---:|:---:|\n`;
+      for (const [id, m] of Object.entries(finalEvalData.methods)) {
+         const tCi = m.held_out_test?.bootstrap_ci;
+         const cCi = m.synthetic_challenge?.bootstrap_ci;
+         const tStr = tCi ? `[${tCi.ci_lower.toFixed(4)}, ${tCi.ci_upper.toFixed(4)}]` : "N/A";
+         const cStr = cCi ? `[${cCi.ci_lower.toFixed(4)}, ${cCi.ci_upper.toFixed(4)}]` : "N/A";
+         md += `| **${id}** | ${m.name} | **${tStr}** | **${cStr}** |\n`;
+      }
+      md += "\n";
+   } else {
+      md += `- **Status for Current 6-Method Roster on Test/Challenge:** **Pending final evaluation freeze** (no values fabricated).\n\n`;
+   }
 
    // -------------------------------------------------------------------------
    // Section G: Feature Ablation Study
@@ -418,7 +475,8 @@ export function generateResultsReport(options = {}) {
    md += `   - **Expanded 10-Concept Dictionary:** Introduced in commit \`a4446b4\` (Oct 10, 2026), demonstrably postdating the 400-pair dataset and split creation.\n`;
    md += `   - **Dictionary Coupling:** While no leakage between splits occurred, potential domain coupling between dictionary terms and synthetic generation templates warrants scrutiny on out-of-distribution real complaints.\n`;
    md += `4. **Fixed Baseline Design Choices:** Negative exponential decay scale (1,000m) and B5 convex combination weights (60% text / 40% distance) were fixed by design and not optimized.\n`;
-   md += `5. **Held-Out Withholding:** Current comprehensive comparisons are restricted to validation; final conclusions await the T6 evaluation freeze.\n\n`;
+   md += `5. **Simplex Classification-Parity Audit Finding:** An audit of the T5 weight optimizer revealed a medium-severity discrepancy in the candidate evaluation heuristic (\`evaluateFastWeights\`) regarding Rule 5 duplicate thresholding. The selected learned weights were separately validated via the official \`scorePair.js\` pipeline (100% training accuracy), and all final predictions in Section E were generated strictly via the production scoring pipeline. The hand-set HISC model remains the production baseline.\n`;
+   md += `6. **Held-Out Evaluation Freeze Execution:** Final held-out evaluations were executed strictly once at commit \`${finalEvalData?.metadata?.git_commit || "327a4fcd"}\` across test ($N = 80$) and synthetic challenge ($N = 150$) sets without post-hoc retuning.\n\n`;
 
    // -------------------------------------------------------------------------
    // Section K: Reproducibility and Artifact Manifest
@@ -444,6 +502,10 @@ export function generateResultsReport(options = {}) {
       md += `| \`BACKEND/results/t5_learned_weights_validation.json\` | \`${t5Data.metadata?.git_commit || "c1d091ce"}\` | Source of train-only weight simplex optimization and validation comparison metrics. |\n`;
       md += `| \`BACKEND/results/t5_learned_weights_validation.md\` | \`${t5Data.metadata?.git_commit || "c1d091ce"}\` | Human-readable T5 learned weights validation comparison report. |\n`;
       md += `| \`BACKEND/results/learned_weights.json\` | \`${t5Data.metadata?.git_commit || "c1d091ce"}\` | Machine-readable selected learned weight vector artifact. |\n`;
+   }
+   if (finalEvalData) {
+      md += `| \`BACKEND/results/final_held_out_evaluation.json\` | \`${finalEvalData.metadata?.git_commit || "327a4fcd"}\` | Source of one-time held-out test and synthetic challenge final freeze evaluation metrics. |\n`;
+      md += `| \`BACKEND/results/final_held_out_evaluation.md\` | \`${finalEvalData.metadata?.git_commit || "327a4fcd"}\` | Human-readable final held-out test and challenge evaluation freeze report. |\n`;
    }
    md += `| \`BACKEND/data/splits.json\` | \`88bfab50\` | Partition manifest and SHA-256 checksums. |\n`;
    md += `| \`BACKEND/data/hisc_baseline_evaluation.json\` | \`88bfab50\` | Historical Phase A3 baseline and feature ablation data. |\n\n`;

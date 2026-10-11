@@ -155,8 +155,40 @@ Per-method error analysis integrated from verified T3 artifacts (`BACKEND/result
 ## E. Test and Challenge Results
 
 > [!IMPORTANT]
-> **Final Method Evaluation Status:** **Pending final evaluation**
-> In strict compliance with the held-out research protocol, the finalized 6-method roster has **not yet been evaluated** on the held-out test split ($N = 80$) or the synthetic challenge set ($N = 150$). These partitions remain frozen and untouched until the final evaluation freeze.
+> **Final Method Evaluation Status:** **Evaluation freeze completed** (Prior status: *Pending final evaluation* until one-time freeze protocol execution at commit `327a4fcdbbda3f44492304871bbfbd3b8ab3c366`).
+> In strict compliance with the held-out research protocol, all methods were evaluated on the held-out test split ($N = 80$) and synthetic challenge set ($N = 150$) exactly once with frozen configurations and zero retuning.
+
+### Held-Out Test Split Results (N = 80)
+
+| Method ID | Method Name | Accuracy | Macro Prec | Macro Rec | Macro F1 | 95% Bootstrap CI (Macro F1) | Per-Class F1 (dup / rel / ind) |
+|---|---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **HISC** | HISC (Hierarchical Incident Stream Clustering) | 100.00% | 1.0000 | 1.0000 | **1.0000** | [1.0000, 1.0000] | 1.0000 / 1.0000 / 1.0000 |
+| **B1_jaccard** | B1: Text Jaccard Similarity | 60.00% | 0.6012 | 0.5893 | **0.5722** | [0.4618, 0.6769] | 0.4737 / 0.5000 / 0.7429 |
+| **B2_distance** | B2: Distance-Only Similarity | 80.00% | 0.8083 | 0.8016 | **0.7937** | [0.7016, 0.8768] | 0.7143 / 0.6667 / 1.0000 |
+| **B3_cat_distance** | B3: Category Plus Distance | 100.00% | 1.0000 | 1.0000 | **1.0000** | [1.0000, 1.0000] | 1.0000 / 1.0000 / 1.0000 |
+| **B4_tfidf** | B4: TF-IDF Cosine Similarity | 70.00% | 0.7062 | 0.6865 | **0.6851** | [0.5849, 0.7732] | 0.5000 / 0.6462 / 0.9091 |
+| **B5_tfidf_distance** | B5: TF-IDF Cosine + Geographic Distance | 72.50% | 0.7393 | 0.7083 | **0.7044** | [0.6057, 0.7910] | 0.4737 / 0.6765 / 0.9630 |
+| **B6_embedding** | B6: Embedding Cosine Similarity Only | 78.75% | 0.8089 | 0.7877 | **0.7923** | [0.6967, 0.8755] | 0.7755 / 0.7213 / 0.8800 |
+| **HISC_embed** | HISC-embed (Embedding-Backed Semantic Affinity) | 100.00% | 1.0000 | 1.0000 | **1.0000** | [1.0000, 1.0000] | 1.0000 / 1.0000 / 1.0000 |
+| **HISC_hybrid_mean** | HISC-hybrid-mean (Mean of Dictionary & Embedding) | 100.00% | 1.0000 | 1.0000 | **1.0000** | [1.0000, 1.0000] | 1.0000 / 1.0000 / 1.0000 |
+| **HISC_hybrid_max** | HISC-hybrid-max (Maximum of Dictionary & Embedding) | 100.00% | 1.0000 | 1.0000 | **1.0000** | [1.0000, 1.0000] | 1.0000 / 1.0000 / 1.0000 |
+| **HISC_learned_weights** | HISC-learned-weights (Train-Learned Simplex Weights) | 100.00% | 1.0000 | 1.0000 | **1.0000** | [1.0000, 1.0000] | 1.0000 / 1.0000 / 1.0000 |
+
+### Synthetic Challenge Set Results (N = 150)
+
+| Method ID | Method Name | Accuracy | Macro Prec | Macro Rec | Macro F1 | 95% Bootstrap CI (Macro F1) | Indep Recall | Per-Class F1 (dup / rel / ind) |
+|---|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **HISC** | HISC (Hierarchical Incident Stream Clustering) | 84.00% | 0.8330 | 0.8387 | **0.8343** | [0.7724, 0.8926] | 77.19% | 0.9524 / 0.7356 / 0.8148 |
+| **B1_jaccard** | B1: Text Jaccard Similarity | 23.33% | 0.2215 | 0.2469 | **0.2296** | [0.1698, 0.2909] | 17.54% | 0.1064 / 0.3883 / 0.1942 |
+| **B2_distance** | B2: Distance-Only Similarity | 48.67% | 0.4456 | 0.4678 | **0.3831** | [0.3239, 0.4389] | 40.35% | 0.5882 / 0.0000 / 0.5610 |
+| **B3_cat_distance** | B3: Category Plus Distance | 56.67% | 0.7183 | 0.6027 | **0.4768** | [0.4208, 0.5288] | 1.75% | 0.8475 / 0.5484 / 0.0345 |
+| **B4_tfidf** | B4: TF-IDF Cosine Similarity | 34.00% | 0.3364 | 0.3353 | **0.3153** | [0.2428, 0.3891] | 26.32% | 0.4234 / 0.2000 / 0.3226 |
+| **B5_tfidf_distance** | B5: TF-IDF Cosine + Geographic Distance | 35.33% | 0.5416 | 0.3639 | **0.3259** | [0.2502, 0.3931] | 12.28% | 0.4733 / 0.2857 / 0.2188 |
+| **B6_embedding** | B6: Embedding Cosine Similarity Only | 28.67% | 0.4538 | 0.3092 | **0.2661** | [0.1921, 0.3359] | 12.28% | 0.2062 / 0.3768 / 0.2154 |
+| **HISC_embed** | HISC-embed (Embedding-Backed Semantic Affinity) | 80.00% | 0.8000 | 0.7995 | **0.7973** | [0.7335, 0.8587] | 75.44% | 0.9000 / 0.6882 / 0.8037 |
+| **HISC_hybrid_mean** | HISC-hybrid-mean (Mean of Dictionary & Embedding) | 80.00% | 0.8000 | 0.7995 | **0.7973** | [0.7343, 0.8583] | 75.44% | 0.9000 / 0.6882 / 0.8037 |
+| **HISC_hybrid_max** | HISC-hybrid-max (Maximum of Dictionary & Embedding) | 80.00% | 0.8000 | 0.7995 | **0.7973** | [0.7335, 0.8587] | 75.44% | 0.9000 / 0.6882 / 0.8037 |
+| **HISC_learned_weights** | HISC-learned-weights (Train-Learned Simplex Weights) | 84.00% | 0.8330 | 0.8387 | **0.8343** | [0.7724, 0.8926] | 77.19% | 0.9524 / 0.7356 / 0.8148 |
 
 ### Historical Reference: Phase A3 HISC Baseline Evaluation (Historical Context Only)
 
@@ -173,7 +205,7 @@ Per-method error analysis integrated from verified T3 artifacts (`BACKEND/result
 
 ### Protocol Specification for Final Evaluation
 
-When the final evaluation freeze is executed, all methods on the frozen roster will be evaluated using the identical statistical protocol:
+All methods on the frozen roster were evaluated using the standardized empirical bootstrap protocol:
 
 - **Primary Metric:** Unweighted Macro F1 across all three classes (`duplicate`, `related`, `independent`).
 - **Bootstrap Method:** Empirical percentile bootstrap confidence intervals.
@@ -181,7 +213,23 @@ When the final evaluation freeze is executed, all methods on the frozen roster w
 - **Resample Iterations:** **1,000 bootstrap iterations**.
 - **Confidence Level:** **95%** (empirical $\alpha/2 = 0.025$ and $1 - \alpha/2 = 0.975$ quantiles).
 - **Random Seed:** **42** using deterministic Mulberry32 PRNG.
-- **Status for Current 6-Method Roster on Test/Challenge:** **Pending final evaluation freeze** (no values fabricated).
+- **Evaluation Status:** **Completed** at commit `327a4fcdbbda3f44492304871bbfbd3b8ab3c366`.
+
+### Summary of Final 95% Bootstrap Confidence Intervals (Macro F1)
+
+| Method ID | Method Name | Held-Out Test 95% CI | Synthetic Challenge 95% CI |
+|---|---|:---:|:---:|
+| **HISC** | HISC (Hierarchical Incident Stream Clustering) | **[1.0000, 1.0000]** | **[0.7724, 0.8926]** |
+| **B1_jaccard** | B1: Text Jaccard Similarity | **[0.4618, 0.6769]** | **[0.1698, 0.2909]** |
+| **B2_distance** | B2: Distance-Only Similarity | **[0.7016, 0.8768]** | **[0.3239, 0.4389]** |
+| **B3_cat_distance** | B3: Category Plus Distance | **[1.0000, 1.0000]** | **[0.4208, 0.5288]** |
+| **B4_tfidf** | B4: TF-IDF Cosine Similarity | **[0.5849, 0.7732]** | **[0.2428, 0.3891]** |
+| **B5_tfidf_distance** | B5: TF-IDF Cosine + Geographic Distance | **[0.6057, 0.7910]** | **[0.2502, 0.3931]** |
+| **B6_embedding** | B6: Embedding Cosine Similarity Only | **[0.6967, 0.8755]** | **[0.1921, 0.3359]** |
+| **HISC_embed** | HISC-embed (Embedding-Backed Semantic Affinity) | **[1.0000, 1.0000]** | **[0.7335, 0.8587]** |
+| **HISC_hybrid_mean** | HISC-hybrid-mean (Mean of Dictionary & Embedding) | **[1.0000, 1.0000]** | **[0.7343, 0.8583]** |
+| **HISC_hybrid_max** | HISC-hybrid-max (Maximum of Dictionary & Embedding) | **[1.0000, 1.0000]** | **[0.7335, 0.8587]** |
+| **HISC_learned_weights** | HISC-learned-weights (Train-Learned Simplex Weights) | **[1.0000, 1.0000]** | **[0.7724, 0.8926]** |
 
 ## G. Feature Ablation Study
 
@@ -265,7 +313,8 @@ When the final evaluation freeze is executed, all methods on the frozen roster w
    - **Expanded 10-Concept Dictionary:** Introduced in commit `a4446b4` (Oct 10, 2026), demonstrably postdating the 400-pair dataset and split creation.
    - **Dictionary Coupling:** While no leakage between splits occurred, potential domain coupling between dictionary terms and synthetic generation templates warrants scrutiny on out-of-distribution real complaints.
 4. **Fixed Baseline Design Choices:** Negative exponential decay scale (1,000m) and B5 convex combination weights (60% text / 40% distance) were fixed by design and not optimized.
-5. **Held-Out Withholding:** Current comprehensive comparisons are restricted to validation; final conclusions await the T6 evaluation freeze.
+5. **Simplex Classification-Parity Audit Finding:** An audit of the T5 weight optimizer revealed a medium-severity discrepancy in the candidate evaluation heuristic (`evaluateFastWeights`) regarding Rule 5 duplicate thresholding. The selected learned weights were separately validated via the official `scorePair.js` pipeline (100% training accuracy), and all final predictions in Section E were generated strictly via the production scoring pipeline. The hand-set HISC model remains the production baseline.
+6. **Held-Out Evaluation Freeze Execution:** Final held-out evaluations were executed strictly once at commit `327a4fcdbbda3f44492304871bbfbd3b8ab3c366` across test ($N = 80$) and synthetic challenge ($N = 150$) sets without post-hoc retuning.
 
 ## K. Reproducibility and Artifact Manifest
 
@@ -285,6 +334,8 @@ When the final evaluation freeze is executed, all methods on the frozen roster w
 | `BACKEND/results/t5_learned_weights_validation.json` | `c1d091ce1f735976fb4580fa4299f365cfd131e1` | Source of train-only weight simplex optimization and validation comparison metrics. |
 | `BACKEND/results/t5_learned_weights_validation.md` | `c1d091ce1f735976fb4580fa4299f365cfd131e1` | Human-readable T5 learned weights validation comparison report. |
 | `BACKEND/results/learned_weights.json` | `c1d091ce1f735976fb4580fa4299f365cfd131e1` | Machine-readable selected learned weight vector artifact. |
+| `BACKEND/results/final_held_out_evaluation.json` | `327a4fcdbbda3f44492304871bbfbd3b8ab3c366` | Source of one-time held-out test and synthetic challenge final freeze evaluation metrics. |
+| `BACKEND/results/final_held_out_evaluation.md` | `327a4fcdbbda3f44492304871bbfbd3b8ab3c366` | Human-readable final held-out test and challenge evaluation freeze report. |
 | `BACKEND/data/splits.json` | `88bfab50` | Partition manifest and SHA-256 checksums. |
 | `BACKEND/data/hisc_baseline_evaluation.json` | `88bfab50` | Historical Phase A3 baseline and feature ablation data. |
 

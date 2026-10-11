@@ -11,6 +11,7 @@
       "evaluate:embeddings": "node src/evaluation/embeddingEvaluationRunner.js",
       "benchmark:latency": "node src/evaluation/clusteringLatencyBenchmark.js",
       "learn:weights": "node src/evaluation/learnHiscWeights.js",
+      "evaluate:freeze": "node src/evaluation/runFinalEvaluationFreeze.js",
       "results:report": "node src/evaluation/generateResultsReport.js"
    },
    "keywords": [],
