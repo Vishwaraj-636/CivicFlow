@@ -231,6 +231,43 @@ All methods on the frozen roster were evaluated using the standardized empirical
 | **HISC_hybrid_max** | HISC-hybrid-max (Maximum of Dictionary & Embedding) | **[1.0000, 1.0000]** | **[0.7335, 0.8587]** |
 | **HISC_learned_weights** | HISC-learned-weights (Train-Learned Simplex Weights) | **[1.0000, 1.0000]** | **[0.7724, 0.8926]** |
 
+### Paired Exact McNemar Significance Tests (N = 150 Challenge Set)
+
+Two-sided exact McNemar tests evaluated across the 150 challenge examples comparing HISC against baseline methods:
+
+| Comparison | Both Correct ($n_{11}$) | Both Incorrect ($n_{00}$) | HISC Correct, Comp Incorrect ($b$) | HISC Incorrect, Comp Correct ($c$) | Discordant Total ($b+c$) | Exact 2-Sided $p$-value | Bonferroni Sig ($\alpha=0.0125$)? |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **HISC vs. HISC_embed** | 120 | 24 | 6 | 0 | 6 | `0.03125` | No ($p > 0.0125$) |
+| **HISC vs. B3 (Cat+Dist)** | 83 | 22 | 43 | 2 | 45 | `5.89e-11` | **Yes** ($p < 0.0001$) |
+| **HISC vs. B4 (TF-IDF)** | 44 | 17 | 82 | 7 | 89 | `2.43e-17` | **Yes** ($p < 0.0001$) |
+| **HISC vs. B2 (Distance)** | 73 | 24 | 53 | 0 | 53 | `2.22e-16` | **Yes** ($p < 0.0001$) |
+
+> [!NOTE]
+> **Multiple Comparisons Caveat:** For the 4 paired comparisons, the family-wise Bonferroni-adjusted significance threshold is $\alpha_{\text{adj}} = 0.05 / 4 = 0.0125$. Under this threshold, HISC's superiority over B2, B3, and B4 is highly statistically significant ($p < 10^{-10}$), whereas the 4-point accuracy difference between HISC (84.0%) and HISC-embed (80.0%) ($p = 0.03125$) is suggestive at unadjusted $\alpha = 0.05$ but not significant under family-wise Bonferroni correction.
+
+### Exact Clopper–Pearson 95% Binomial Confidence Intervals (Accuracy)
+
+Exact binomial confidence intervals for overall accuracy computed via Beta quantile inversion:
+
+| Method ID | Method Name | Challenge Accuracy (N = 150) | Challenge 95% Clopper–Pearson CI | Test Accuracy (N = 80) | Test 95% Clopper–Pearson CI |
+|---|---|:---:|:---:|:---:|:---:|
+| **HISC** | HISC | 84.00% (126/150) | **[0.7714, 0.8947]** | 100.00% (80/80) | **[0.9549, 1.0000]** |
+| **B1_jaccard** | B1: Jaccard | 23.33% (35/150) | **[0.1683, 0.3099]** | 60.00% (48/80) | **[0.4844, 0.7078]** |
+| **B2_distance** | B2: Distance | 48.67% (73/150) | **[0.4042, 0.5698]** | 80.00% (64/80) | **[0.6956, 0.8811]** |
+| **B3_cat_distance** | B3: Cat+Dist | 56.67% (85/150) | **[0.4831, 0.6477]** | 100.00% (80/80) | **[0.9549, 1.0000]** |
+| **B4_tfidf** | B4: TF-IDF | 34.00% (51/150) | **[0.2646, 0.4222]** | 70.00% (56/80) | **[0.5872, 0.7974]** |
+| **B5_tfidf_distance** | B5: TF-IDF+Dist | 35.33% (53/150) | **[0.2771, 0.4359]** | 72.50% (58/80) | **[0.6138, 0.8190]** |
+| **B6_embedding** | B6: Embedding | 28.67% (43/150) | **[0.2157, 0.3667]** | 78.75% (63/80) | **[0.6817, 0.8711]** |
+| **HISC_embed** | HISC-embed | 80.00% (120/150) | **[0.7270, 0.8608]** | 100.00% (80/80) | **[0.9549, 1.0000]** |
+| **HISC_hybrid_mean** | HISC-hybrid-mean | 80.00% (120/150) | **[0.7270, 0.8608]** | 100.00% (80/80) | **[0.9549, 1.0000]** |
+| **HISC_hybrid_max** | HISC-hybrid-max | 80.00% (120/150) | **[0.7270, 0.8608]** | 100.00% (80/80) | **[0.9549, 1.0000]** |
+| **HISC_learned_weights** | HISC-learned-weights | 84.00% (126/150) | **[0.7714, 0.8947]** | 100.00% (80/80) | **[0.9549, 1.0000]** |
+
+### Sampling Design and Incident-Clustering Nuance
+
+- **Challenge Set Equivalence:** In the synthetic challenge set ($N = 150$), each complaint pair belongs to a unique incident cluster (`CH_INC0001` through `CH_INC0150`), meaning cluster sizes are $M_i = 1$. Consequently, pair-level binomial intervals and incident-clustered resampling are mathematically equivalent.
+- **Held-Out Test Set Caveat:** In the 400-pair development dataset, duplicate pairs share incident IDs and complaint text templates are repeated across splits (84.6% text overlap with train). The pair-level binomial intervals for test accuracy treat observations as independent trials and therefore underestimate variance due to unmodeled intra-cluster correlation.
+
 ## G. Feature Ablation Study
 
 ### Historical HISC Feature Ablations on Validation Split (Historical Reference)
