@@ -35,8 +35,18 @@ const ReportComplaint = () => {
       });
    };
 
+   const handlePreventEnterSubmit = (event) => {
+      if (event.key === "Enter") {
+         event.preventDefault();
+      }
+   };
+
    async function handleSubmit(event) {
       event.preventDefault();
+
+      if (saving) {
+         return;
+      }
 
       if (!form.category) {
          setError("Please select a complaint category.");
@@ -200,6 +210,7 @@ const ReportComplaint = () => {
                            maxLength={80}
                            value={form.title}
                            onChange={handleForm}
+                           onKeyDown={handlePreventEnterSubmit}
                            placeholder="Brief summary (e.g. Deep pothole causing hazard on 5th Main)"
                            className="w-full min-h-[44px] rounded-lg border border-[#CBD2CF] bg-white px-3.5 py-2.5 text-sm text-[#17202A] placeholder-[#87919B] transition focus:border-[#173B5E] focus:outline-none focus:ring-2 focus:ring-[#173B5E]/20"
                         />
@@ -281,6 +292,7 @@ const ReportComplaint = () => {
                         required
                         value={form.address}
                         onChange={handleForm}
+                        onKeyDown={handlePreventEnterSubmit}
                         placeholder="Door number, street name, locality, landmark"
                         className="w-full min-h-[44px] rounded-lg border border-[#CBD2CF] bg-white px-3.5 py-2.5 text-sm text-[#17202A] placeholder-[#87919B] transition focus:border-[#173B5E] focus:outline-none focus:ring-2 focus:ring-[#173B5E]/20"
                      />
