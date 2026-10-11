@@ -64,9 +64,9 @@ const ComplaintHeatmap = () => {
          </div>
 
          {error && <p className="rounded-lg border border-[#F3D0D0] bg-[#FBF0F0] p-3 text-sm text-[#A44A4A]">{error}</p>}
-         <div className="relative h-112 overflow-hidden rounded-xl border border-[#CBD2CF]">
+         <div className="relative isolate z-0 h-112 overflow-hidden rounded-xl border border-[#CBD2CF]">
             {loading ? <div className="flex h-full items-center justify-center text-sm text-[#52606D]">Loading complaint locations...</div> : (
-               <MapContainer center={center} zoom={12} style={{ width: "100%", height: "100%" }} attributionControl={false}>
+               <MapContainer center={center} zoom={12} style={{ width: "100%", height: "100%" }} className="z-0" attributionControl={false}>
                   <TileLayer url={JAWG_TILE_URL} attribution={JAWG_ATTRIBUTION} />
                   {clusters.map((cluster) => {
                      const highestPriority = cluster.complaints.reduce((highest, complaint) => PRIORITY_ORDER[complaint.priority] > PRIORITY_ORDER[highest] ? complaint.priority : highest, "low");
@@ -79,7 +79,7 @@ const ComplaintHeatmap = () => {
                   })}
                </MapContainer>
             )}
-            <div className="absolute bottom-3 left-3 z-1000 flex flex-wrap gap-2 rounded-lg border border-[#CBD2CF] bg-white/95 p-2 text-[10px] font-semibold capitalize shadow-sm">
+            <div className="absolute bottom-3 left-3 z-10 flex flex-wrap gap-2 rounded-lg border border-[#CBD2CF] bg-white/95 p-2 text-[10px] font-semibold capitalize shadow-sm">
                {Object.entries(PRIORITY_COLORS).map(([priority, color]) => <span key={priority} className="inline-flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />{priority}</span>)}
             </div>
          </div>
