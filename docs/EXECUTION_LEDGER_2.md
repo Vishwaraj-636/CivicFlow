@@ -24,4 +24,9 @@ HEAD at start: fba5d5d251fc120d1ed98ae31384a5a87e77eed6
 | 2.3 | DONE | 34278bf | GET /api/complaints/similar endpoint with HISC scoring, privacy guard, and submittedDespiteSimilar flag |
 | 2.4 | DONE | e15134a | Duplicate-warning UI with debounced 600ms similar search, expandable signals, support, and silent fallback |
 | 2.5 | DONE | c27773f | Reproducible demo data seeder with PRNG seed 42, 120 complaints, 11 clusters, and DEMO_CREDENTIALS.md |
-| 2.6 | DONE | [pending commit] | Lazy SLA escalation helper with 60s per-process throttle called from staff and admin controllers |
+| 2.6 | DONE | ce27fff | Lazy SLA escalation helper with 60s per-process throttle called from staff and admin controllers |
+| 3.1 | DONE | [pending commit] | Process and import env matrix created in docs/ENV_MATRIX.md; .env.example updated |
+| 3.2 | DONE | [pending commit] | Transformers dynamic import confirmed lazy; startup memory RSS verified at 122.26 MB (<512MB) |
+| 3.3 | DONE | [pending commit] | Production-mode local run checks (a)-(e) all passed (health, CORS, cookies, helmet, websocket) |
+| 3.4 | DONE | [pending commit] | Smoke test script scripts/smoke.mjs created with markdown table output and exit codes |
+| 3.5 | DONE | [pending commit] | Deployment documents verified: engines Node >=20, branch documented, rollback section added |

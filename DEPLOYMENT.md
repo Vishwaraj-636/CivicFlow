@@ -9,10 +9,13 @@ This guide details the step-by-step procedure for deploying CivicFlow across fre
 
 ## 1. System Architecture and Build Specifications
 
-| Component | Repository Root | Build / Install Command | Start / Output Command | Health Check |
-|---|---|---|---|---|
-| **Backend** | `BACKEND/` | `npm install` | `node server.js` | `GET /health` |
-| **Frontend** | `FRONTEND/` | `npm run build` | Output dir: `dist/` | SPA rewrite to `/index.html` |
+| Component | Repository Root | Build / Install Command | Start / Output Command | Health Check | Runtime Engine |
+|---|---|---|---|---|---|
+| **Backend** | `BACKEND/` | `npm install` | `node server.js` | `GET /health` | Node.js `>=20` (`engines` field enforced) |
+| **Frontend** | `FRONTEND/` | `npm run build` | Output dir: `dist/` | SPA rewrite to `/index.html` | Node.js `>=20` |
+
+> **Deployment Branch Context:**
+> The active development branch containing the complete HISC evaluation and product hardening is `feat/algorithm`. Render and Vercel services can be configured to deploy `feat/algorithm` directly, or `feat/algorithm` can be merged into `main` prior to triggering deployments.
 
 ---
 
@@ -38,6 +41,7 @@ The application reads only the following verified environment variables:
 | `LLM_PROVIDER` | Optional | `gemini` | AI grievance routing provider. |
 | `LLM_API_KEY` | Optional | `AIzaSy...` | API key for Gemini models. |
 | `LLM_MODEL` | Optional | `gemini-3.5-flash-lite` | Target model for AI chatbot and categorization. |
+| `EMBEDDING_PROVIDER` | Optional | `none` | Neural embedding mode (`none`, `local`). Production defaults to `none` (<100MB RAM). |
 
 ### B. Frontend Variables (`FRONTEND/.env`)
 | Variable | Required? | Example Production Value | Purpose / Notes |
@@ -169,15 +173,74 @@ When the frontend (`vercel.app`) and backend (`onrender.com`) sit on different d
    - The first request after sleep takes 50–90 seconds to wake up.
    - The `/health` endpoint can be used with a free uptime monitor (e.g., UptimeRobot, cron-job.org) pinging every 10 minutes to keep the instance warm.
 2. **512 MB RAM Memory Limit:**
-   - The backend service is bounded to 512 MB RAM.
-   - CivicFlow's HISC similarity algorithm uses zero-shot token and concept matching without in-process neural network embeddings or heavy vector stores, consuming <100 MB of heap memory.
+   - The backend service is bounded to 512 MB RAM. Production sets `EMBEDDING_PROVIDER=none` (the free 512 MB host cannot run the local model).
+   - CivicFlow's HISC similarity algorithm uses zero-shot token and concept matching without in-process neural network embeddings or heavy vector stores, consuming ~122 MB of memory at startup.
    - Do not run heavy offline evaluation scripts or training jobs on the live web service container.
 
 ---
 
-## 9. Post-Deployment Smoke Test Checklist
+## 9. Ordered Deployment Sequence
 
-Once both services are deployed, execute these verification checks:
+Follow this exact sequence to ensure services connect without misconfiguration:
+
+1. **MongoDB Atlas M0:**
+   - Provision cluster, configure user credentials.
+   - Configure IP Access List: add `0.0.0.0/0` (required for Render free-tier dynamic IPs).
+   - Obtain MongoDB SRV connection URI.
+2. **Render Web Service (Backend):**
+   - Connect repository, set root directory to `BACKEND`, runtime `Node` (>=20).
+   - Set deployment branch (e.g. `feat/algorithm` or `main`).
+   - Configure environment variables (`MONGO_URI`, `JWT_SECRET`, `NODE_ENV=production`, `EMBEDDING_PROVIDER=none`, `COOKIE_SAME_SITE=none`, `TRUST_PROXY=true`, etc.).
+   - Trigger build and start (`npm install` -> `node server.js`).
+   - Copy assigned Render backend URL (`https://<backend-app-name>.onrender.com`).
+3. **Vercel SPA (Frontend):**
+   - Connect repository, set root directory to `FRONTEND`, framework `Vite`.
+   - Set environment variables:
+     - `VITE_API_URL=https://<backend-app-name>.onrender.com/api`
+     - `VITE_SOCKET_URL=https://<backend-app-name>.onrender.com`
+   - Trigger deployment (`npm run build`).
+   - Copy assigned Vercel URL (`https://<frontend-app-name>.vercel.app`).
+4. **Update Render Origin Configurations:**
+   - In Render dashboard, set `CLIENT_URL=https://<frontend-app-name>.vercel.app` and `ALLOWED_ORIGINS=https://<frontend-app-name>.vercel.app`.
+   - Render restarts the backend service to apply updated origins.
+5. **Update Google Cloud Console OAuth 2.0:**
+   - In Authorized JavaScript origins: add `https://<frontend-app-name>.vercel.app`.
+   - In Authorized redirect URIs: add `https://<backend-app-name>.onrender.com/api/auth/google/callback`.
+   - Update `GOOGLE_CALLBACK_URL` on Render if not already set.
+6. **Automated Smoke Test Verification:**
+   - Execute `node scripts/smoke.mjs` against both live URLs to verify all gates.
+7. **Optional Demo Data Seeding:**
+   - If demo accounts and complaints are needed for presentation screenshots:
+     `DEMO_SEED_ALLOW_REMOTE=1 node BACKEND/src/scripts/seedDemo.js --allow-remote`
+     *(Requires MONGO_URI in environment. Safe and idempotent for `@demo.civicflow.local` accounts).*
+
+---
+
+## 10. Automated Post-Deployment Smoke Test
+
+CivicFlow includes an automated production verification script [`scripts/smoke.mjs`](file:///c:/Projects/CivicFlow/scripts/smoke.mjs) that validates:
+- API `/health` endpoint responds 200 OK.
+- CORS preflight allow-origin header for the Vercel frontend.
+- Unauthenticated access to protected `/api/complaints/similar` correctly returns 401.
+- Optional login authentication and secure cookie flags (`HttpOnly`, `Secure`, `SameSite=None`).
+- Frontend SPA returns HTTP 200 and valid HTML.
+
+### Running the Smoke Test:
+```bash
+# Basic endpoint and CORS verification
+node scripts/smoke.mjs --api https://<backend-app-name>.onrender.com --web https://<frontend-app-name>.vercel.app
+
+# With authenticated login check:
+SMOKE_ADMIN_EMAIL=admin@demo.civicflow.local SMOKE_ADMIN_PASSWORD=Demo@12345 \
+node scripts/smoke.mjs --api https://<backend-app-name>.onrender.com --web https://<frontend-app-name>.vercel.app
+```
+Exit code `0` indicates all checks passed; exit code `1` indicates a check failure.
+
+---
+
+## 11. Post-Deployment Manual Verification Checklist
+
+Once automated smoke checks pass, conduct manual validation:
 
 - [ ] **1. Health Check Probe:**
   ```bash
@@ -209,3 +272,28 @@ Once both services are deployed, execute these verification checks:
 
 - [ ] **6. Real-Time Socket Connection:**
   - Open staff incident view. Check browser developer console for successful Socket.IO handshake (`transport: websocket` or `polling`).
+
+---
+
+## 12. Rollback Procedure
+
+If an issue or regression occurs in production:
+
+### Backend Rollback (Render):
+1. In the Render Dashboard, navigate to the Web Service -> **Deploys** tab.
+2. Locate the previous stable build commit.
+3. Click the actions menu (`...`) and select **Rollback to this deploy**.
+4. Render immediately switches traffic to the prior container image without re-building.
+5. In Git, create a revert commit if code changes are needed: `git revert <commit-hash>`.
+
+### Frontend Rollback (Vercel):
+1. In the Vercel Dashboard, navigate to the Project -> **Deployments** tab.
+2. Locate the prior stable deployment.
+3. Click the actions menu (`...`) and select **Promote to Production**.
+4. Vercel instantly routes edge traffic to the selected deployment (instant zero-downtime rollback).
+
+### Database Rollback:
+- Schema changes in CivicFlow are backward-compatible.
+- If corrupted demo data needs clearing:
+  Rerun seeder or clear demo users ending in `@demo.civicflow.local` using `npm run seed:demo -- --allow-remote`.
+- If production data was affected, restore from MongoDB Atlas point-in-time snapshot or daily backup via **Atlas Dashboard → Backup**.
