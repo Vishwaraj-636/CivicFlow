@@ -1,6 +1,6 @@
 # CivicFlow Research Evaluation — Rule Attribution and Ablation Study
 
-**Audit Timestamp:** 2026-10-11T10:11:18.397Z
+**Audit Timestamp:** 2026-10-11T16:19:15.429Z
 **Evaluation Preset:** `HISC-eval (duplicateThreshold: 0.60, relatedThreshold: 0.10)`
 
 > [!IMPORTANT]
@@ -70,6 +70,9 @@ Counts of rules that determined the final classification label for each pair und
 | **Ablate Rule 4 (Incompatible Categories)** | 77.33% | **0.7688** | `-0.0655` | 0.9524 | 0.6667 | 0.6875 |
 | **Ablate Rule 5 (Duplicate Tight Constraints)** | 73.33% | **0.7157** | `-0.1186` | 0.7813 | 0.6087 | 0.7573 |
 | **Ablate All Rules (Pure Score Thresholds)** | 52.00% | **0.4198** | `-0.4145` | 0.7407 | 0.5185 | 0.0000 |
+
+> [!NOTE]
+> **Threshold Mechanism & Independent Prediction Note:** With `relatedThreshold: 0.10`, the weighted score alone cannot produce `independent` except below 0.10. On the synthetic challenge set ($N = 150$), the minimum weighted score is $0.2298$ (maximum $0.9425$). Consequently, the all-rules-removed variant **NEVER predicts independent** (predicted class distribution: 85 duplicate, 65 related, 0 independent; independent class F1: 0.0000; macro F1: 0.4198). On the validation set ($N = 80$), 3 pairs score below 0.10, yielding 25 duplicate, 52 related, 3 independent (accuracy 67.50%, macro F1 0.6160).
 
 ---
 

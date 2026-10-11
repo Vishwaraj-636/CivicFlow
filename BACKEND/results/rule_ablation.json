@@ -1,5 +1,5 @@
 {
-  "evaluatedAt": "2026-10-11T10:11:18.397Z",
+  "evaluatedAt": "2026-10-11T16:19:15.429Z",
   "evaluationConfig": "HISC-eval (duplicateThreshold: 0.60, relatedThreshold: 0.10)",
   "ruleDefinitions": {
     "rule_1_distant_boundary": {
@@ -111,6 +111,11 @@
         "macro_f1": 1,
         "delta_macro_f1": 0,
         "delta_accuracy": 0,
+        "predicted_distribution": {
+          "duplicate": 24,
+          "related": 28,
+          "independent": 28
+        },
         "per_class_f1": {
           "duplicate": 1,
           "related": 1,
@@ -125,6 +130,11 @@
         "macro_f1": 1,
         "delta_macro_f1": 0,
         "delta_accuracy": 0,
+        "predicted_distribution": {
+          "duplicate": 24,
+          "related": 28,
+          "independent": 28
+        },
         "per_class_f1": {
           "duplicate": 1,
           "related": 1,
@@ -139,6 +149,11 @@
         "macro_f1": 1,
         "delta_macro_f1": 0,
         "delta_accuracy": 0,
+        "predicted_distribution": {
+          "duplicate": 24,
+          "related": 28,
+          "independent": 28
+        },
         "per_class_f1": {
           "duplicate": 1,
           "related": 1,
@@ -153,6 +168,11 @@
         "macro_f1": 0.9762,
         "delta_macro_f1": -0.0238,
         "delta_accuracy": -0.025,
+        "predicted_distribution": {
+          "duplicate": 24,
+          "related": 30,
+          "independent": 26
+        },
         "per_class_f1": {
           "duplicate": 1,
           "related": 0.9655,
@@ -167,6 +187,11 @@
         "macro_f1": 1,
         "delta_macro_f1": 0,
         "delta_accuracy": 0,
+        "predicted_distribution": {
+          "duplicate": 24,
+          "related": 28,
+          "independent": 28
+        },
         "per_class_f1": {
           "duplicate": 1,
           "related": 1,
@@ -181,6 +206,11 @@
         "macro_f1": 0.9871,
         "delta_macro_f1": -0.0129,
         "delta_accuracy": -0.0125,
+        "predicted_distribution": {
+          "duplicate": 25,
+          "related": 27,
+          "independent": 28
+        },
         "per_class_f1": {
           "duplicate": 0.9796,
           "related": 0.9818,
@@ -195,6 +225,11 @@
         "macro_f1": 0.616,
         "delta_macro_f1": -0.384,
         "delta_accuracy": -0.325,
+        "predicted_distribution": {
+          "duplicate": 25,
+          "related": 52,
+          "independent": 3
+        },
         "per_class_f1": {
           "duplicate": 0.9796,
           "related": 0.675,
@@ -211,6 +246,11 @@
         "macro_f1": 0.8343,
         "delta_macro_f1": 0,
         "delta_accuracy": 0,
+        "predicted_distribution": {
+          "duplicate": 55,
+          "related": 44,
+          "independent": 51
+        },
         "per_class_f1": {
           "duplicate": 0.9524,
           "related": 0.7356,
@@ -225,6 +265,11 @@
         "macro_f1": 0.762,
         "delta_macro_f1": -0.0723,
         "delta_accuracy": -0.0733,
+        "predicted_distribution": {
+          "duplicate": 55,
+          "related": 55,
+          "independent": 40
+        },
         "per_class_f1": {
           "duplicate": 0.9524,
           "related": 0.6531,
@@ -239,6 +284,11 @@
         "macro_f1": 0.8371,
         "delta_macro_f1": 0.0028,
         "delta_accuracy": 0,
+        "predicted_distribution": {
+          "duplicate": 55,
+          "related": 54,
+          "independent": 41
+        },
         "per_class_f1": {
           "duplicate": 0.9524,
           "related": 0.7629,
@@ -253,6 +303,11 @@
         "macro_f1": 0.8351,
         "delta_macro_f1": 0.0008,
         "delta_accuracy": 0,
+        "predicted_distribution": {
+          "duplicate": 55,
+          "related": 46,
+          "independent": 49
+        },
         "per_class_f1": {
           "duplicate": 0.9524,
           "related": 0.7416,
@@ -267,6 +322,11 @@
         "macro_f1": 0.7688,
         "delta_macro_f1": -0.0655,
         "delta_accuracy": -0.0667,
+        "predicted_distribution": {
+          "duplicate": 55,
+          "related": 56,
+          "independent": 39
+        },
         "per_class_f1": {
           "duplicate": 0.9524,
           "related": 0.6667,
@@ -281,6 +341,11 @@
         "macro_f1": 0.7157,
         "delta_macro_f1": -0.1186,
         "delta_accuracy": -0.1067,
+        "predicted_distribution": {
+          "duplicate": 78,
+          "related": 26,
+          "independent": 46
+        },
         "per_class_f1": {
           "duplicate": 0.7813,
           "related": 0.6087,
@@ -295,6 +360,11 @@
         "macro_f1": 0.4198,
         "delta_macro_f1": -0.4145,
         "delta_accuracy": -0.32,
+        "predicted_distribution": {
+          "duplicate": 85,
+          "related": 65,
+          "independent": 0
+        },
         "per_class_f1": {
           "duplicate": 0.7407,
           "related": 0.5185,

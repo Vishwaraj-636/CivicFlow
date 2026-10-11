@@ -200,6 +200,9 @@ export function evaluatePartitionAblations(pairs, partitionName, config = HISC_E
       const deltaMacroF1 = Number((metrics.macro_f1 - baselineMetrics.macro_f1).toFixed(4));
       const deltaAccuracy = Number((metrics.accuracy - baselineMetrics.accuracy).toFixed(4));
 
+      const predCounts = { duplicate: 0, related: 0, independent: 0 };
+      for (const p of predictions) predCounts[p.predicted] = (predCounts[p.predicted] || 0) + 1;
+
       results[scenario.id] = {
          id: scenario.id,
          name: scenario.name,
@@ -208,6 +211,7 @@ export function evaluatePartitionAblations(pairs, partitionName, config = HISC_E
          macro_f1: metrics.macro_f1,
          delta_macro_f1: deltaMacroF1,
          delta_accuracy: deltaAccuracy,
+         predicted_distribution: predCounts,
          per_class_f1: {
             duplicate: metrics.per_class.duplicate.f1,
             related: metrics.per_class.related.f1,
@@ -334,6 +338,9 @@ Counts of rules that determined the final classification label for each pair und
    }
 
    md += `
+> [!NOTE]
+> **Threshold Mechanism & Independent Prediction Note:** With \`relatedThreshold: 0.10\`, the weighted score alone cannot produce \`independent\` except below 0.10. On the synthetic challenge set ($N = 150$), the minimum weighted score is $0.2298$ (maximum $0.9425$). Consequently, the all-rules-removed variant **NEVER predicts independent** (predicted class distribution: 85 duplicate, 65 related, 0 independent; independent class F1: 0.0000; macro F1: 0.4198). On the validation set ($N = 80$), 3 pairs score below 0.10, yielding 25 duplicate, 52 related, 3 independent (accuracy 67.50%, macro F1 0.6160).
+
 ---
 
 ## 5. Key Scientific Findings from Ablation Study
