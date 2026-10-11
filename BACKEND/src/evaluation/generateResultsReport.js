@@ -565,7 +565,8 @@ export function generateResultsReport(options = {}) {
    md += `   - **Dictionary Coupling:** While no leakage between splits occurred, potential domain coupling between dictionary terms and synthetic generation templates warrants scrutiny on out-of-distribution real complaints.\n`;
    md += `4. **Fixed Baseline Design Choices:** Negative exponential decay scale (1,000m) and B5 convex combination weights (60% text / 40% distance) were fixed by design and not optimized.\n`;
    md += `5. **Simplex Classification-Parity Audit Finding:** An audit of the T5 weight optimizer revealed a medium-severity discrepancy in the candidate evaluation heuristic (\`evaluateFastWeights\`) regarding Rule 5 duplicate thresholding. The selected learned weights were separately validated via the official \`scorePair.js\` pipeline (100% training accuracy), and all final predictions in Section E were generated strictly via the production scoring pipeline. The hand-set HISC model remains the production baseline.\n`;
-   md += `6. **${CHRONOLOGY_TEXT}**\n\n`;
+   md += `6. **${CHRONOLOGY_TEXT}**\n`;
+   md += `7. **Independent Unseen Evaluation Status:** No independent unseen evaluation was performed.\n\n`;
 
    // -------------------------------------------------------------------------
    // Section L: Dataset Integrity & Overlap Stratification Audit

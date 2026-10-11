@@ -379,6 +379,7 @@ Exact binomial confidence intervals for overall accuracy computed via Beta quant
 4. **Fixed Baseline Design Choices:** Negative exponential decay scale (1,000m) and B5 convex combination weights (60% text / 40% distance) were fixed by design and not optimized.
 5. **Simplex Classification-Parity Audit Finding:** An audit of the T5 weight optimizer revealed a medium-severity discrepancy in the candidate evaluation heuristic (`evaluateFastWeights`) regarding Rule 5 duplicate thresholding. The selected learned weights were separately validated via the official `scorePair.js` pipeline (100% training accuracy), and all final predictions in Section E were generated strictly via the production scoring pipeline. The hand-set HISC model remains the production baseline.
 6. **Chronology and development-set status. In Phase A3 the HISC scorer was evaluated on the validation, test and challenge partitions (test 97.50%, challenge 57.33%). Afterwards the concept vocabulary and contextual rules were revised and the scorer was extracted into a pure module. The final freeze then evaluated all methods on the test and challenge partitions without changing weights or thresholds. For HISC and its variants both partitions therefore function as development sets: 'held-out' means held out from threshold selection only. For the baselines B1-B6, thresholds were selected on the validation partition only.**
+7. **Independent Unseen Evaluation Status:** No independent unseen evaluation was performed.
 
 ## L. Dataset Integrity & Overlap Stratification Audit
 
