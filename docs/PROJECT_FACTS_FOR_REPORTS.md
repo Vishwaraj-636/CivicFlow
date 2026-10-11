@@ -261,7 +261,7 @@ CivicFlow features 24 native Node.js test suites containing **247 automated test
 | `ruleAblation.test.js` | 4 | 4 | 0 | Leave-one-rule-out contextual rule ablation |
 | `securityHardening.test.js` | 7 | 7 | 0 | Helmet headers, rate limiting 429, $ injection guards |
 | `similarComplaints.test.js` | 7 | 7 | 0 | Duplicate-warning API, privacy filters, and HISC top-5 |
-| `spatialQueryBenchmark.test.js` | 5 | 4 | 1 | Spatial benchmark tests (*1 known mock failure*) |
+| `spatialQueryBenchmark.test.js` | 5 | 5 | 0 | Spatial benchmark tests (in-memory geospatial indexing) |
 | `splitsAndChallenge.test.js` | 19 | 19 | 0 | Stratified 60/20/20 split & challenge set integrity |
 | `staffRequestHardening.test.js` | 5 | 5 | 0 | Staff request rollback compensation upon error |
 | `statisticalComparisonAndCI.test.js` | 12 | 12 | 0 | Clopper-Pearson CIs & exact two-sided McNemar tests |
