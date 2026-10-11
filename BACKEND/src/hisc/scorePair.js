@@ -226,6 +226,57 @@ export const classifyIncidentScore = (scoreOrAnalysis, rawConfig = DEFAULT_HISC_
    return "independent";
 };
 
+/**
+ * Diagnostic helper: identifies the exact rule or decision path responsible for a classification label.
+ * Returns the specific rule key, or "threshold" when no special contextual rule determined the outcome.
+ *
+ * @param {number|{ score: number, context?: object }} scoreOrAnalysis
+ * @param {object} [rawConfig=DEFAULT_HISC_CONFIG]
+ * @param {object} [context=null]
+ * @returns {string} Rule identifier string
+ */
+export const determineRuleFired = (scoreOrAnalysis, rawConfig = DEFAULT_HISC_CONFIG, context = null) => {
+   const config = loadConfig(rawConfig);
+   const score = typeof scoreOrAnalysis === "object" ? scoreOrAnalysis.score : scoreOrAnalysis;
+   const ctx = (typeof scoreOrAnalysis === "object" ? scoreOrAnalysis.context : null)
+      ?? context?.analysis?.context ?? context;
+
+   if (ctx) {
+      const {
+         distance = 0,
+         hours = 0,
+         catSim = 1,
+         causallyConnected = false,
+         opposingDir = false,
+         semantic = 0,
+         lexical = 0,
+      } = ctx;
+
+      // Rule 1: Distant boundary (>3000m is never local incident)
+      if (distance > 3000) return "rule_1_distant_boundary";
+      // Rule 2: Temporal boundary (>720h is independent weather/temporal cycle)
+      if (hours > 720) return "rule_2_temporal_boundary";
+      // Rule 3: Operational radius (>1000m requires substantive causal/defect connection)
+      if (distance > config.radiusInMeters && (!causallyConnected || semantic < 0.20)) return "rule_3_operational_radius";
+      // Rule 4: Incompatible categories without causal connection
+      if (catSim === 0.0 && !causallyConnected) return "rule_4_incompatible_categories";
+
+      // Rule 5: Duplicate requirements
+      if (score >= config.duplicateThreshold) {
+         if (catSim >= 0.9 && distance <= 250 && hours <= 168 && !opposingDir && (semantic > 0 || lexical > 0 || score >= 0.70)) {
+            return "rule_5_duplicate";
+         }
+         return opposingDir ? "rule_5_opposing_direction" : "rule_5_downgraded_related";
+      }
+      if (score >= config.relatedThreshold) {
+         return opposingDir && catSim < 0.9 ? "rule_opposing_direction_related" : "threshold";
+      }
+      return "threshold";
+   }
+
+   return "threshold";
+};
+
 const extractCoordinates = (item) => {
    if (Array.isArray(item?.location?.coordinates)) return item.location.coordinates;
    if (Array.isArray(item?.coordinates)) return item.coordinates;
@@ -327,6 +378,7 @@ export const scorePair = (a, b, opts = {}) => {
    };
 
    const label = classifyIncidentScore({ score, context }, config);
+   const rule_fired = determineRuleFired({ score, context }, config);
    const explanation = featureExplanation(features, distance, hours);
 
    const result = {
@@ -338,6 +390,7 @@ export const scorePair = (a, b, opts = {}) => {
 
    // Non-enumerable metadata preserving internal compatibility without altering the required public contract shape
    Object.defineProperties(result, {
+      rule_fired: { value: rule_fired, enumerable: false, writable: true, configurable: true },
       distance: { value: distance, enumerable: false, writable: true, configurable: true },
       hours: { value: hours, enumerable: false, writable: true, configurable: true },
       context: { value: context, enumerable: false, writable: true, configurable: true },
@@ -351,6 +404,7 @@ export default {
    scorePair,
    loadConfig,
    classifyIncidentScore,
+   determineRuleFired,
    distanceInMeters,
    categoryScore,
    extractCivicConcepts,
