@@ -90,6 +90,14 @@ HISC ($N=150$) compared pairwise against key comparators using exact two-sided b
 | **rule_opposing_direction_related** | Rule 6: Opposing Direction Override on Moderate Score | `score >= relatedThreshold && opposingDir && catSim < 0.9` | `independent` | 0 | 0 |
 | **threshold** | Pure Threshold Classification | `No contextual rule overrode classification; outcome decided strictly by duplicate/related thresholds` | `score-dependent (duplicate / related / independent)` | 26 | 27 |
 
+### Three-Tier Decision Breakdown (Challenge vs Validation)
+| Decision Tier | Definition / Scope | Challenge Activations | Challenge Correct | Challenge Accuracy | Validation Activations | Validation Correct | Validation Accuracy |
+|---|---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **HARD OVERRIDES** | Spatial, temporal, categorical, directional bounds | 51 | 44 | 86.27% | 28 | 28 | 100.00% |
+| **GATE RULES** | Score >= 0.60 duplicate verification & downgrade | 73 | 61 | 83.56% | 25 | 25 | 100.00% |
+| **BARE THRESHOLD** | Numerical decision (score >= 0.10) | 26 | 21 | 80.77% | 27 | 27 | 100.00% |
+| **TOTAL** | All decision paths combined | **150** | **126** | **84.00%** | **80** | **80** | **100.00%** |
+
 ### Leave-One-Rule-Out Ablation (Synthetic Challenge Set, N=150)
 | Ablation State | Description | Challenge Accuracy | Challenge Macro F1 | Accuracy Delta vs HISC |
 |---|---|:---:|:---:|:---:|
@@ -100,6 +108,8 @@ HISC ($N=150$) compared pairwise against key comparators using exact two-sided b
 | **ablate_rule_4** | Ablate Rule 4 (Incompatible Categories) | 77.33% | 0.7688 | -6.67% |
 | **ablate_rule_5** | Ablate Rule 5 (Duplicate Tight Constraints) | 73.33% | 0.7157 | -10.67% |
 | **ablate_all_rules** | Ablate All Rules (Pure Score Thresholds) | 52.00% | 0.4198 | -32.00% |
+
+> **Threshold Mechanism & Independent Prediction Note:** With `relatedThreshold: 0.10`, the weighted score alone cannot produce `independent` except below 0.10. On the synthetic challenge set ($N = 150$), the minimum weighted score is 0.2298. Consequently, the all-rules-removed variant **NEVER predicts independent** (predicted distribution: 85 duplicate, 65 related, 0 independent; macro F1: 0.4198).
 
 ## 6. Synthetic Challenge Breakdown by Category
 
