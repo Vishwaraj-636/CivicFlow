@@ -393,7 +393,19 @@ An independent integrity audit verified identifier overlap and text template reu
 
 To test whether high test accuracy is driven by template overlap with training data, test pairs were stratified by maximum unigram Jaccard overlap with training complaints:
 
-#### Tertile Split
+#### Binary Overlap Split (< 1.00 vs = 1.00)
+
+| Overlap Stratum | Sample Count (N) | Overlap Range | HISC Accuracy | B1 (Jaccard) | B3 (Cat+Dist) | B4 (TF-IDF) | B6 (Embedding) |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Overlap < 1.00** | 23 | [0.62, 0.91] | 100.0% | 69.6% | 100.0% | 69.6% | 87.0% |
+| **Overlap = 1.00** | 57 | [1.00, 1.00] | 100.0% | 56.1% | 100.0% | 70.2% | 75.4% |
+
+> [!NOTE]
+> **Diagnostic Finding:** Binary overlap stratification is uninformative where HISC and B3 are 100% in every group.
+
+#### Tertile Split (Tie-Ordered / Degenerate Cut)
+
+> **Note on Tertiles:** Because 71% of test pairs tie at overlap 1.00, tertiles 2 and 3 represent an arbitrary cut across tied pairs.
 
 | Tertile | Sample Count (N) | Overlap Range | HISC Accuracy | B1 (Jaccard) | B3 (Cat+Dist) | B4 (TF-IDF) | B6 (Embedding) |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
