@@ -86,8 +86,8 @@ describe("Task C — Challenge Category Breakdown and Validation", () => {
                const catData = methodResult.categories[cat];
                assert.ok(catData.N > 0, `Category '${cat}' for method '${m}' must have N > 0`);
                assert.ok(typeof catData.accuracy === "number");
-               assert.ok(typeof catData.macro_f1_3class === "number");
-               assert.ok(typeof catData.macro_f1_present === "number");
+               assert.ok(typeof catData.predicted_classes === "object");
+               assert.equal(catData.f1, "not reported: per-category F1 is undefined when classes are absent");
             }
          }
       });

@@ -13,4 +13,5 @@ HEAD at start: fba5d5d251fc120d1ed98ae31384a5a87e77eed6
 | 0.4 | DONE | fba5d5d251fc120d1ed98ae31384a5a87e77eed6 | Verified local MongoDB reachable at 127.0.0.1:27017, env names cataloged |
 | 0.5 | DONE | fba5d5d251fc120d1ed98ae31384a5a87e77eed6 | Earlier work check: preDeployment tracked, media roles present, rollback present; PENDING_H10=false |
 | 1.1 | DONE | 391f1a4 | Rule inventory completed; proved LEAK=false (no ground-truth grouping read); leak-free acc 84.0%, macro F1 0.8343 |
-| 1.2 | DONE | [pending commit] | Cross-tabs (rule_fired x actual x predicted) and leave-one-rule-out validation comparison added to rule_inventory.md |
+| 1.2 | DONE | 071b841 | Cross-tabs (rule_fired x actual x predicted) and leave-one-rule-out validation comparison added to rule_inventory.md |
+| 1.3 | DONE | [pending commit] | Removed undefined per-category F1 and aggregate F1; reported N, correct, accuracy, and predicted counts |

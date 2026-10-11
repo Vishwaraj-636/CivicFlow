@@ -1,6 +1,6 @@
 {
   "sourceArtifact": "final_held_out_evaluation.json",
-  "evaluatedAt": "2026-10-11T09:58:51.773Z",
+  "evaluatedAt": "2026-10-11T12:51:09.853Z",
   "evaluationPhase": "Final Evaluation Freeze — One-Time Held-Out Test & Challenge",
   "sampleCount": 150,
   "categoryCounts": {
@@ -22,177 +22,167 @@
       "aggregateCorrect": 126,
       "aggregateAccuracy": 0.84,
       "savedAggregateAccuracy": 0.84,
-      "savedMacroF1": 0.8343,
+      "aggregateF1": "not reported: per-category F1 is undefined when classes are absent",
       "categories": {
         "Paraphrases with Novel Vocabulary": {
           "N": 15,
           "correct": 15,
           "accuracy": 1,
-          "macro_f1_3class": 1,
-          "macro_f1_present": 1,
-          "class_distribution": {
+          "predicted_classes": {
             "duplicate": 7,
             "related": 4,
             "independent": 4
           },
-          "per_class_f1": {
-            "duplicate": 1,
-            "related": 1,
-            "independent": 1
-          }
+          "actual_classes": {
+            "duplicate": 7,
+            "related": 4,
+            "independent": 4
+          },
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Typos and Spelling Variations": {
           "N": 15,
           "correct": 15,
           "accuracy": 1,
-          "macro_f1_3class": 1,
-          "macro_f1_present": 1,
-          "class_distribution": {
+          "predicted_classes": {
             "duplicate": 7,
             "related": 4,
             "independent": 4
           },
-          "per_class_f1": {
-            "duplicate": 1,
-            "related": 1,
-            "independent": 1
-          }
+          "actual_classes": {
+            "duplicate": 7,
+            "related": 4,
+            "independent": 4
+          },
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Tanglish and Colloquial Phrasing": {
           "N": 15,
           "correct": 15,
           "accuracy": 1,
-          "macro_f1_3class": 1,
-          "macro_f1_present": 1,
-          "class_distribution": {
+          "predicted_classes": {
             "duplicate": 7,
             "related": 4,
             "independent": 4
           },
-          "per_class_f1": {
-            "duplicate": 1,
-            "related": 1,
-            "independent": 1
-          }
+          "actual_classes": {
+            "duplicate": 7,
+            "related": 4,
+            "independent": 4
+          },
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Very Short and Vague Descriptions": {
           "N": 15,
           "correct": 11,
           "accuracy": 0.7333,
-          "macro_f1_3class": 0.5556,
-          "macro_f1_present": 0.8334,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 7,
+            "related": 4,
+            "independent": 4
+          },
+          "actual_classes": {
             "duplicate": 7,
             "related": 0,
             "independent": 8
           },
-          "per_class_f1": {
-            "duplicate": 1,
-            "related": 0,
-            "independent": 0.6667
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Same Location, Different Issue": {
           "N": 15,
           "correct": 9,
           "accuracy": 0.6,
-          "macro_f1_3class": 0.3988,
-          "macro_f1_present": 0.5982,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 0,
+            "related": 9,
+            "independent": 6
+          },
+          "actual_classes": {
             "duplicate": 0,
             "related": 5,
             "independent": 10
           },
-          "per_class_f1": {
-            "duplicate": 0,
-            "related": 0.5714,
-            "independent": 0.625
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Same Issue, Geographically Distant": {
           "N": 15,
           "correct": 14,
           "accuracy": 0.9333,
-          "macro_f1_3class": 0.5432,
-          "macro_f1_present": 0.8148,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 0,
+            "related": 1,
+            "independent": 14
+          },
+          "actual_classes": {
             "duplicate": 0,
             "related": 2,
             "independent": 13
           },
-          "per_class_f1": {
-            "duplicate": 0,
-            "related": 0.6667,
-            "independent": 0.963
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Temporally Distant at Same Location": {
           "N": 10,
           "correct": 5,
           "accuracy": 0.5,
-          "macro_f1_3class": 0.2222,
-          "macro_f1_present": 0.3333,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 10
+          },
+          "actual_classes": {
             "duplicate": 0,
             "related": 5,
             "independent": 5
           },
-          "per_class_f1": {
-            "duplicate": 0,
-            "related": 0,
-            "independent": 0.6667
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Similar Wording, Distinct Incidents": {
           "N": 13,
           "correct": 5,
           "accuracy": 0.3846,
-          "macro_f1_3class": 0.2381,
-          "macro_f1_present": 0.3572,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 5,
+            "related": 3,
+            "independent": 5
+          },
+          "actual_classes": {
             "duplicate": 0,
             "related": 4,
             "independent": 9
           },
-          "per_class_f1": {
-            "duplicate": 0,
-            "related": 0,
-            "independent": 0.7143
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Cascading Related Failures": {
           "N": 15,
           "correct": 15,
           "accuracy": 1,
-          "macro_f1_3class": 0.3333,
-          "macro_f1_present": 1,
-          "class_distribution": {
+          "predicted_classes": {
             "duplicate": 0,
             "related": 15,
             "independent": 0
           },
-          "per_class_f1": {
+          "actual_classes": {
             "duplicate": 0,
-            "related": 1,
+            "related": 15,
             "independent": 0
-          }
+          },
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "True Duplicates with Disparate Phrasing": {
           "N": 22,
           "correct": 22,
           "accuracy": 1,
-          "macro_f1_3class": 0.3333,
-          "macro_f1_present": 1,
-          "class_distribution": {
+          "predicted_classes": {
             "duplicate": 22,
             "related": 0,
             "independent": 0
           },
-          "per_class_f1": {
-            "duplicate": 1,
+          "actual_classes": {
+            "duplicate": 22,
             "related": 0,
             "independent": 0
-          }
+          },
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         }
       }
     },
@@ -202,177 +192,167 @@
       "aggregateCorrect": 85,
       "aggregateAccuracy": 0.5667,
       "savedAggregateAccuracy": 0.5667,
-      "savedMacroF1": 0.4768,
+      "aggregateF1": "not reported: per-category F1 is undefined when classes are absent",
       "categories": {
         "Paraphrases with Novel Vocabulary": {
           "N": 15,
           "correct": 11,
           "accuracy": 0.7333,
-          "macro_f1_3class": 0.5556,
-          "macro_f1_present": 0.5556,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 7,
+            "related": 8,
+            "independent": 0
+          },
+          "actual_classes": {
             "duplicate": 7,
             "related": 4,
             "independent": 4
           },
-          "per_class_f1": {
-            "duplicate": 1,
-            "related": 0.6667,
-            "independent": 0
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Typos and Spelling Variations": {
           "N": 15,
           "correct": 11,
           "accuracy": 0.7333,
-          "macro_f1_3class": 0.5556,
-          "macro_f1_present": 0.5556,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 7,
+            "related": 8,
+            "independent": 0
+          },
+          "actual_classes": {
             "duplicate": 7,
             "related": 4,
             "independent": 4
           },
-          "per_class_f1": {
-            "duplicate": 1,
-            "related": 0.6667,
-            "independent": 0
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Tanglish and Colloquial Phrasing": {
           "N": 15,
           "correct": 12,
           "accuracy": 0.8,
-          "macro_f1_3class": 0.7091,
-          "macro_f1_present": 0.7091,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 7,
+            "related": 7,
+            "independent": 1
+          },
+          "actual_classes": {
             "duplicate": 7,
             "related": 4,
             "independent": 4
           },
-          "per_class_f1": {
-            "duplicate": 1,
-            "related": 0.7273,
-            "independent": 0.4
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Very Short and Vague Descriptions": {
           "N": 15,
           "correct": 7,
           "accuracy": 0.4667,
-          "macro_f1_3class": 0.3333,
-          "macro_f1_present": 0.5,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 7,
+            "related": 8,
+            "independent": 0
+          },
+          "actual_classes": {
             "duplicate": 7,
             "related": 0,
             "independent": 8
           },
-          "per_class_f1": {
-            "duplicate": 1,
-            "related": 0,
-            "independent": 0
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Same Location, Different Issue": {
           "N": 15,
           "correct": 5,
           "accuracy": 0.3333,
-          "macro_f1_3class": 0.1667,
-          "macro_f1_present": 0.25,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 0,
+            "related": 15,
+            "independent": 0
+          },
+          "actual_classes": {
             "duplicate": 0,
             "related": 5,
             "independent": 10
           },
-          "per_class_f1": {
-            "duplicate": 0,
-            "related": 0.5,
-            "independent": 0
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Same Issue, Geographically Distant": {
           "N": 15,
           "correct": 2,
           "accuracy": 0.1333,
-          "macro_f1_3class": 0.0784,
-          "macro_f1_present": 0.1177,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 0,
+            "related": 15,
+            "independent": 0
+          },
+          "actual_classes": {
             "duplicate": 0,
             "related": 2,
             "independent": 13
           },
-          "per_class_f1": {
-            "duplicate": 0,
-            "related": 0.2353,
-            "independent": 0
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Temporally Distant at Same Location": {
           "N": 10,
           "correct": 0,
           "accuracy": 0,
-          "macro_f1_3class": 0,
-          "macro_f1_present": 0,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 10,
+            "related": 0,
+            "independent": 0
+          },
+          "actual_classes": {
             "duplicate": 0,
             "related": 5,
             "independent": 5
           },
-          "per_class_f1": {
-            "duplicate": 0,
-            "related": 0,
-            "independent": 0
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Similar Wording, Distinct Incidents": {
           "N": 13,
           "correct": 0,
           "accuracy": 0,
-          "macro_f1_3class": 0,
-          "macro_f1_present": 0,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 8,
+            "related": 5,
+            "independent": 0
+          },
+          "actual_classes": {
             "duplicate": 0,
             "related": 4,
             "independent": 9
           },
-          "per_class_f1": {
-            "duplicate": 0,
-            "related": 0,
-            "independent": 0
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Cascading Related Failures": {
           "N": 15,
           "correct": 15,
           "accuracy": 1,
-          "macro_f1_3class": 0.3333,
-          "macro_f1_present": 1,
-          "class_distribution": {
+          "predicted_classes": {
             "duplicate": 0,
             "related": 15,
             "independent": 0
           },
-          "per_class_f1": {
+          "actual_classes": {
             "duplicate": 0,
-            "related": 1,
+            "related": 15,
             "independent": 0
-          }
+          },
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "True Duplicates with Disparate Phrasing": {
           "N": 22,
           "correct": 22,
           "accuracy": 1,
-          "macro_f1_3class": 0.3333,
-          "macro_f1_present": 1,
-          "class_distribution": {
+          "predicted_classes": {
             "duplicate": 22,
             "related": 0,
             "independent": 0
           },
-          "per_class_f1": {
-            "duplicate": 1,
+          "actual_classes": {
+            "duplicate": 22,
             "related": 0,
             "independent": 0
-          }
+          },
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         }
       }
     },
@@ -382,177 +362,167 @@
       "aggregateCorrect": 51,
       "aggregateAccuracy": 0.34,
       "savedAggregateAccuracy": 0.34,
-      "savedMacroF1": 0.3153,
+      "aggregateF1": "not reported: per-category F1 is undefined when classes are absent",
       "categories": {
         "Paraphrases with Novel Vocabulary": {
           "N": 15,
           "correct": 6,
           "accuracy": 0.4,
-          "macro_f1_3class": 0.3485,
-          "macro_f1_present": 0.3485,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 4,
+            "related": 3,
+            "independent": 8
+          },
+          "actual_classes": {
             "duplicate": 7,
             "related": 4,
             "independent": 4
           },
-          "per_class_f1": {
-            "duplicate": 0.5455,
-            "related": 0,
-            "independent": 0.5
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Typos and Spelling Variations": {
           "N": 15,
           "correct": 7,
           "accuracy": 0.4667,
-          "macro_f1_3class": 0.4008,
-          "macro_f1_present": 0.4008,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 8,
+            "related": 3,
+            "independent": 4
+          },
+          "actual_classes": {
             "duplicate": 7,
             "related": 4,
             "independent": 4
           },
-          "per_class_f1": {
-            "duplicate": 0.6667,
-            "related": 0.2857,
-            "independent": 0.25
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Tanglish and Colloquial Phrasing": {
           "N": 15,
           "correct": 9,
           "accuracy": 0.6,
-          "macro_f1_3class": 0.5259,
-          "macro_f1_present": 0.5259,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 8,
+            "related": 2,
+            "independent": 5
+          },
+          "actual_classes": {
             "duplicate": 7,
             "related": 4,
             "independent": 4
           },
-          "per_class_f1": {
-            "duplicate": 0.8,
-            "related": 0.3333,
-            "independent": 0.4444
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Very Short and Vague Descriptions": {
           "N": 15,
           "correct": 8,
           "accuracy": 0.5333,
-          "macro_f1_3class": 0.4103,
-          "macro_f1_present": 0.6154,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 6,
+            "related": 4,
+            "independent": 5
+          },
+          "actual_classes": {
             "duplicate": 7,
             "related": 0,
             "independent": 8
           },
-          "per_class_f1": {
-            "duplicate": 0.6154,
-            "related": 0,
-            "independent": 0.6154
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Same Location, Different Issue": {
           "N": 15,
           "correct": 2,
           "accuracy": 0.1333,
-          "macro_f1_3class": 0.0952,
-          "macro_f1_present": 0.1429,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 6,
+            "related": 5,
+            "independent": 4
+          },
+          "actual_classes": {
             "duplicate": 0,
             "related": 5,
             "independent": 10
           },
-          "per_class_f1": {
-            "duplicate": 0,
-            "related": 0,
-            "independent": 0.2857
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Same Issue, Geographically Distant": {
           "N": 15,
           "correct": 2,
           "accuracy": 0.1333,
-          "macro_f1_3class": 0.2698,
-          "macro_f1_present": 0.4048,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 13,
+            "related": 1,
+            "independent": 1
+          },
+          "actual_classes": {
             "duplicate": 0,
             "related": 2,
             "independent": 13
           },
-          "per_class_f1": {
-            "duplicate": 0,
-            "related": 0.6667,
-            "independent": 0.1429
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Temporally Distant at Same Location": {
           "N": 10,
           "correct": 4,
           "accuracy": 0.4,
-          "macro_f1_3class": 0.3571,
-          "macro_f1_present": 0.5357,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 5,
+            "related": 2,
+            "independent": 3
+          },
+          "actual_classes": {
             "duplicate": 0,
             "related": 5,
             "independent": 5
           },
-          "per_class_f1": {
-            "duplicate": 0,
-            "related": 0.5714,
-            "independent": 0.5
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Similar Wording, Distinct Incidents": {
           "N": 13,
           "correct": 0,
           "accuracy": 0,
-          "macro_f1_3class": 0,
-          "macro_f1_present": 0,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 13,
+            "related": 0,
+            "independent": 0
+          },
+          "actual_classes": {
             "duplicate": 0,
             "related": 4,
             "independent": 9
           },
-          "per_class_f1": {
-            "duplicate": 0,
-            "related": 0,
-            "independent": 0
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Cascading Related Failures": {
           "N": 15,
           "correct": 2,
           "accuracy": 0.1333,
-          "macro_f1_3class": 0.0784,
-          "macro_f1_present": 0.2353,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 13,
+            "related": 2,
+            "independent": 0
+          },
+          "actual_classes": {
             "duplicate": 0,
             "related": 15,
             "independent": 0
           },
-          "per_class_f1": {
-            "duplicate": 0,
-            "related": 0.2353,
-            "independent": 0
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "True Duplicates with Disparate Phrasing": {
           "N": 22,
           "correct": 11,
           "accuracy": 0.5,
-          "macro_f1_3class": 0.2222,
-          "macro_f1_present": 0.6667,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 11,
+            "related": 5,
+            "independent": 6
+          },
+          "actual_classes": {
             "duplicate": 22,
             "related": 0,
             "independent": 0
           },
-          "per_class_f1": {
-            "duplicate": 0.6667,
-            "related": 0,
-            "independent": 0
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         }
       }
     },
@@ -562,184 +532,170 @@
       "aggregateCorrect": 120,
       "aggregateAccuracy": 0.8,
       "savedAggregateAccuracy": 0.8,
-      "savedMacroF1": 0.7973,
+      "aggregateF1": "not reported: per-category F1 is undefined when classes are absent",
       "categories": {
         "Paraphrases with Novel Vocabulary": {
           "N": 15,
           "correct": 15,
           "accuracy": 1,
-          "macro_f1_3class": 1,
-          "macro_f1_present": 1,
-          "class_distribution": {
+          "predicted_classes": {
             "duplicate": 7,
             "related": 4,
             "independent": 4
           },
-          "per_class_f1": {
-            "duplicate": 1,
-            "related": 1,
-            "independent": 1
-          }
+          "actual_classes": {
+            "duplicate": 7,
+            "related": 4,
+            "independent": 4
+          },
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Typos and Spelling Variations": {
           "N": 15,
           "correct": 14,
           "accuracy": 0.9333,
-          "macro_f1_3class": 0.9373,
-          "macro_f1_present": 0.9373,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 6,
+            "related": 5,
+            "independent": 4
+          },
+          "actual_classes": {
             "duplicate": 7,
             "related": 4,
             "independent": 4
           },
-          "per_class_f1": {
-            "duplicate": 0.9231,
-            "related": 0.8889,
-            "independent": 1
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Tanglish and Colloquial Phrasing": {
           "N": 15,
           "correct": 12,
           "accuracy": 0.8,
-          "macro_f1_3class": 0.8182,
-          "macro_f1_present": 0.8182,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 4,
+            "related": 7,
+            "independent": 4
+          },
+          "actual_classes": {
             "duplicate": 7,
             "related": 4,
             "independent": 4
           },
-          "per_class_f1": {
-            "duplicate": 0.7273,
-            "related": 0.7273,
-            "independent": 1
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Very Short and Vague Descriptions": {
           "N": 15,
           "correct": 11,
           "accuracy": 0.7333,
-          "macro_f1_3class": 0.5556,
-          "macro_f1_present": 0.8334,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 7,
+            "related": 4,
+            "independent": 4
+          },
+          "actual_classes": {
             "duplicate": 7,
             "related": 0,
             "independent": 8
           },
-          "per_class_f1": {
-            "duplicate": 1,
-            "related": 0,
-            "independent": 0.6667
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Same Location, Different Issue": {
           "N": 15,
           "correct": 9,
           "accuracy": 0.6,
-          "macro_f1_3class": 0.3988,
-          "macro_f1_present": 0.5982,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 0,
+            "related": 9,
+            "independent": 6
+          },
+          "actual_classes": {
             "duplicate": 0,
             "related": 5,
             "independent": 10
           },
-          "per_class_f1": {
-            "duplicate": 0,
-            "related": 0.5714,
-            "independent": 0.625
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Same Issue, Geographically Distant": {
           "N": 15,
           "correct": 13,
           "accuracy": 0.8667,
-          "macro_f1_3class": 0.4744,
-          "macro_f1_present": 0.7116,
-          "class_distribution": {
+          "predicted_classes": {
             "duplicate": 0,
             "related": 2,
             "independent": 13
           },
-          "per_class_f1": {
+          "actual_classes": {
             "duplicate": 0,
-            "related": 0.5,
-            "independent": 0.9231
-          }
+            "related": 2,
+            "independent": 13
+          },
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Temporally Distant at Same Location": {
           "N": 10,
           "correct": 5,
           "accuracy": 0.5,
-          "macro_f1_3class": 0.2222,
-          "macro_f1_present": 0.3333,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 10
+          },
+          "actual_classes": {
             "duplicate": 0,
             "related": 5,
             "independent": 5
           },
-          "per_class_f1": {
-            "duplicate": 0,
-            "related": 0,
-            "independent": 0.6667
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Similar Wording, Distinct Incidents": {
           "N": 13,
           "correct": 5,
           "accuracy": 0.3846,
-          "macro_f1_3class": 0.2381,
-          "macro_f1_present": 0.3572,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 5,
+            "related": 3,
+            "independent": 5
+          },
+          "actual_classes": {
             "duplicate": 0,
             "related": 4,
             "independent": 9
           },
-          "per_class_f1": {
-            "duplicate": 0,
-            "related": 0,
-            "independent": 0.7143
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "Cascading Related Failures": {
           "N": 15,
           "correct": 15,
           "accuracy": 1,
-          "macro_f1_3class": 0.3333,
-          "macro_f1_present": 1,
-          "class_distribution": {
+          "predicted_classes": {
             "duplicate": 0,
             "related": 15,
             "independent": 0
           },
-          "per_class_f1": {
+          "actual_classes": {
             "duplicate": 0,
-            "related": 1,
+            "related": 15,
             "independent": 0
-          }
+          },
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         },
         "True Duplicates with Disparate Phrasing": {
           "N": 22,
           "correct": 21,
           "accuracy": 0.9545,
-          "macro_f1_3class": 0.3256,
-          "macro_f1_present": 0.9767,
-          "class_distribution": {
+          "predicted_classes": {
+            "duplicate": 21,
+            "related": 1,
+            "independent": 0
+          },
+          "actual_classes": {
             "duplicate": 22,
             "related": 0,
             "independent": 0
           },
-          "per_class_f1": {
-            "duplicate": 0.9767,
-            "related": 0,
-            "independent": 0
-          }
+          "f1": "not reported: per-category F1 is undefined when classes are absent"
         }
       }
     }
   },
-  "conventions": {
-    "macroF1_3class": "Unweighted mean across all 3 problem classes (duplicate, related, independent). Classes with support = 0 yield F1 = 0.0.",
-    "macroF1_present": "Unweighted mean across active classes present in that specific category (classes with support > 0).",
-    "accuracy": "Number of correctly classified pairs divided by N."
-  }
+  "metricPolicy": "not reported: per-category F1 is undefined when classes are absent"
 }
