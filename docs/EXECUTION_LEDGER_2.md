@@ -22,4 +22,5 @@ HEAD at start: fba5d5d251fc120d1ed98ae31384a5a87e77eed6
 | 2.1 | SKIPPED(already present) | 2ce2777 | Staff request rollback, resolution media validation, and media roles already present from earlier work |
 | 2.2 | DONE | cc396ea | Helmet headers, general & auth rate limiting, Express 5 $ operator guard, zod validation, SECURITY.md |
 | 2.3 | DONE | 34278bf | GET /api/complaints/similar endpoint with HISC scoring, privacy guard, and submittedDespiteSimilar flag |
-| 2.4 | DONE | [pending commit] | Duplicate-warning UI with debounced 600ms similar search, expandable signals, support, and silent fallback |
+| 2.4 | DONE | e15134a | Duplicate-warning UI with debounced 600ms similar search, expandable signals, support, and silent fallback |
+| 2.5 | DONE | [pending commit] | Reproducible demo data seeder with PRNG seed 42, 120 complaints, 11 clusters, and DEMO_CREDENTIALS.md |

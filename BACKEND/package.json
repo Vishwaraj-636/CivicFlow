@@ -12,7 +12,8 @@
       "benchmark:latency": "node src/evaluation/clusteringLatencyBenchmark.js",
       "learn:weights": "node src/evaluation/learnHiscWeights.js",
       "evaluate:freeze": "node src/evaluation/runFinalEvaluationFreeze.js",
-      "results:report": "node src/evaluation/generateResultsReport.js"
+      "results:report": "node src/evaluation/generateResultsReport.js",
+      "seed:demo": "node src/scripts/seedDemo.js"
    },
    "keywords": [],
    "author": "",
