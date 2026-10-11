@@ -35,4 +35,6 @@ HEAD at start: fba5d5d251fc120d1ed98ae31384a5a87e77eed6
 | 4.1 | DONE | a66b403 | Generated facts sheet BACKEND/src/evaluation/generateFactsSheet.js & npm run facts:sheet -> docs/FACTS_SHEET_GENERATED.md |
 | 4.2 | DONE | ea914e1 | Authoritative project facts document written from verified source code in docs/PROJECT_FACTS_FOR_REPORTS.md |
 | 4.3 | DONE | f1e6e38 | Mermaid system diagrams in docs/DIAGRAMS.md and report screenshot checklist in docs/SCREENSHOT_CHECKLIST.md |
-| 4.4 | DONE | [pending commit] | Comprehensive reproduction guide with exact npm commands in docs/REPRODUCE.md |
+| 4.4 | DONE | afbd468 | Comprehensive reproduction guide with exact npm commands in docs/REPRODUCE.md |
+| 5.1 | DONE | [pending commit] | Final checks: protected hashes, npm test tail, frontend build tail, git diff stat, relatedThreshold confirmed |
+| 5.2 | DONE | [pending commit] | Final verification pack written in docs/FINAL_VERIFICATION_PACK.md covering S0-S15 |
