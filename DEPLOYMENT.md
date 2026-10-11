@@ -70,7 +70,7 @@ Configure the following variables in the Render Dashboard (**Environment** tab):
    - **Runtime:** `Node`
    - **Build Command:**
      ```bash
-     npm install --prefix BACKEND && npm install --prefix FRONTEND && npm run build --prefix FRONTEND
+     npm install --prefix BACKEND && npm install --prefix FRONTEND --include=dev && npm run build --prefix FRONTEND
      ```
    - **Start Command:**
      ```bash
