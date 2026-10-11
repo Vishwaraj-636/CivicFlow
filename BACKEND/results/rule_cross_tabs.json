@@ -1,0 +1,537 @@
+{
+  "evaluatedAt": "2026-10-11T16:17:42.609Z",
+  "preset": {
+    "presetName": "HISC-eval",
+    "radiusInMeters": 1000,
+    "temporalWindowHours": 720,
+    "duplicateThreshold": 0.6,
+    "relatedThreshold": 0.1,
+    "weights": {
+      "category": 0.2,
+      "geographic": 0.25,
+      "lexical": 0.1,
+      "semantic": 0.3,
+      "temporal": 0.15
+    },
+    "enabledFeatures": {},
+    "semanticMode": "synonym",
+    "embeddingProvider": "none"
+  },
+  "definitions": {
+    "HARD_OVERRIDES": "Direct short-circuit on geographic, temporal, categorical, or directional bounds without requiring duplicate score threshold.",
+    "GATE_RULES": "Rules gating duplicate qualification when score >= duplicateThreshold (0.60), requiring strict spatial (<=250m), temporal (<=168h), categorical (>=0.9), and non-opposing direction constraints, else downgrading to related.",
+    "BARE_THRESHOLD": "Standard numerical decision threshold: score >= relatedThreshold (0.10) ? related : independent without contextual rule firing."
+  },
+  "challenge": {
+    "partitionName": "synthetic_challenge",
+    "sampleCount": 150,
+    "totalCorrect": 126,
+    "accuracy": 0.84,
+    "truthDistribution": {
+      "duplicate": 50,
+      "related": 43,
+      "independent": 57
+    },
+    "predictedDistribution": {
+      "duplicate": 55,
+      "related": 44,
+      "independent": 51
+    },
+    "fullConfusionMatrix": {
+      "duplicate": {
+        "duplicate": 50,
+        "related": 0,
+        "independent": 0
+      },
+      "related": {
+        "duplicate": 4,
+        "related": 32,
+        "independent": 7
+      },
+      "independent": {
+        "duplicate": 1,
+        "related": 12,
+        "independent": 44
+      }
+    },
+    "perRuleMatrices": {
+      "rule_1_distant_boundary": {
+        "duplicate": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 22
+        }
+      },
+      "rule_2_temporal_boundary": {
+        "duplicate": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 5
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 5
+        }
+      },
+      "rule_3_operational_radius": {
+        "duplicate": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 1
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 1
+        }
+      },
+      "rule_4_incompatible_categories": {
+        "duplicate": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 1
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 11
+        }
+      },
+      "rule_5_opposing_direction": {
+        "duplicate": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 5
+        }
+      },
+      "rule_opposing_direction_related": {
+        "duplicate": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        }
+      },
+      "rule_5_duplicate": {
+        "duplicate": {
+          "duplicate": 50,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 4,
+          "related": 0,
+          "independent": 0
+        },
+        "independent": {
+          "duplicate": 1,
+          "related": 0,
+          "independent": 0
+        }
+      },
+      "rule_5_downgraded_related": {
+        "duplicate": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 11,
+          "independent": 0
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 7,
+          "independent": 0
+        }
+      },
+      "threshold": {
+        "duplicate": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 21,
+          "independent": 0
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 5,
+          "independent": 0
+        }
+      }
+    },
+    "groupSummaries": {
+      "HARD_OVERRIDES": {
+        "count": 51,
+        "correct": 44,
+        "accuracy": 0.8627,
+        "matrix": {
+          "duplicate": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 7
+          },
+          "independent": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 44
+          }
+        }
+      },
+      "GATE_RULES": {
+        "count": 73,
+        "correct": 61,
+        "accuracy": 0.8356,
+        "matrix": {
+          "duplicate": {
+            "duplicate": 50,
+            "related": 0,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 4,
+            "related": 11,
+            "independent": 0
+          },
+          "independent": {
+            "duplicate": 1,
+            "related": 7,
+            "independent": 0
+          }
+        }
+      },
+      "BARE_THRESHOLD": {
+        "count": 26,
+        "correct": 21,
+        "accuracy": 0.8077,
+        "matrix": {
+          "duplicate": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 0,
+            "related": 21,
+            "independent": 0
+          },
+          "independent": {
+            "duplicate": 0,
+            "related": 5,
+            "independent": 0
+          }
+        }
+      }
+    }
+  },
+  "validation": {
+    "partitionName": "validation",
+    "sampleCount": 80,
+    "totalCorrect": 80,
+    "accuracy": 1,
+    "truthDistribution": {
+      "duplicate": 24,
+      "related": 28,
+      "independent": 28
+    },
+    "predictedDistribution": {
+      "duplicate": 24,
+      "related": 28,
+      "independent": 28
+    },
+    "fullConfusionMatrix": {
+      "duplicate": {
+        "duplicate": 24,
+        "related": 0,
+        "independent": 0
+      },
+      "related": {
+        "duplicate": 0,
+        "related": 28,
+        "independent": 0
+      },
+      "independent": {
+        "duplicate": 0,
+        "related": 0,
+        "independent": 28
+      }
+    },
+    "perRuleMatrices": {
+      "rule_1_distant_boundary": {
+        "duplicate": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 26
+        }
+      },
+      "rule_2_temporal_boundary": {
+        "duplicate": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        }
+      },
+      "rule_3_operational_radius": {
+        "duplicate": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 2
+        }
+      },
+      "rule_4_incompatible_categories": {
+        "duplicate": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        }
+      },
+      "rule_5_opposing_direction": {
+        "duplicate": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        }
+      },
+      "rule_opposing_direction_related": {
+        "duplicate": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        }
+      },
+      "rule_5_duplicate": {
+        "duplicate": {
+          "duplicate": 24,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        }
+      },
+      "rule_5_downgraded_related": {
+        "duplicate": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 1,
+          "independent": 0
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        }
+      },
+      "threshold": {
+        "duplicate": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 27,
+          "independent": 0
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 0
+        }
+      }
+    },
+    "groupSummaries": {
+      "HARD_OVERRIDES": {
+        "count": 28,
+        "correct": 28,
+        "accuracy": 1,
+        "matrix": {
+          "duplicate": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 0
+          },
+          "independent": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 28
+          }
+        }
+      },
+      "GATE_RULES": {
+        "count": 25,
+        "correct": 25,
+        "accuracy": 1,
+        "matrix": {
+          "duplicate": {
+            "duplicate": 24,
+            "related": 0,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 0,
+            "related": 1,
+            "independent": 0
+          },
+          "independent": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 0
+          }
+        }
+      },
+      "BARE_THRESHOLD": {
+        "count": 27,
+        "correct": 27,
+        "accuracy": 1,
+        "matrix": {
+          "duplicate": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 0,
+            "related": 27,
+            "independent": 0
+          },
+          "independent": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 0
+          }
+        }
+      }
+    }
+  }
+}
