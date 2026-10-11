@@ -62,7 +62,7 @@ router.get("/admin/complaints/escalation-summary", authenticate, requireRole("ad
 router.post(
    "/complaints/media",
    authenticate,
-   requireRole("citizen"),
+   requireRole("citizen", "dept_staff", "admin"),
    parseMediaUpload,
    uploadComplaintMedia
 );
