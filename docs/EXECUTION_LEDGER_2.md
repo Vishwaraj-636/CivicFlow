@@ -21,4 +21,5 @@ HEAD at start: fba5d5d251fc120d1ed98ae31384a5a87e77eed6
 | 1.7 | DONE | 2ce2777 | Phase 1 gate: 225/226 tests passed (1 known flaky spatial failure), all 4 protected hashes match |
 | 2.1 | SKIPPED(already present) | 2ce2777 | Staff request rollback, resolution media validation, and media roles already present from earlier work |
 | 2.2 | DONE | cc396ea | Helmet headers, general & auth rate limiting, Express 5 $ operator guard, zod validation, SECURITY.md |
-| 2.3 | DONE | [pending commit] | GET /api/complaints/similar endpoint with HISC scoring, privacy guard, and submittedDespiteSimilar flag |
+| 2.3 | DONE | 34278bf | GET /api/complaints/similar endpoint with HISC scoring, privacy guard, and submittedDespiteSimilar flag |
+| 2.4 | DONE | [pending commit] | Duplicate-warning UI with debounced 600ms similar search, expandable signals, support, and silent fallback |

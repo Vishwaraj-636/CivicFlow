@@ -28,6 +28,14 @@ export async function createComplaint(complaintData) {
    return response.data;
 }
 
+export async function getSimilarComplaints({ lat, lng, category, text }, signal) {
+   const response = await complaintApiInstance.get("/complaints/similar", {
+      params: { lat, lng, category, text },
+      signal,
+   });
+   return response.data;
+}
+
 export async function uploadComplaintMedia(files) {
    const formData = new FormData();
    files.forEach((file) => formData.append("files", file));
