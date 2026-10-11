@@ -30,5 +30,6 @@ HEAD at start: fba5d5d251fc120d1ed98ae31384a5a87e77eed6
 | 3.3 | DONE | 5cb4ada | Production-mode local run checks (a)-(e) all passed (health, CORS, cookies, helmet, websocket) |
 | 3.4 | DONE | 5cb4ada | Smoke test script scripts/smoke.mjs created with markdown table output and exit codes |
 | 3.5 | DONE | 5cb4ada | Deployment documents verified: engines Node >=20, branch documented, rollback section added |
-| 3.6 | DONE | [pending commit] | Secret scan clean (0 secrets, 0 tracked .env); all localhost/127.0.0.1 hits are config defaults/fallbacks |
-| 3.7 | DONE | [pending commit] | Phase 3 gate: 245/247 tests passed (only known spatial benchmark), Vite build passed, 4 protected hashes match |
+| 3.6 | DONE | 8fa9765 | Secret scan clean (0 secrets, 0 tracked .env); all localhost/127.0.0.1 hits are config defaults/fallbacks |
+| 3.7 | DONE | 8fa9765 | Phase 3 gate: 245/247 tests passed (only known spatial benchmark), Vite build passed, 4 protected hashes match |
+| 4.1 | DONE | [pending commit] | Generated facts sheet BACKEND/src/evaluation/generateFactsSheet.js & npm run facts:sheet -> docs/FACTS_SHEET_GENERATED.md |

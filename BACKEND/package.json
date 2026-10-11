@@ -13,7 +13,8 @@
       "learn:weights": "node src/evaluation/learnHiscWeights.js",
       "evaluate:freeze": "node src/evaluation/runFinalEvaluationFreeze.js",
       "results:report": "node src/evaluation/generateResultsReport.js",
-      "seed:demo": "node src/scripts/seedDemo.js"
+      "seed:demo": "node src/scripts/seedDemo.js",
+      "facts:sheet": "node src/evaluation/generateFactsSheet.js"
    },
    "keywords": [],
    "author": "",
