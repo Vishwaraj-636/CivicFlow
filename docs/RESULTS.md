@@ -233,9 +233,28 @@ When the final evaluation freeze is executed, all methods on the frozen roster w
 
 ## I. Learned Weights
 
-**Status:** **Pending optional T5**
+*Learned strictly on the training partition ($N = 240$) via 5-feature simplex optimization (step size $\Delta = 0.05$, examining **10,626** candidate weight vectors) and evaluated on the validation split ($N = 80$):*
 
-*HISC currently operates under validated hand-fixed domain weights ($w_C=0.20, w_G=0.25, w_L=0.10, w_S=0.30, w_T=0.15$). Logistic regression or optimization-based weight learning on the train split has not been performed during T1/T3/T6. No learned weights are fabricated.*
+### Weight Comparison: Hand-Set vs Train-Learned
+
+| Feature | Hand-Set Weight | Train-Learned Weight | $\Delta$ (Learned - Hand-Set) |
+|---|:---:|:---:|:---:|
+| **Category** (`category`) | **0.20** | **0.00** | -0.20 |
+| **Geographic** (`geographic`) | **0.25** | **0.30** | 0.05 |
+| **Lexical** (`lexical`) | **0.10** | **0.00** | -0.10 |
+| **Semantic** (`semantic`) | **0.30** | **0.40** | 0.10 |
+| **Temporal** (`temporal`) | **0.15** | **0.30** | 0.15 |
+| **Sum** | **1.00** | **1.00** | **0.00** |
+
+### Validation Comparison (N = 80, Frozen Learned Weights)
+
+| Configuration | Accuracy | Macro Prec | Macro Rec | Macro F1 | Duplicate F1 | Related F1 | Independent F1 |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Hand-Set Baseline** | 100.00% | 1.0000 | 1.0000 | **1.0000** | 1.0000 | 1.0000 | 1.0000 |
+| **Train-Learned Weights** | 100.00% | 1.0000 | 1.0000 | **1.0000** | 1.0000 | 1.0000 | 1.0000 |
+
+> [!NOTE]
+> **Configuration Selection Decision:** **TIE** — Both hand-set and learned configurations achieved identical validation Macro F1 (1.0000). Under the pre-specified tie-breaking protocol (preferring the existing hand-set configuration on an exact tie), the **hand-set baseline is retained**. Production defaults remain unmodified ($w_C=0.20, w_G=0.25, w_L=0.10, w_S=0.30, w_T=0.15$).
 
 ## J. Limitations and Threats to Validity
 
@@ -263,6 +282,9 @@ When the final evaluation freeze is executed, all methods on the frozen roster w
 | `BACKEND/results/t4_latency_benchmark.json` | `84d191ea` | Source of clustering latency, candidate caps, spatial-index benchmark, and execution plan stats. |
 | `BACKEND/results/t4_latency_benchmark.csv` | `84d191ea` | Tabular benchmark measurements across workloads and configurations. |
 | `BACKEND/results/t4_latency_benchmark.md` | `84d191ea` | Human-readable clustering latency and spatial index benchmark report. |
+| `BACKEND/results/t5_learned_weights_validation.json` | `c1d091ce1f735976fb4580fa4299f365cfd131e1` | Source of train-only weight simplex optimization and validation comparison metrics. |
+| `BACKEND/results/t5_learned_weights_validation.md` | `c1d091ce1f735976fb4580fa4299f365cfd131e1` | Human-readable T5 learned weights validation comparison report. |
+| `BACKEND/results/learned_weights.json` | `c1d091ce1f735976fb4580fa4299f365cfd131e1` | Machine-readable selected learned weight vector artifact. |
 | `BACKEND/data/splits.json` | `88bfab50` | Partition manifest and SHA-256 checksums. |
 | `BACKEND/data/hisc_baseline_evaluation.json` | `88bfab50` | Historical Phase A3 baseline and feature ablation data. |
 

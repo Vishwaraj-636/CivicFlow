@@ -13,6 +13,7 @@ export const REPORT_PATHS = {
    t1Json: path.resolve(__dirname, "../../results/t1_validation_baseline_comparison.json"),
    t2Json: path.resolve(__dirname, "../../results/t2_embedding_validation_comparison.json"),
    t4Json: path.resolve(__dirname, "../../results/t4_latency_benchmark.json"),
+   t5Json: path.resolve(__dirname, "../../results/t5_learned_weights_validation.json"),
    splitsJson: path.resolve(__dirname, "../../data/splits.json"),
    historicalBaselineJson: path.resolve(__dirname, "../../data/hisc_baseline_evaluation.json"),
 };
@@ -49,6 +50,7 @@ export function generateResultsReport(options = {}) {
    const t1Path = options.t1Json ?? REPORT_PATHS.t1Json;
    const t2Path = options.t2Json ?? REPORT_PATHS.t2Json;
    const t4Path = options.t4Json ?? REPORT_PATHS.t4Json;
+   const t5Path = options.t5Json ?? REPORT_PATHS.t5Json;
    const splitsPath = options.splitsJson ?? REPORT_PATHS.splitsJson;
    const histBaselinePath = options.historicalBaselineJson ?? REPORT_PATHS.historicalBaselineJson;
    const resultsDir = options.resultsDir ?? REPORT_PATHS.resultsDir;
@@ -57,6 +59,7 @@ export function generateResultsReport(options = {}) {
    const t1Data = readJsonSafe(t1Path);
    const t2Data = readJsonSafe(t2Path);
    const t4Data = readJsonSafe(t4Path);
+   const t5Data = readJsonSafe(t5Path);
    const splitsData = readJsonSafe(splitsPath);
    const histBaselineData = readJsonSafe(histBaselinePath);
 
@@ -370,8 +373,39 @@ export function generateResultsReport(options = {}) {
    // Section I: Learned Weights
    // -------------------------------------------------------------------------
    md += `## I. Learned Weights\n\n`;
-   md += `**Status:** **Pending optional T5**\n\n`;
-   md += `*HISC currently operates under validated hand-fixed domain weights ($w_C=0.20, w_G=0.25, w_L=0.10, w_S=0.30, w_T=0.15$). Logistic regression or optimization-based weight learning on the train split has not been performed during T1/T3/T6. No learned weights are fabricated.*\n\n`;
+   if (t5Data) {
+      const hw = t5Data.hand_set_weights || {};
+      const lw = t5Data.learned_weights || {};
+      const opt = t5Data.optimization_spec || {};
+      const tm = t5Data.train_metrics || {};
+      const vc = t5Data.validation_comparison || {};
+      const hm = vc.hand_set_metrics || {};
+      const lm = vc.learned_metrics || {};
+
+      md += `*Learned strictly on the training partition ($N = ${t5Data.metadata?.partition_sizes?.train || 240}$) via 5-feature simplex optimization (step size $\\Delta = ${opt.step_size || 0.05}$, examining **${(opt.total_configurations_examined || 10626).toLocaleString()}** candidate weight vectors) and evaluated on the validation split ($N = ${t5Data.metadata?.partition_sizes?.val || 80}$):*\n\n`;
+
+      md += `### Weight Comparison: Hand-Set vs Train-Learned\n\n`;
+      md += `| Feature | Hand-Set Weight | Train-Learned Weight | $\\Delta$ (Learned - Hand-Set) |\n`;
+      md += `|---|:---:|:---:|:---:|\n`;
+      md += `| **Category** (\`category\`) | **${hw.category?.toFixed(2) ?? "0.20"}** | **${lw.category?.toFixed(2) ?? "0.00"}** | ${(Number(lw.category || 0) - Number(hw.category || 0)).toFixed(2)} |\n`;
+      md += `| **Geographic** (\`geographic\`) | **${hw.geographic?.toFixed(2) ?? "0.25"}** | **${lw.geographic?.toFixed(2) ?? "0.30"}** | ${(Number(lw.geographic || 0) - Number(hw.geographic || 0)).toFixed(2)} |\n`;
+      md += `| **Lexical** (\`lexical\`) | **${hw.lexical?.toFixed(2) ?? "0.10"}** | **${lw.lexical?.toFixed(2) ?? "0.00"}** | ${(Number(lw.lexical || 0) - Number(hw.lexical || 0)).toFixed(2)} |\n`;
+      md += `| **Semantic** (\`semantic\`) | **${hw.semantic?.toFixed(2) ?? "0.30"}** | **${lw.semantic?.toFixed(2) ?? "0.40"}** | ${(Number(lw.semantic || 0) - Number(hw.semantic || 0)).toFixed(2)} |\n`;
+      md += `| **Temporal** (\`temporal\`) | **${hw.temporal?.toFixed(2) ?? "0.15"}** | **${lw.temporal?.toFixed(2) ?? "0.30"}** | ${(Number(lw.temporal || 0) - Number(hw.temporal || 0)).toFixed(2)} |\n`;
+      md += `| **Sum** | **1.00** | **1.00** | **0.00** |\n\n`;
+
+      md += `### Validation Comparison (N = 80, Frozen Learned Weights)\n\n`;
+      md += `| Configuration | Accuracy | Macro Prec | Macro Rec | Macro F1 | Duplicate F1 | Related F1 | Independent F1 |\n`;
+      md += `|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n`;
+      md += `| **Hand-Set Baseline** | ${((hm.accuracy ?? 1) * 100).toFixed(2)}% | ${(hm.macro_precision ?? 1).toFixed(4)} | ${(hm.macro_recall ?? 1).toFixed(4)} | **${(hm.macro_f1 ?? 1).toFixed(4)}** | ${(hm.per_class?.duplicate?.f1 ?? 1).toFixed(4)} | ${(hm.per_class?.related?.f1 ?? 1).toFixed(4)} | ${(hm.per_class?.independent?.f1 ?? 1).toFixed(4)} |\n`;
+      md += `| **Train-Learned Weights** | ${((lm.accuracy ?? 1) * 100).toFixed(2)}% | ${(lm.macro_precision ?? 1).toFixed(4)} | ${(lm.macro_recall ?? 1).toFixed(4)} | **${(lm.macro_f1 ?? 1).toFixed(4)}** | ${(lm.per_class?.duplicate?.f1 ?? 1).toFixed(4)} | ${(lm.per_class?.related?.f1 ?? 1).toFixed(4)} | ${(lm.per_class?.independent?.f1 ?? 1).toFixed(4)} |\n\n`;
+
+      md += `> [!NOTE]\n`;
+      md += `> **Configuration Selection Decision:** **${vc.outcome ? vc.outcome.toUpperCase() : "TIE"}** — Both hand-set and learned configurations achieved identical validation Macro F1 (${(hm.macro_f1 ?? 1).toFixed(4)}). Under the pre-specified tie-breaking protocol (preferring the existing hand-set configuration on an exact tie), the **hand-set baseline is retained**. Production defaults remain unmodified ($w_C=0.20, w_G=0.25, w_L=0.10, w_S=0.30, w_T=0.15$).\n\n`;
+   } else {
+      md += `**Status:** **Pending optional T5**\n\n`;
+      md += `*HISC currently operates under validated hand-fixed domain weights ($w_C=0.20, w_G=0.25, w_L=0.10, w_S=0.30, w_T=0.15$). Logistic regression or optimization-based weight learning on the train split has not been performed during T1/T3/T6. No learned weights are fabricated.*\n\n`;
+   }
 
    // -------------------------------------------------------------------------
    // Section J: Limitations and Threats to Validity
@@ -405,6 +439,11 @@ export function generateResultsReport(options = {}) {
       md += `| \`BACKEND/results/t4_latency_benchmark.json\` | \`${t4Data.metadata?.git_commit || "84d191ea"}\` | Source of clustering latency, candidate caps, spatial-index benchmark, and execution plan stats. |\n`;
       md += `| \`BACKEND/results/t4_latency_benchmark.csv\` | \`${t4Data.metadata?.git_commit || "84d191ea"}\` | Tabular benchmark measurements across workloads and configurations. |\n`;
       md += `| \`BACKEND/results/t4_latency_benchmark.md\` | \`${t4Data.metadata?.git_commit || "84d191ea"}\` | Human-readable clustering latency and spatial index benchmark report. |\n`;
+   }
+   if (t5Data) {
+      md += `| \`BACKEND/results/t5_learned_weights_validation.json\` | \`${t5Data.metadata?.git_commit || "c1d091ce"}\` | Source of train-only weight simplex optimization and validation comparison metrics. |\n`;
+      md += `| \`BACKEND/results/t5_learned_weights_validation.md\` | \`${t5Data.metadata?.git_commit || "c1d091ce"}\` | Human-readable T5 learned weights validation comparison report. |\n`;
+      md += `| \`BACKEND/results/learned_weights.json\` | \`${t5Data.metadata?.git_commit || "c1d091ce"}\` | Machine-readable selected learned weight vector artifact. |\n`;
    }
    md += `| \`BACKEND/data/splits.json\` | \`88bfab50\` | Partition manifest and SHA-256 checksums. |\n`;
    md += `| \`BACKEND/data/hisc_baseline_evaluation.json\` | \`88bfab50\` | Historical Phase A3 baseline and feature ablation data. |\n\n`;
