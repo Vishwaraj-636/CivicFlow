@@ -8,7 +8,7 @@ import { getActivePresetName, DEFAULT_HISC_CONFIG } from './src/hisc/config.js';
 
 dotenv.config();
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
    try {

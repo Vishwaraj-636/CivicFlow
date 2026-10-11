@@ -1,299 +1,147 @@
-# CivicFlow Production Deployment Guide
+# CivicFlow Production Deployment Guide (Single-Origin Render)
 
-This guide details the step-by-step procedure for deploying CivicFlow across free-tier production infrastructure:
-- **Backend & Socket Server:** [Render](https://render.com) (Node.js Web Service)
+This guide details the step-by-step procedure for deploying CivicFlow as a **single-origin unified service** on free-tier production infrastructure:
+- **Unified Web Service (Frontend + Backend + Sockets):** [Render](https://render.com) (Node.js Web Service, Singapore region)
 - **Database:** [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) (M0 Free Shared Cluster)
-- **Frontend SPA:** [Vercel](https://vercel.com) (Static Vite React Application)
+- **Vercel Deployment Status:** **OBSOLETE / DEPRECATED**. Vercel is no longer used. Both the Vite React SPA and the Express 5 REST API + Socket.IO server are served from the same Render origin to eliminate cross-domain cookie restrictions.
 
 ---
 
 ## 1. System Architecture and Build Specifications
 
-| Component | Repository Root | Build / Install Command | Start / Output Command | Health Check | Runtime Engine |
-|---|---|---|---|---|---|
-| **Backend** | `BACKEND/` | `npm install` | `node server.js` | `GET /health` | Node.js `>=20` (`engines` field enforced) |
-| **Frontend** | `FRONTEND/` | `npm run build` | Output dir: `dist/` | SPA rewrite to `/index.html` | Node.js `>=20` |
+| Component | Repository Root | Build / Install Command | Start / Output Command | Health Check | Runtime Engine | Region |
+|---|---|---|---|---|---|---|
+| **Unified Service** | Repository root (`.`) | `npm install --prefix BACKEND && npm install --prefix FRONTEND && npm run build --prefix FRONTEND` | `npm start --prefix BACKEND` | `GET /health` | Node.js `>=20` (`engines` field enforced) | Singapore (`singapore`) |
 
-> **Deployment Branch Context:**
-> The active development branch containing the complete HISC evaluation and product hardening is `feat/algorithm`. Render and Vercel services can be configured to deploy `feat/algorithm` directly, or `feat/algorithm` can be merged into `main` prior to triggering deployments.
+### How Single-Origin Serving Operates:
+1. **API Requests:** Requests starting with `/api` are handled by Express 5 REST routers. Unhandled `/api/*` routes return JSON 404 `{ "error": "API route not found" }`.
+2. **Health Check:** `GET /health` responds immediately with HTTP 200 `{ "status": "ok" }`.
+3. **Real-Time Sockets:** Handled by Socket.IO mounted at `/socket.io`.
+4. **Production Frontend Static Assets:** Express serves pre-built static assets from `FRONTEND/dist` via `express.static`.
+5. **SPA Route Fallback:** Non-API GET requests (such as `/`, `/dashboard`, `/login`, `/complaints/:id`) serve `FRONTEND/dist/index.html` for client-side routing.
+6. **Cookie Security:** Because frontend and API share the exact same origin, cookies use `SameSite=Lax`, `HttpOnly=true`, and `Secure=true` in production, eliminating 3rd-party cookie blocking issues across strict browsers (Safari ITP, Brave, Firefox ETP).
 
 ---
 
 ## 2. Complete Environment Variables Specification
 
-The application reads only the following verified environment variables:
+Configure the following variables in the Render Dashboard (**Environment** tab):
 
-### A. Backend Variables (`BACKEND/.env`)
-| Variable | Required? | Example Production Value | Purpose / Notes |
-|---|:---:|---|---|
-| `MONGO_URI` | **Yes** | `mongodb+srv://<user>:<password>@cluster0.abcde.mongodb.net/civicflow?retryWrites=true&w=majority` | Connection string for MongoDB Atlas. |
-| `JWT_SECRET` | **Yes** | `min-32-char-cryptographically-secure-random-secret` | Signs JWT session tokens. |
-| `NODE_ENV` | **Yes** | `production` | Enforces production mode and cookie security flags. |
-| `GOOGLE_CLIENT_ID` | **Yes** | `1234567890-xyz.apps.googleusercontent.com` | Google Cloud OAuth 2.0 Client ID. |
-| `GOOGLE_CLIENT_SECRET` | **Yes** | `GOCSPX-abc123def456` | Google Cloud OAuth 2.0 Client Secret. |
-| `IMAGE_KIT_PRIVATE_KEY` | **Yes** | `private_abc123...` | Media upload verification via ImageKit. |
-| `PORT` | Auto | *(Injected automatically by Render, e.g. 10000)* | Port the HTTP and Socket.IO server binds to. |
-| `CLIENT_URL` | Optional | `https://civicflow.vercel.app` | Default allowed frontend origin. |
-| `ALLOWED_ORIGINS` | Optional | `https://civicflow.vercel.app,http://localhost:5173` | Comma-separated list of origins permitted by CORS and Socket.IO (precedence over `CLIENT_URL`). |
-| `GOOGLE_CALLBACK_URL` | Optional | `https://civicflow-api.onrender.com/api/auth/google/callback` | Absolute HTTPS callback URL registered in Google Cloud Console. |
-| `COOKIE_SAME_SITE` | Optional | `none` *(for cross-origin Vercel+Render)* | Sets cookie `SameSite` attribute (`none`, `lax`, or `strict`). When `none`, `secure: true` is enforced automatically. |
-| `TRUST_PROXY` | Optional | `true` *(on Render / reverse proxies)* | Instructs Passport and Express to respect `X-Forwarded-Proto` and secure headers. |
-| `LLM_PROVIDER` | Optional | `gemini` | AI grievance routing provider. |
-| `LLM_API_KEY` | Optional | `AIzaSy...` | API key for Gemini models. |
-| `LLM_MODEL` | Optional | `gemini-3.5-flash-lite` | Target model for AI chatbot and categorization. |
-| `EMBEDDING_PROVIDER` | Optional | `none` | Neural embedding mode (`none`, `local`). Production defaults to `none` (<100MB RAM). |
-
-### B. Frontend Variables (`FRONTEND/.env`)
-| Variable | Required? | Example Production Value | Purpose / Notes |
-|---|:---:|---|---|
-| `VITE_API_URL` | **Yes** | `https://civicflow-api.onrender.com/api` | Base URL for REST API endpoints. |
-| `VITE_SOCKET_URL` | **Yes** | `https://civicflow-api.onrender.com` | Base URL for Socket.IO real-time channels. |
-| `VITE_JAWG_ACCESS_TOKEN` | Optional | `your_jawg_token` | Optional custom map tiles token (defaults to OpenStreetMap tiles if omitted). |
+| Variable Name | Required? | Example Value | Where to Obtain Value | When to Set It | Notes |
+|---|:---:|---|---|---|---|
+| `NODE_ENV` | **Yes** | `production` | Static string | First deploy | Enforces production mode, static asset serving, and secure cookie flags. |
+| `MONGO_URI` | **Yes** | `mongodb+srv://<user>:<password>@cluster0.abcde.mongodb.net/civicflow_prod?retryWrites=true&w=majority` | MongoDB Atlas Cluster Dashboard | First deploy | Connection string for MongoDB Atlas production database. |
+| `JWT_SECRET` | **Yes** | *(Generate 32+ char random hex string)* | Render "Generate" button or `openssl rand -hex 32` | First deploy | Signs JWT session tokens in authentication cookies. |
+| `GOOGLE_CLIENT_ID` | **Yes** | `1234567890-xyz.apps.googleusercontent.com` | Google Cloud Console (Credentials) | First deploy | OAuth 2.0 Client ID for Google authentication. |
+| `GOOGLE_CLIENT_SECRET` | **Yes** | `GOCSPX-abc123def456` | Google Cloud Console (Credentials) | First deploy | OAuth 2.0 Client Secret for Google authentication. |
+| `IMAGE_KIT_PRIVATE_KEY` | **Yes** | `private_abc123...` | ImageKit Dashboard (Developer Options) | First deploy | Server-side API key for media upload and verification. |
+| `CLIENT_URL` | **Yes** | `https://<render-service>.onrender.com` | Assigned Render Web Service URL | After 1st deploy | Exact public origin without trailing slash; set after Render URL is generated. |
+| `ALLOWED_ORIGINS` | Optional | `https://<render-service>.onrender.com` | Assigned Render Web Service URL | After 1st deploy | Comma-separated list of origins permitted by CORS and Socket.IO. Defaults to `CLIENT_URL`. |
+| `GOOGLE_CALLBACK_URL` | Optional | `https://<render-service>.onrender.com/api/auth/google/callback` | Render URL + `/api/auth/google/callback` | After 1st deploy | Absolute HTTPS redirect URL registered in Google Cloud Console. |
+| `COOKIE_SAME_SITE` | Optional | `lax` | Static string (default `lax`) | First deploy | SameSite cookie policy. Defaults to `lax` in production single-origin. |
+| `TRUST_PROXY` | Optional | `1` | Static string (default `1`) | First deploy | Instructs Express and Passport to trust Render's reverse proxy for HTTPS detection. |
+| `EMBEDDING_PROVIDER` | Optional | `none` | Static string (default `none`) | First deploy | Keeps neural embedding overhead at 0 MB RAM on free tier. |
+| `LLM_PROVIDER` | Optional | `gemini` | Static string | Optional | AI assistant provider (`gemini` or `grounded-fallback`). |
+| `LLM_API_KEY` | Optional | `AIzaSy...` | Google AI Studio | Optional | Gemini API key. If omitted, AI desk gracefully uses grounded knowledge fallback. |
+| `LLM_MODEL` | Optional | `gemini-3.5-flash-lite` | Static string | Optional | Gemini model name. |
 
 ---
 
-## 3. Step 1: Database Setup on MongoDB Atlas
+## 3. Step-by-Step Deployment Procedure
 
-1. **Create Free Cluster:**
-   - Log into [MongoDB Atlas](https://cloud.mongodb.com/).
-   - Create a free **M0 Shared Cluster** (512 MB storage, shared RAM). Choose an AWS/GCP region closest to your server (e.g. `eu-west-1` or `us-east-1`).
-2. **Configure Database User:**
-   - Navigate to **Security → Database Access**.
-   - Create a database user (e.g., `civicflow_admin`) with **Read and write to any database** privilege.
-   - Store the password securely.
-3. **Configure Network Access:**
-   - Navigate to **Security → Network Access**.
-   - Click **Add IP Address** and choose **Allow Access From Anywhere (`0.0.0.0/0`)**.
-   - *Requirement:* Dynamic cloud platforms like Render rotate egress IPs; `0.0.0.0/0` is required for connectivity.
-4. **Retrieve Connection String:**
-   - Go to **Deployments → Database → Connect → Drivers**.
-   - Select Node.js. Copy the SRV URI:
+### Step 1: Database Setup on MongoDB Atlas
+1. Log into [MongoDB Atlas](https://cloud.mongodb.com/).
+2. Select your free **M0 Shared Cluster**.
+3. Under **Database Access**, create or verify a database user with read and write permissions to `civicflow_prod` (and `civicflow_demo` if seeding demo data).
+4. Under **Network Access**, ensure IP access list allows `0.0.0.0/0` (required because Render Free dynamically assigns outbound IPs).
+5. Copy your connection string and ensure the database path is `civicflow_prod`:
+   ```
+   mongodb+srv://<username>:<password>@<cluster>.mongodb.net/civicflow_prod?retryWrites=true&w=majority
+   ```
+
+### Step 2: Create Render Web Service
+1. In the Render Dashboard, click **New +** -> **Web Service**.
+2. Connect your repository (`CivicFlow`).
+3. Configure the service settings:
+   - **Name:** `civicflow-app` (or your chosen service name)
+   - **Region:** `Singapore` (`singapore`)
+   - **Branch:** `deploy/prod` (or `main` after authorized release)
+   - **Root Directory:** *(leave blank / repository root)*
+   - **Runtime:** `Node`
+   - **Build Command:**
+     ```bash
+     npm install --prefix BACKEND && npm install --prefix FRONTEND && npm run build --prefix FRONTEND
      ```
-     mongodb+srv://<username>:<password>@<cluster>.mongodb.net/civicflow?retryWrites=true&w=majority
+   - **Start Command:**
+     ```bash
+     npm start --prefix BACKEND
      ```
-   - *Note on Geospatial Indexes:* The `2dsphere` spatial index required for proximity duplicate detection is automatically generated by Mongoose upon first startup.
-
----
-
-## 4. Step 2: Backend Deployment on Render
-
-### Option A: Via Render Blueprint (`render.yaml`)
-1. In the Render Dashboard, select **New → Blueprint**.
-2. Connect your GitHub repository.
-3. Render reads `render.yaml` and provisions service `civicflow-backend`.
-4. Enter your secrets (`MONGO_URI`, `GOOGLE_CLIENT_ID`, etc.) in the dashboard when prompted.
-
-### Option B: Manual Web Service Creation
-1. Select **New → Web Service**.
-2. Connect your GitHub repository.
-3. Configure the following service settings:
-   - **Name:** `civicflow-backend` (or your choice)
-   - **Root Directory:** `BACKEND`
-   - **Environment:** `Node`
-   - **Branch:** `main` (or your deployment branch)
-   - **Build Command:** `npm install`
-   - **Start Command:** `node server.js`
-   - **Plan:** `Free`
+   - **Instance Type:** `Free`
    - **Health Check Path:** `/health`
-4. Under **Environment Variables**, configure all variables from Section 2A.
-5. Deploy the service. Once deployed, copy your assigned URL:
-   `https://<backend-app-name>.onrender.com`
+   - **Auto-Deploy:** `No` (manual deploy recommended for controlled verification)
+4. Under **Environment Variables**, add the initial boot variables:
+   - `NODE_ENV` = `production`
+   - `MONGO_URI` = *(your Atlas URI with civicflow_prod)*
+   - `JWT_SECRET` = *(click Generate or enter a secure random secret)*
+   - `GOOGLE_CLIENT_ID` = *(from Google Cloud Console)*
+   - `GOOGLE_CLIENT_SECRET` = *(from Google Cloud Console)*
+   - `IMAGE_KIT_PRIVATE_KEY` = *(from ImageKit Dashboard)*
+   - `COOKIE_SAME_SITE` = `lax`
+   - `TRUST_PROXY` = `1`
+   - `EMBEDDING_PROVIDER` = `none`
+   - `LLM_PROVIDER` = `gemini`
+   - *(Optional)* `LLM_API_KEY` = *(your Gemini key if available)*
+5. Click **Create Web Service**.
+
+### Step 3: Wire Public URL, CORS, and OAuth
+1. Once Render creates the service, copy your assigned public URL:
+   `https://<render-service-name>.onrender.com`
+2. In the Render service dashboard (**Environment** tab):
+   - Set `CLIENT_URL` = `https://<render-service-name>.onrender.com`
+   - Set `ALLOWED_ORIGINS` = `https://<render-service-name>.onrender.com`
+   - Set `GOOGLE_CALLBACK_URL` = `https://<render-service-name>.onrender.com/api/auth/google/callback`
+   - Click **Save Changes** and trigger **Manual Deploy** -> **Deploy latest commit**.
+3. In [Google Cloud Console](https://console.cloud.google.com/apis/credentials):
+   - Under **Authorized JavaScript origins**, add: `https://<render-service-name>.onrender.com`
+   - Under **Authorized redirect URIs**, add: `https://<render-service-name>.onrender.com/api/auth/google/callback`
+   - Save changes.
 
 ---
 
-## 5. Step 3: Google OAuth 2.0 Registration
+## 4. Automated Production Smoke Testing
 
-1. Go to the [Google Cloud Console](https://console.cloud.google.com/apis/credentials).
-2. Select your project and navigate to **Credentials → OAuth 2.0 Client IDs**.
-3. Configure the following entries:
-   - **Authorized JavaScript origins:**
-     - `http://localhost:5173` (for local development)
-     - `https://<frontend-app-name>.vercel.app` (your actual Vercel domain)
-   - **Authorized redirect URIs (Exact Format):**
-     - `http://localhost:3000/api/auth/google/callback` (local development)
-     - `https://<backend-app-name>.onrender.com/api/auth/google/callback` (exact production backend URL)
-4. Update `GOOGLE_CALLBACK_URL` in your Render dashboard environment variables with the exact URL above.
+Execute the automated single-origin verification script against the live Render URL:
 
----
+```bash
+# Basic single-origin check (health, root HTML, deep links, API 404, Socket.IO handshake)
+node scripts/smoke.mjs --single-origin --api https://<render-service-name>.onrender.com
 
-## 6. Step 4: Frontend Deployment on Vercel
+# With optional authenticated session check:
+SMOKE_ADMIN_EMAIL=admin@demo.civicflow.local SMOKE_ADMIN_PASSWORD=Demo@12345 \
+node scripts/smoke.mjs --single-origin --api https://<render-service-name>.onrender.com
+```
 
-1. Log into [Vercel](https://vercel.com/) and select **Add New → Project**.
-2. Import the CivicFlow GitHub repository.
-3. Configure the project settings:
-   - **Framework Preset:** `Vite`
-   - **Root Directory:** `FRONTEND`
-   - **Build Command:** `npm run build`
-   - **Output Directory:** `dist`
-4. **Environment Variables:**
-   - `VITE_API_URL` = `https://<backend-app-name>.onrender.com/api`
-   - `VITE_SOCKET_URL` = `https://<backend-app-name>.onrender.com`
-5. **SPA Routing Configuration:**
-   - Single-Page Applications require route rewrites so deep links (`/dashboard`, `/complaints/:id`) do not 404 on refresh.
-   - Vercel uses [`FRONTEND/vercel.json`](file:///c:/Projects/CivicFlow/FRONTEND/vercel.json) (already configured):
-     ```json
-     {
-       "$schema": "https://openapi.vercel.sh/vercel.json",
-       "rewrites": [
-         {
-           "source": "/(.*)",
-           "destination": "/index.html"
-         }
-       ]
-     }
-     ```
-6. Click **Deploy**. Copy your production frontend URL:
-   `https://<frontend-app-name>.vercel.app`
-7. Return to your Render dashboard and set `CLIENT_URL` / `ALLOWED_ORIGINS` to this Vercel domain.
+The script verifies:
+1. `GET /health` returns HTTP 200 `{ "status": "ok" }`.
+2. `GET /` returns HTTP 200 with HTML document.
+3. `GET /dashboard` deep link returns HTTP 200 with HTML document.
+4. `GET /api/<unknown>` returns HTTP 404 with JSON `{ "error": "API route not found" }`.
+5. Socket.IO polling handshake returns valid engine protocol packet.
+6. Optional login probe verifies `HttpOnly`, `Secure`, and `SameSite=Lax` cookie flags without exposing secret tokens.
 
 ---
 
-## 7. Cross-Origin Topology and Security Guidelines
-
-### Cross-Domain Deployment (Vercel Frontend + Render Backend)
-When the frontend (`vercel.app`) and backend (`onrender.com`) sit on different domains:
-1. **Cookies:** Browsers consider this a cross-site context.
-   - Set `COOKIE_SAME_SITE=none` on Render.
-   - Backend automatically sets `Secure: true` when `sameSite=none`.
-2. **Reverse Proxy Trust:**
-   - Render terminates SSL at its edge proxy.
-   - Set `TRUST_PROXY=true` on Render so Passport and Express recognize HTTPS.
-   - *Security note:* Do not set `TRUST_PROXY=true` in environments where the application server directly faces untrusted traffic without an edge proxy.
-
-### Shared Apex Domain Deployment (Recommended for Long-Term Production)
-- Example: `app.civicflow.org` (Frontend) and `api.civicflow.org` (Backend).
-- In this topology, cookies are same-site. You can use standard `COOKIE_SAME_SITE=lax`.
-
----
-
-## 8. Free-Tier Operational Constraints
+## 5. Free-Tier Operational Notes & Troubleshooting
 
 1. **Render Free-Tier Cold Starts:**
-   - Render free web services spin down after 15 minutes of inactivity.
-   - The first request after sleep takes 50–90 seconds to wake up.
-   - The `/health` endpoint can be used with a free uptime monitor (e.g., UptimeRobot, cron-job.org) pinging every 10 minutes to keep the instance warm.
-2. **512 MB RAM Memory Limit:**
-   - The backend service is bounded to 512 MB RAM. Production sets `EMBEDDING_PROVIDER=none` (the free 512 MB host cannot run the local model).
-   - CivicFlow's HISC similarity algorithm uses zero-shot token and concept matching without in-process neural network embeddings or heavy vector stores, consuming ~122 MB of memory at startup.
-   - Do not run heavy offline evaluation scripts or training jobs on the live web service container.
-
----
-
-## 9. Ordered Deployment Sequence
-
-Follow this exact sequence to ensure services connect without misconfiguration:
-
-1. **MongoDB Atlas M0:**
-   - Provision cluster, configure user credentials.
-   - Configure IP Access List: add `0.0.0.0/0` (required for Render free-tier dynamic IPs).
-   - Obtain MongoDB SRV connection URI.
-2. **Render Web Service (Backend):**
-   - Connect repository, set root directory to `BACKEND`, runtime `Node` (>=20).
-   - Set deployment branch (e.g. `feat/algorithm` or `main`).
-   - Configure environment variables (`MONGO_URI`, `JWT_SECRET`, `NODE_ENV=production`, `EMBEDDING_PROVIDER=none`, `COOKIE_SAME_SITE=none`, `TRUST_PROXY=true`, etc.).
-   - Trigger build and start (`npm install` -> `node server.js`).
-   - Copy assigned Render backend URL (`https://<backend-app-name>.onrender.com`).
-3. **Vercel SPA (Frontend):**
-   - Connect repository, set root directory to `FRONTEND`, framework `Vite`.
-   - Set environment variables:
-     - `VITE_API_URL=https://<backend-app-name>.onrender.com/api`
-     - `VITE_SOCKET_URL=https://<backend-app-name>.onrender.com`
-   - Trigger deployment (`npm run build`).
-   - Copy assigned Vercel URL (`https://<frontend-app-name>.vercel.app`).
-4. **Update Render Origin Configurations:**
-   - In Render dashboard, set `CLIENT_URL=https://<frontend-app-name>.vercel.app` and `ALLOWED_ORIGINS=https://<frontend-app-name>.vercel.app`.
-   - Render restarts the backend service to apply updated origins.
-5. **Update Google Cloud Console OAuth 2.0:**
-   - In Authorized JavaScript origins: add `https://<frontend-app-name>.vercel.app`.
-   - In Authorized redirect URIs: add `https://<backend-app-name>.onrender.com/api/auth/google/callback`.
-   - Update `GOOGLE_CALLBACK_URL` on Render if not already set.
-6. **Automated Smoke Test Verification:**
-   - Execute `node scripts/smoke.mjs` against both live URLs to verify all gates.
-7. **Optional Demo Data Seeding:**
-   - If demo accounts and complaints are needed for presentation screenshots:
-     `DEMO_SEED_ALLOW_REMOTE=1 node BACKEND/src/scripts/seedDemo.js --allow-remote`
-     *(Requires MONGO_URI in environment. Safe and idempotent for `@demo.civicflow.local` accounts).*
-
----
-
-## 10. Automated Post-Deployment Smoke Test
-
-CivicFlow includes an automated production verification script [`scripts/smoke.mjs`](file:///c:/Projects/CivicFlow/scripts/smoke.mjs) that validates:
-- API `/health` endpoint responds 200 OK.
-- CORS preflight allow-origin header for the Vercel frontend.
-- Unauthenticated access to protected `/api/complaints/similar` correctly returns 401.
-- Optional login authentication and secure cookie flags (`HttpOnly`, `Secure`, `SameSite=None`).
-- Frontend SPA returns HTTP 200 and valid HTML.
-
-### Running the Smoke Test:
-```bash
-# Basic endpoint and CORS verification
-node scripts/smoke.mjs --api https://<backend-app-name>.onrender.com --web https://<frontend-app-name>.vercel.app
-
-# With authenticated login check:
-SMOKE_ADMIN_EMAIL=admin@demo.civicflow.local SMOKE_ADMIN_PASSWORD=Demo@12345 \
-node scripts/smoke.mjs --api https://<backend-app-name>.onrender.com --web https://<frontend-app-name>.vercel.app
-```
-Exit code `0` indicates all checks passed; exit code `1` indicates a check failure.
-
----
-
-## 11. Post-Deployment Manual Verification Checklist
-
-Once automated smoke checks pass, conduct manual validation:
-
-- [ ] **1. Health Check Probe:**
-  ```bash
-  curl -i https://<backend-app-name>.onrender.com/health
-  # Expected: HTTP 200 OK, { "status": "ok" }
-  ```
-
-- [ ] **2. CORS Headers Validation:**
-  ```bash
-  curl -i -X OPTIONS https://<backend-app-name>.onrender.com/api/auth/me \
-    -H "Origin: https://<frontend-app-name>.vercel.app" \
-    -H "Access-Control-Request-Method: GET"
-  # Expected: HTTP 204 or 200 with Access-Control-Allow-Origin: https://<frontend-app-name>.vercel.app
-  # and Access-Control-Allow-Credentials: true
-  ```
-
-- [ ] **3. SPA Direct Route Navigation:**
-  - In a browser, open `https://<frontend-app-name>.vercel.app/login` directly.
-  - Refresh the page.
-  - Expected: The login page renders without 404 errors.
-
-- [ ] **4. Citizen Registration & Login:**
-  - Register a new citizen account via the UI.
-  - Confirm the authentication cookie is set and redirects to `/dashboard`.
-
-- [ ] **5. Complaint Submission & Similarity Pipeline:**
-  - Submit a test complaint with a description and map coordinate.
-  - Verify receipt in MongoDB and check that status is `submitted`.
-
-- [ ] **6. Real-Time Socket Connection:**
-  - Open staff incident view. Check browser developer console for successful Socket.IO handshake (`transport: websocket` or `polling`).
-
----
-
-## 12. Rollback Procedure
-
-If an issue or regression occurs in production:
-
-### Backend Rollback (Render):
-1. In the Render Dashboard, navigate to the Web Service -> **Deploys** tab.
-2. Locate the previous stable build commit.
-3. Click the actions menu (`...`) and select **Rollback to this deploy**.
-4. Render immediately switches traffic to the prior container image without re-building.
-5. In Git, create a revert commit if code changes are needed: `git revert <commit-hash>`.
-
-### Frontend Rollback (Vercel):
-1. In the Vercel Dashboard, navigate to the Project -> **Deployments** tab.
-2. Locate the prior stable deployment.
-3. Click the actions menu (`...`) and select **Promote to Production**.
-4. Vercel instantly routes edge traffic to the selected deployment (instant zero-downtime rollback).
-
-### Database Rollback:
-- Schema changes in CivicFlow are backward-compatible.
-- If corrupted demo data needs clearing:
-  Rerun seeder or clear demo users ending in `@demo.civicflow.local` using `npm run seed:demo -- --allow-remote`.
-- If production data was affected, restore from MongoDB Atlas point-in-time snapshot or daily backup via **Atlas Dashboard → Backup**.
+   - Free services spin down after 15 minutes of inactivity.
+   - Initial wake-up takes 50–90 seconds.
+   - Best practice: Set up a free uptime monitor (e.g., UptimeRobot) pinging `https://<render-service-name>.onrender.com/health` every 5 minutes.
+2. **Deep-Link Refreshes:**
+   - Direct navigation to `/dashboard`, `/login`, or `/profile` is natively supported by the Express SPA fallback.
+3. **Demo Data Seeding Safety:**
+   - To seed demo data, target ONLY the isolated demo database `civicflow_demo`, NEVER `civicflow_prod`.
+   - The seeder refuses `NODE_ENV=production`. Remote seeding requires both flags:
+     ```powershell
+     $env:NODE_ENV="development"; $env:DEMO_SEED_ALLOW_REMOTE="1"; $env:MONGO_URI="mongodb+srv://<user>:<password>@cluster0.abcde.mongodb.net/civicflow_demo?retryWrites=true&w=majority"; npm run seed:demo --prefix BACKEND -- --allow-remote
+     ```

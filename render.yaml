@@ -1,11 +1,11 @@
 services:
   - type: web
-    name: civicflow-backend
+    name: civicflow-app
     env: node
     plan: free
-    rootDir: BACKEND
-    buildCommand: npm install
-    startCommand: node server.js
+    region: singapore
+    buildCommand: npm install --prefix BACKEND && npm install --prefix FRONTEND && npm run build --prefix FRONTEND
+    startCommand: npm start --prefix BACKEND
     healthCheckPath: /health
     autoDeploy: false
     envVars:
@@ -28,9 +28,11 @@ services:
       - key: ALLOWED_ORIGINS
         sync: false
       - key: COOKIE_SAME_SITE
-        value: none
+        value: lax
       - key: TRUST_PROXY
-        value: "true"
+        value: "1"
+      - key: EMBEDDING_PROVIDER
+        value: none
       - key: LLM_PROVIDER
         value: gemini
       - key: LLM_API_KEY
