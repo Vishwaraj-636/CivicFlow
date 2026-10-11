@@ -7,7 +7,7 @@ import { uploadMedia, validateMediaFile } from "../service/imagekit.service.js";
 import { upsertIncidentCluster } from "../service/incidentIntelligence.service.js";
 import { priorityExplanation, scoreComplaintPriority } from "../service/priorityScoring.service.js";
 import { calculateResolutionDeadline, getSlaHours } from "../service/sla.service.js";
-import { escalateOverdueComplaints, openComplaintStatuses } from "../service/complaintEscalation.service.js";
+import { escalateOverdueComplaints, openComplaintStatuses, lazyEscalateOverdueComplaints } from "../service/complaintEscalation.service.js";
 import Notification from "../model/notification.model.js";
 import { createNotification } from "../service/notification.service.js";
 import ComplaintSupport from "../model/complaintSupport.model.js";
@@ -198,6 +198,7 @@ export const supportComplaint = async (req, res) => {
 
 export const getAdminComplaintMapData = async (req, res) => {
    try {
+      await lazyEscalateOverdueComplaints();
       const complaints = await Complaint.find({
          status: { $ne: "deleted" },
          "location.coordinates": { $exists: true, $size: 2 },
@@ -232,6 +233,7 @@ export const getAdminComplaintTrends = async (req, res) => {
    const periodExpression = { $dateToString: { format: formatByPeriod[period], date: "$createdAt" } };
 
    try {
+      await lazyEscalateOverdueComplaints();
       const [trend, categoryTrend, departmentTrend] = await Promise.all([
          Complaint.aggregate([
             { $match: dateMatch },
@@ -324,6 +326,7 @@ export const updateComplaint = async (req, res) => {
 
 export const listComplaintsForStaff = async (req, res) => {
    try {
+      await lazyEscalateOverdueComplaints();
       const filter = { status: { $ne: "deleted" } };
       if (req.user.role === "dept_staff") {
          filter.assignedDepartment = req.user.departmentId;
@@ -341,6 +344,7 @@ export const listComplaintsForStaff = async (req, res) => {
 
 export const getStaffComplaints = async (req, res) => {
    try {
+      await lazyEscalateOverdueComplaints();
       const complaints = await Complaint.find({
          assignedDepartment: req.user.departmentId,
          status: { $ne: "deleted" },
@@ -677,7 +681,7 @@ export const updateComplaintPriority = async (req, res) => {
 
 export const getEscalatedComplaints = async (req, res) => {
    try {
-      await escalateOverdueComplaints();
+      await lazyEscalateOverdueComplaints();
       const complaints = await Complaint.find({ escalated: true, status: { $ne: "deleted" } })
          .populate("assignedDepartment", "fullname code")
          .populate("assignedStaff", "fullname email")
@@ -691,7 +695,7 @@ export const getEscalatedComplaints = async (req, res) => {
 
 export const getEscalationSummary = async (req, res) => {
    try {
-      await escalateOverdueComplaints();
+      await lazyEscalateOverdueComplaints();
       const summary = await Complaint.aggregate([
          { $match: { escalated: true, status: { $ne: "deleted" } } },
          {
