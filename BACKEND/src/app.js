@@ -7,7 +7,7 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
 
 
-import { config } from './config/config.js';
+import { config, isOriginAllowed } from './config/config.js';
 import authRouter from './routes/auth.routes.js';
 import requestRouter from './routes/request.routes.js';
 import departmentRouter from "./routes/department.routes.js"
@@ -27,17 +27,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-   origin: 'http://localhost:5173',
+   origin: (origin, callback) => {
+      callback(null, isOriginAllowed(origin));
+   },
    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
    credentials: true
-}))
+}));
 
 app.use(passport.initialize());
 
 passport.use(new GoogleStrategy({
    clientID: process.env.GOOGLE_CLIENT_ID,
    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-   callbackURL: "/api/auth/google/callback"
+   callbackURL: config.GOOGLE_CALLBACK_URL || process.env.GOOGLE_CALLBACK_URL || "/api/auth/google/callback",
+   proxy: process.env.TRUST_PROXY === "true" || process.env.TRUST_PROXY === "1",
 }, (accessToken, refreshToken, profile, done) => {
    return done(null, profile)
 }))
@@ -45,6 +48,10 @@ passport.use(new GoogleStrategy({
 
 app.get('/', (req, res) => {
    res.status(200).json({ message: "server is running" })
+})
+
+app.get('/health', (req, res) => {
+   res.status(200).json({ status: "ok" });
 })
 
 app.use('/api/auth', authRouter);

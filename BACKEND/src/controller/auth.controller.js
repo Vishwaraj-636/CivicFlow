@@ -13,9 +13,7 @@ async function sendTokenResponse(user, res) {
    })
 
    res.cookie('token', token, {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: config.NODE_ENV === 'production',
+      ...config.COOKIE_OPTIONS,
       maxAge: 24 * 60 * 60 * 1000
    });
 
@@ -97,18 +95,19 @@ export const login = async (req, res) => {
 }
 
 export const googleLogin = (req, res) => {
-   res.redirect('http://localhost:3000/api/auth/google');
+   res.redirect('/api/auth/google');
 }
 
 
 //google callback
 export const googleCallback = async (req, res) => {
+   const clientUrl = (config.ALLOWED_ORIGINS && config.ALLOWED_ORIGINS[0]) || "http://localhost:5173";
    const { id, displayName, emails } = req.user;
    const email = emails[0].value;
    let user = await userModel.findOne({ googleId: id });
 
    if (!user && await userModel.exists({ email, authProvider: 'local' })) {
-      return res.redirect('http://localhost:5173/login?error=google-account-already-used');
+      return res.redirect(`${clientUrl}/login?error=google-account-already-used`);
    }
 
    if (!user) {
@@ -124,7 +123,7 @@ export const googleCallback = async (req, res) => {
    }
 
    if (!user.isActive) {
-      return res.redirect('http://localhost:5173/login?error=account-inactive');
+      return res.redirect(`${clientUrl}/login?error=account-inactive`);
    }
 
    const token = jwt.sign({
@@ -134,13 +133,11 @@ export const googleCallback = async (req, res) => {
    })
 
    res.cookie('token', token, {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: config.NODE_ENV === 'production',
+      ...config.COOKIE_OPTIONS,
       maxAge: 24 * 60 * 60 * 1000
    })
 
-   res.redirect(user.profileCompleted ? 'http://localhost:5173/dashboard' : 'http://localhost:5173/complete-profile')
+   res.redirect(user.profileCompleted ? `${clientUrl}/dashboard` : `${clientUrl}/complete-profile`)
 }
 
 
@@ -221,7 +218,12 @@ export const completeGoogleProfile = async (req, res) => {
 
 
 export const logout = async (req, res) => {
-   res.clearCookie('token');
+   res.clearCookie('token', {
+      httpOnly: config.COOKIE_OPTIONS.httpOnly,
+      sameSite: config.COOKIE_OPTIONS.sameSite,
+      secure: config.COOKIE_OPTIONS.secure,
+      path: config.COOKIE_OPTIONS.path
+   });
    res.status(200).json({ message: "Logged out successfully" });
 }
 
