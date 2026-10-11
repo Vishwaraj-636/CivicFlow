@@ -5,6 +5,8 @@ import {
    validateLogin,
    validateGoogleProfileCompletion
 } from '../validator/auth.validator.js';
+import { validateZod } from '../middleware/zodValidation.middleware.js';
+import { registerSchema, loginSchema } from '../validator/zodSchemas.js';
 
 import {
    register,
@@ -29,7 +31,7 @@ const router = express.Router();
  * @desc Register a new user
  * @access Public
  */
-router.post('/register', validateRegister, register);
+router.post('/register', validateZod(registerSchema), validateRegister, register);
 
 
 /**
@@ -37,7 +39,7 @@ router.post('/register', validateRegister, register);
  * @desc Login a user
  * @access Public
  */
-router.post('/login', validateLogin, login);
+router.post('/login', validateZod(loginSchema), validateLogin, login);
 
 
 /**

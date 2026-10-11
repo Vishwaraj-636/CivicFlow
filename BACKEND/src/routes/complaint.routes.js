@@ -36,6 +36,8 @@ import {
    validateComplaintRejection,
    validateComplaintResolution,
 } from "../validator/complaint.validator.js";
+import { validateZod } from "../middleware/zodValidation.middleware.js";
+import { createComplaintSchema } from "../validator/zodSchemas.js";
 
 const router = express.Router();
 const mediaUpload = multer({
@@ -133,6 +135,7 @@ router.post(
    "/complaints",
    authenticate,
    requireRole("citizen"),
+   validateZod(createComplaintSchema),
    validateCreateComplaint,
    createComplaint
 );

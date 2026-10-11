@@ -18,4 +18,6 @@ HEAD at start: fba5d5d251fc120d1ed98ae31384a5a87e77eed6
 | 1.4 | DONE | 90960ae | Overlap-stratified accuracy computed (71.3% degenerate at 1.00; median & tertile splits reported; causal caveat included) |
 | 1.5 | DONE | 7749969 | Stale claims swept, canonical name updated, chronology and disclaimers inserted, RESULTS.md regenerated |
 | 1.6 | SKIPPED(no independent set provided) | 2709111 | Independent challenge set files not present; added limitations note to RESULTS.md |
-| 1.7 | DONE | [pending commit] | Phase 1 gate: 225/226 tests passed (1 known flaky spatial failure), all 4 protected hashes match |
+| 1.7 | DONE | 2ce2777 | Phase 1 gate: 225/226 tests passed (1 known flaky spatial failure), all 4 protected hashes match |
+| 2.1 | SKIPPED(already present) | 2ce2777 | Staff request rollback, resolution media validation, and media roles already present from earlier work |
+| 2.2 | DONE | [pending commit] | Helmet headers, general & auth rate limiting, Express 5 $ operator guard, zod validation, SECURITY.md |
