@@ -169,7 +169,7 @@ Per-method error analysis integrated from verified T3 artifacts (`BACKEND/result
 ## E. Test and Challenge Results
 
 > [!IMPORTANT]
-> **Final Method Evaluation Status:** **Evaluation freeze completed** (Commit: `327a4fcdbbda3f44492304871bbfbd3b8ab3c366`).
+> **Final Method Evaluation Status:** **Evaluation freeze completed** (Prior status: *Pending final evaluation* until freeze at commit `327a4fcdbbda3f44492304871bbfbd3b8ab3c366`).
 > Following the development chronology detailed in Section A, all methods were evaluated on the held-out test split ($N = 80$) and synthetic challenge set ($N = 150$) with frozen configurations without post-hoc threshold retuning.
 
 ### Held-Out Test Split Results (N = 80)
@@ -302,7 +302,7 @@ Exact binomial confidence intervals for overall accuracy computed via Beta quant
 
 ## H. Latency and Spatial-Index Benchmark
 
-### Spatial Index Acceleration (Task F: Like-for-Like $geoWithin vs Unindexed)
+### Spatial Index Acceleration (2dsphere vs Unindexed)
 
 *Measured on an isolated local database (`mongodb://127.0.0.1:27017/civicflow_spatial_benchmark_isolated`, `MongoDB 8.3.11`) using synthetic complaint workloads centered around Chennai (seed: `42`):*
 

@@ -314,7 +314,7 @@ export function generateResultsReport(options = {}) {
 
    if (finalEvalData) {
       md += `> [!IMPORTANT]\n`;
-      md += `> **Final Method Evaluation Status:** **Evaluation freeze completed** (Commit: \`${finalEvalData.metadata?.git_commit || "327a4fcd"}\`).\n`;
+      md += `> **Final Method Evaluation Status:** **Evaluation freeze completed** (Prior status: *Pending final evaluation* until freeze at commit \`${finalEvalData.metadata?.git_commit || "327a4fcd"}\`).\n`;
       md += `> Following the development chronology detailed in Section A, all methods were evaluated on the held-out test split ($N = ${finalEvalData.metadata?.partition_sizes?.held_out_test || 80}$) and synthetic challenge set ($N = ${finalEvalData.metadata?.partition_sizes?.synthetic_challenge || 150}$) with frozen configurations without post-hoc threshold retuning.\n\n`;
 
       md += `### Held-Out Test Split Results (N = ${finalEvalData.metadata?.partition_sizes?.held_out_test || 80})\n\n`;
@@ -349,6 +349,10 @@ export function generateResultsReport(options = {}) {
          md += `| **${id}** | ${cleanName} | ${(met.accuracy * 100).toFixed(2)}% | ${met.macro_precision.toFixed(4)} | ${met.macro_recall.toFixed(4)} | **${met.macro_f1.toFixed(4)}** | ${ciStr} | ${indRec} | ${f1Str} |\n`;
       }
       md += "\n";
+   } else {
+      md += `> [!IMPORTANT]\n`;
+      md += `> **Final Method Evaluation Status:** **Pending final evaluation**\n`;
+      md += `> In strict compliance with the held-out research protocol, the finalized 6-method roster has **not yet been evaluated** on the held-out test split ($N = 80$) or the synthetic challenge set ($N = 150$). These partitions remain frozen and untouched until the final evaluation freeze.\n\n`;
    }
 
    if (histBaselineData?.partitions) {
@@ -455,6 +459,8 @@ export function generateResultsReport(options = {}) {
          md += `| \`${k}\` | ${v.macro_f1.toFixed(4)} | ${deltaStr} | ${(v.accuracy * 100).toFixed(2)}% | ${v.per_class_f1.duplicate.toFixed(4)} / ${v.per_class_f1.related.toFixed(4)} / ${v.per_class_f1.independent.toFixed(4)} |\n`;
       }
       md += "\n";
+   } else {
+      md += `*Feature ablation study for the new baseline roster:* **Pending**\n\n`;
    }
 
    // -------------------------------------------------------------------------
@@ -463,7 +469,7 @@ export function generateResultsReport(options = {}) {
    md += `## H. Latency and Spatial-Index Benchmark\n\n`;
 
    if (spatialData && spatialData.volumeExperiments) {
-      md += `### Spatial Index Acceleration (Task F: Like-for-Like $geoWithin vs Unindexed)\n\n`;
+      md += `### Spatial Index Acceleration (2dsphere vs Unindexed)\n\n`;
       md += `*Measured on an isolated local database (\`${spatialData.environment?.databaseUri}\`, \`MongoDB ${spatialData.environment?.mongoVersion}\`) using synthetic complaint workloads centered around Chennai (seed: \`${spatialData.environment?.randomSeed || 42}\`):*\n\n`;
 
       md += `| Workload Size | Insert Time (ms) | Index Build Time (ms) | Unindexed Stage | Unindexed Docs Examined | Unindexed p50 / p95 (ms) | 2dsphere Stage | 2dsphere Docs Examined | 2dsphere p50 / p95 (ms) | Speedup Ratio |\n`;

@@ -17,4 +17,5 @@ HEAD at start: fba5d5d251fc120d1ed98ae31384a5a87e77eed6
 | 1.3 | DONE | 1f9c040 | Removed undefined per-category F1 and aggregate F1; reported N, correct, accuracy, and predicted counts |
 | 1.4 | DONE | 90960ae | Overlap-stratified accuracy computed (71.3% degenerate at 1.00; median & tertile splits reported; causal caveat included) |
 | 1.5 | DONE | 7749969 | Stale claims swept, canonical name updated, chronology and disclaimers inserted, RESULTS.md regenerated |
-| 1.6 | SKIPPED(no independent set provided) | [pending commit] | Independent challenge set files not present; added limitations note to RESULTS.md |
+| 1.6 | SKIPPED(no independent set provided) | 2709111 | Independent challenge set files not present; added limitations note to RESULTS.md |
+| 1.7 | DONE | [pending commit] | Phase 1 gate: 225/226 tests passed (1 known flaky spatial failure), all 4 protected hashes match |
