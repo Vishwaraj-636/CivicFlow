@@ -53,7 +53,7 @@ export function calculatePercentile(values, p) {
  * @param {number} [seed=42]
  * @returns {Array<object>}
  */
-export function generateSyntheticLocations(count, seed = 42) {
+export function generateSyntheticLocations(count, seed = 42, baseTime = 1760000000000) {
    const rng = createRNG(seed);
    const docs = [];
 
@@ -80,7 +80,7 @@ export function generateSyntheticLocations(count, seed = 42) {
             coordinates: [lng, lat],
          },
          status: "open",
-         createdAt: new Date(Date.now() - Math.floor(rng() * 30 * 86400000)),
+         createdAt: new Date(baseTime - Math.floor(rng() * 30 * 86400000)),
       });
    }
 
