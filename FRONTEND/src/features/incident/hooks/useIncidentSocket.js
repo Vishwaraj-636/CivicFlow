@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { SOCKET_URL } from "../../../config/api.config.js";
 
-const socketUrl = import.meta.env.VITE_SOCKET_URL || "http://localhost:3000";
+const socketUrl = SOCKET_URL;
 
 export const useIncidentSocket = (incidentId) => {
    const [messages, setMessages] = useState([]);

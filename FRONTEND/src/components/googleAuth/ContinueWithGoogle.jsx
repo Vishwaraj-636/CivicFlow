@@ -1,9 +1,9 @@
-import React from 'react';
+import { GOOGLE_AUTH_URL } from "../../config/api.config.js";
 
 const ContinueWithGoogle = () => {
    return (
       <a
-         href="http://localhost:3000/api/auth/google"
+         href={GOOGLE_AUTH_URL}
          className="flex items-center w-full h-[48px] bg-white dark:bg-[#131314] border border-[#747775] dark:border-[#8e918f] rounded-lg px-3 hover:bg-[#f8fafd] dark:hover:bg-[#1f1f1f] transition-all duration-200 mb-4"
       >
          <svg

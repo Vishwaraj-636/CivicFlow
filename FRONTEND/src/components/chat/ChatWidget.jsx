@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
+import { API_BASE_URL, SOCKET_URL } from "../../config/api.config.js";
 import { queryIncidentCopilot } from "../../features/ai/services/ai.api";
 import { useAuth } from "../../features/auth/hook/useAuth";
 
-const chatApi = axios.create({ baseURL: "http://localhost:3000/api", withCredentials: true });
+const chatApi = axios.create({ baseURL: API_BASE_URL, withCredentials: true });
 
 const ChatWidget = () => {
    const { user: currentUser } = useAuth();
@@ -35,7 +36,7 @@ const ChatWidget = () => {
       if (!currentUser) return undefined;
       const cache = readCache();
       setUnreadByUser(cache.unread || {});
-      const socket = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:3000", { withCredentials: true });
+      const socket = io(SOCKET_URL, { withCredentials: true });
       socketRef.current = socket;
       socket.on("connect", () => { if (selectedUserRef.current) socket.emit("direct:join", selectedUserRef.current._id); });
       socket.on("direct:new", (message) => {

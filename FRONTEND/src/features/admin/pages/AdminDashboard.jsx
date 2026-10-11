@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet, useOutlet } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../../../config/api.config.js";
 import { getStaffRequests } from "../services/staffRequest.api";
 import ComplaintHeatmap from "../components/ComplaintHeatmap";
 import ComplaintTrendAnalytics from "../components/ComplaintTrendAnalytics";
 
 // Department API instance configured for Admin credentials
 const departmentApi = axios.create({
-   baseURL: "http://localhost:3000/api",
+   baseURL: API_BASE_URL,
    withCredentials: true,
 });
 
