@@ -4,7 +4,10 @@ import IncidentCluster from "../model/incidentCluster.model.js";
 
 import {
    DEFAULT_HISC_CONFIG,
+   HISC_EVAL_PRESET,
+   HISC_PRESETS,
    loadConfig,
+   getActivePresetName,
 } from "../hisc/config.js";
 
 import {
@@ -27,6 +30,10 @@ export const HISC_CONFIG = DEFAULT_HISC_CONFIG;
 export const resolveConfig = loadConfig;
 
 export {
+   DEFAULT_HISC_CONFIG,
+   HISC_EVAL_PRESET,
+   HISC_PRESETS,
+   getActivePresetName,
    CIVIC_CONCEPT_DICTIONARY,
    CAUSAL_CONCEPT_PAIRS,
    CIVIC_STOP_WORDS,

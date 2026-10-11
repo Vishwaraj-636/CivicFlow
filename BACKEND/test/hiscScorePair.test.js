@@ -2,7 +2,13 @@ import test, { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
 import { scorePair } from "../src/hisc/scorePair.js";
-import { loadConfig, DEFAULT_HISC_CONFIG } from "../src/hisc/config.js";
+import {
+   loadConfig,
+   DEFAULT_HISC_CONFIG,
+   HISC_EVAL_PRESET,
+   HISC_PRESETS,
+   getActivePresetName,
+} from "../src/hisc/config.js";
 import {
    extractIncidentFeatures,
    classifyIncidentScore,
@@ -179,6 +185,81 @@ describe("HISC Pure Scoring Interface — scorePair and loadConfig", () => {
          assert.equal(pureResult.label, prodLabel);
          assert.deepEqual(pureResult.features, prodAnalysis.features);
          assert.deepEqual(pureResult.explanation, prodAnalysis.explanation);
+      });
+   });
+
+   describe("6. Configuration Presets and Production Separation (HISC-eval vs production-default)", () => {
+      it("exports frozen HISC_EVAL_PRESET with exact evaluation freeze thresholds", () => {
+         assert.equal(HISC_EVAL_PRESET.presetName, "HISC-eval");
+         assert.equal(HISC_EVAL_PRESET.duplicateThreshold, 0.60);
+         assert.equal(HISC_EVAL_PRESET.relatedThreshold, 0.10);
+         assert.equal(HISC_EVAL_PRESET.radiusInMeters, 1000);
+         assert.equal(HISC_EVAL_PRESET.temporalWindowHours, 720);
+         assert.deepEqual(HISC_EVAL_PRESET.weights, DEFAULT_HISC_CONFIG.weights);
+         assert.equal(HISC_EVAL_PRESET.semanticMode, "synonym");
+         assert.equal(HISC_EVAL_PRESET.embeddingProvider, "none");
+         assert.ok(Object.isFrozen(HISC_EVAL_PRESET));
+         assert.ok(Object.isFrozen(HISC_EVAL_PRESET.weights));
+      });
+
+      it("preserves DEFAULT_HISC_CONFIG as the deployed production default", () => {
+         assert.equal(DEFAULT_HISC_CONFIG.duplicateThreshold, 0.60);
+         assert.equal(DEFAULT_HISC_CONFIG.relatedThreshold, 0.35);
+         assert.notEqual(DEFAULT_HISC_CONFIG.relatedThreshold, HISC_EVAL_PRESET.relatedThreshold);
+      });
+
+      it("provides HISC_PRESETS mapping both named presets", () => {
+         assert.equal(HISC_PRESETS["production-default"], DEFAULT_HISC_CONFIG);
+         assert.equal(HISC_PRESETS["HISC-eval"], HISC_EVAL_PRESET);
+         assert.ok(Object.isFrozen(HISC_PRESETS));
+      });
+
+      it("loadConfig() defaults strictly to production-default when called without arguments", () => {
+         const cfg = loadConfig();
+         assert.equal(cfg.relatedThreshold, 0.35);
+         assert.equal(cfg.duplicateThreshold, 0.60);
+         assert.equal(cfg.presetName, "production-default");
+         assert.equal(getActivePresetName(cfg), "production-default");
+      });
+
+      it("loadConfig('HISC-eval') explicitly loads the evaluation freeze preset", () => {
+         const cfg = loadConfig("HISC-eval");
+         assert.equal(cfg.relatedThreshold, 0.10);
+         assert.equal(cfg.duplicateThreshold, 0.60);
+         assert.equal(cfg.presetName, "HISC-eval");
+         assert.equal(getActivePresetName(cfg), "HISC-eval");
+      });
+
+      it("loadConfig({ preset: 'HISC-eval' }) supports object-based preset selection", () => {
+         const cfg = loadConfig({ preset: "HISC-eval" });
+         assert.equal(cfg.relatedThreshold, 0.10);
+         assert.equal(cfg.duplicateThreshold, 0.60);
+         assert.equal(cfg.presetName, "HISC-eval");
+      });
+
+      it("scorePair behavior differs between production default and evaluation preset on intermediate scores", () => {
+         // Cross-department compatible pair (Roads & Transport <-> Water & Utilities) ~800m apart
+         // producing score in [0.10, 0.35)
+         const complaintA = {
+            text: "Road surface broken",
+            category: "Roads & Transport",
+            location: { coordinates: [80.1382, 12.9231] },
+            createdAt: "2026-03-15T10:00:00.000Z",
+         };
+         const complaintB = {
+            text: "Water pipe leaking",
+            category: "Water & Utilities",
+            location: { coordinates: [80.1440, 12.9280] }, // ~800m away
+            createdAt: "2026-03-17T10:00:00.000Z", // 48h later
+         };
+
+         const prodRes = scorePair(complaintA, complaintB); // uses DEFAULT_HISC_CONFIG (rel: 0.35)
+         const evalRes = scorePair(complaintA, complaintB, HISC_EVAL_PRESET); // uses HISC_EVAL_PRESET (rel: 0.10)
+
+         assert.equal(prodRes.score, evalRes.score, "Raw score calculation must remain completely identical");
+         assert.ok(prodRes.score >= 0.10 && prodRes.score < 0.35, "Score must fall squarely in [0.10, 0.35)");
+         assert.equal(prodRes.label, "independent", "Production default threshold (0.35) classifies low score as independent");
+         assert.equal(evalRes.label, "related", "Evaluation preset threshold (0.10) classifies score >= 0.10 as related");
       });
    });
 });

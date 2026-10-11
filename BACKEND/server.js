@@ -4,6 +4,7 @@ import connectDB from './src/config/database.js';
 import { createServer } from 'node:http';
 import { attachSocketServer } from './src/socket/socket.server.js';
 import { escalateOverdueComplaints } from './src/service/complaintEscalation.service.js';
+import { getActivePresetName, DEFAULT_HISC_CONFIG } from './src/hisc/config.js';
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ const startServer = async () => {
       app.set("io", attachSocketServer(httpServer));
       httpServer.listen(PORT, () => {
          console.log(`Server listening on port ${PORT}`);
+         console.log(`[HISC] Active configuration preset: ${getActivePresetName()} (duplicateThreshold: ${DEFAULT_HISC_CONFIG.duplicateThreshold}, relatedThreshold: ${DEFAULT_HISC_CONFIG.relatedThreshold})`);
       })
    }
    catch (err) {
