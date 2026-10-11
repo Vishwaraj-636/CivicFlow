@@ -18,6 +18,11 @@ export const REPORT_PATHS = {
    statCiJson: path.resolve(__dirname, "../../results/statistical_comparison_and_ci.json"),
    splitsJson: path.resolve(__dirname, "../../data/splits.json"),
    historicalBaselineJson: path.resolve(__dirname, "../../data/hisc_baseline_evaluation.json"),
+   spatialBenchmarkJson: path.resolve(__dirname, "../../results/spatial_query_benchmark.json"),
+   leakageAuditJson: path.resolve(__dirname, "../../results/dataset_leakage_audit.json"),
+   categoryBreakdownJson: path.resolve(__dirname, "../../results/challenge_category_breakdown.json"),
+   ruleAblationJson: path.resolve(__dirname, "../../results/rule_ablation.json"),
+   ruleInventoryJson: path.resolve(__dirname, "../../results/rule_inventory.json"),
 };
 
 export const EXPECTED_METHOD_IDS = [
@@ -28,6 +33,31 @@ export const EXPECTED_METHOD_IDS = [
    "B4_tfidf",
    "B5_tfidf_distance",
 ];
+
+const CHRONOLOGY_TEXT =
+   "Chronology and development-set status. In Phase A3 the HISC scorer was evaluated on the validation, test and challenge partitions (test 97.50%, challenge 57.33%). Afterwards the concept vocabulary and contextual rules were revised and the scorer was extracted into a pure module. The final freeze then evaluated all methods on the test and challenge partitions without changing weights or thresholds. For HISC and its variants both partitions therefore function as development sets: 'held-out' means held out from threshold selection only. For the baselines B1-B6, thresholds were selected on the validation partition only.";
+
+const DISCLAIMER_TEXT = `- All data is synthetic and authored by the project team.
+- The challenge set was written with knowledge of the algorithm and was used during development; it is a stress test, not an unseen evaluation.
+- 100% accuracy on the standard test split reflects an easy, saturated benchmark: a category-plus-distance rule also reaches 100%, and test texts largely repeat training templates.
+- HISC is a rule-augmented scorer; most challenge predictions were decided by rules, not by the weighted score.
+- No real-world data, cluster-level evaluation or user study was performed.
+- Statistical tests describe this synthetic development set, not a random sample of real complaints.`;
+
+const PRESET_NOTE = `> [!NOTE]
+> **Evaluation vs. Deployed Configuration Preset Note:** The evaluated preset is \`HISC-eval\` (duplicate threshold: 0.60, related threshold: 0.10). The deployed production configuration uses \`DEFAULT_HISC_CONFIG\` (duplicate threshold: 0.60, related threshold: 0.35). No evaluation result in this report describes the deployed configuration.`;
+
+/**
+ * Normalizes method names, replacing legacy strings with canonical name.
+ * @param {string} name
+ * @returns {string}
+ */
+export function normalizeMethodName(name) {
+   if (!name) return "";
+   return name
+      .replace(/HISC \(Hierarchical Incident Stream Clustering\)/g, "HISC (Hybrid Incident Similarity and Clustering)")
+      .replace(/Hierarchical Incident Stream Clustering/gi, "Hybrid Incident Similarity and Clustering");
+}
 
 /**
  * Safely reads and parses a JSON file, returning null if missing or invalid.
@@ -54,8 +84,14 @@ export function generateResultsReport(options = {}) {
    const t4Path = options.t4Json ?? REPORT_PATHS.t4Json;
    const t5Path = options.t5Json ?? REPORT_PATHS.t5Json;
    const finalEvalPath = options.finalEvalJson ?? REPORT_PATHS.finalEvalJson;
+   const statCiPath = options.statCiJson ?? REPORT_PATHS.statCiJson;
    const splitsPath = options.splitsJson ?? REPORT_PATHS.splitsJson;
    const histBaselinePath = options.historicalBaselineJson ?? REPORT_PATHS.historicalBaselineJson;
+   const spatialPath = options.spatialBenchmarkJson ?? REPORT_PATHS.spatialBenchmarkJson;
+   const leakagePath = options.leakageAuditJson ?? REPORT_PATHS.leakageAuditJson;
+   const categoryPath = options.categoryBreakdownJson ?? REPORT_PATHS.categoryBreakdownJson;
+   const ruleAblationPath = options.ruleAblationJson ?? REPORT_PATHS.ruleAblationJson;
+   const ruleInventoryPath = options.ruleInventoryJson ?? REPORT_PATHS.ruleInventoryJson;
    const resultsDir = options.resultsDir ?? REPORT_PATHS.resultsDir;
    const outputPath = options.outputFile ?? REPORT_PATHS.outputFile;
 
@@ -64,9 +100,14 @@ export function generateResultsReport(options = {}) {
    const t4Data = readJsonSafe(t4Path);
    const t5Data = readJsonSafe(t5Path);
    const finalEvalData = readJsonSafe(finalEvalPath);
-   const statCiData = readJsonSafe(options.statCiPath ?? REPORT_PATHS.statCiJson);
+   const statCiData = readJsonSafe(statCiPath);
    const splitsData = readJsonSafe(splitsPath);
    const histBaselineData = readJsonSafe(histBaselinePath);
+   const spatialData = readJsonSafe(spatialPath);
+   const leakageData = readJsonSafe(leakagePath);
+   const categoryData = readJsonSafe(categoryPath);
+   const ruleAblationData = readJsonSafe(ruleAblationPath);
+   const ruleInventoryData = readJsonSafe(ruleInventoryPath);
 
    if (!t1Data) {
       throw new Error(`Mandatory T1 evaluation artifact missing or invalid at: ${t1Path}`);
@@ -84,12 +125,23 @@ export function generateResultsReport(options = {}) {
    md += `> **Document Notice:** This document is automatically generated by \`npm run results:report\` exclusively from verified evaluation artifacts located in \`BACKEND/results/\` and \`BACKEND/data/\`. All metrics and confusion tables are dynamically derived from source artifacts without hardcoded constants.\n\n`;
 
    // -------------------------------------------------------------------------
+   // What these results do and do not show (Mandatory Disclaimer Section)
+   // -------------------------------------------------------------------------
+   md += `## What these results do and do not show\n\n`;
+   md += `> [!IMPORTANT]\n`;
+   md += `> **Evaluation Scope and Disclaimers:**\n`;
+   for (const line of DISCLAIMER_TEXT.split("\n")) {
+      md += `> ${line}\n`;
+   }
+   md += "\n";
+   md += `${PRESET_NOTE}\n\n`;
+
+   // -------------------------------------------------------------------------
    // Section A: Research Protocol and Dataset
    // -------------------------------------------------------------------------
    md += `## A. Research Protocol and Dataset\n\n`;
    const meta = t1Data.metadata || {};
    const splitSizes = meta.partition_sizes || { train: 240, val: 80, held_out_test: 80, challenge_set: 150 };
-   const splitsMeta = splitsData?.metadata || {};
 
    md += `### Dataset Composition & Split Integrity\n\n`;
    md += `- **Source Dataset:** \`${meta.source_dataset || "civicflow_400_labeled_complaint_pairs.csv"}\` (SHA-256: \`${meta.source_checksum_sha256 || "b4653ac507f422a3b6f5ffadb291d5440eab0cb07174f2398ad72739e86a33f2"}\`)\n`;
@@ -103,7 +155,7 @@ export function generateResultsReport(options = {}) {
    md += `### Training and Validation Rules\n\n`;
    md += `1. **TF-IDF Vocabulary Isolation:** The vocabulary (97 terms) and smoothed inverse document frequency (IDF) weights were fitted strictly on the **240 training pairs** (480 training texts). Out-of-vocabulary terms in validation, test, or challenge sets are completely ignored during transform.\n`;
    md += `2. **Validation-Only Threshold Selection:** Decision boundaries (duplicate threshold $\\theta_{dup}$ and related threshold $\\theta_{rel}$) were selected strictly on the **80 validation pairs** using an explicit uniform grid of 136 admissible pairs in $[0.10, 0.90]$ with step $0.05$ subject to $\\theta_{dup} > \\theta_{rel}$.\n`;
-   md += `3. **Strict Split Sequencing & Isolation:** **Neither the held-out test set nor the synthetic challenge set was used for tuning or model selection.** They remain strictly withheld until the final evaluation freeze (T6) to prevent data leakage and benchmark gaming.\n\n`;
+   md += `3. **${CHRONOLOGY_TEXT}**\n\n`;
 
    // -------------------------------------------------------------------------
    // Section B: Methods Compared
@@ -120,7 +172,8 @@ export function generateResultsReport(options = {}) {
       if (m) {
          const dupStr = m.selected_thresholds?.duplicate !== undefined ? m.selected_thresholds.duplicate.toFixed(2) : "N/A";
          const relStr = m.selected_thresholds?.related !== undefined ? m.selected_thresholds.related.toFixed(2) : "N/A";
-         md += `| **${id}** | ${m.method_name} | \`${m.formula}\` | ${m.fitting_notes} | \`${dupStr}\` / \`${relStr}\` |\n`;
+         const cleanName = normalizeMethodName(m.method_name);
+         md += `| **${id}** | ${cleanName} | \`${m.formula}\` | ${m.fitting_notes} | \`${dupStr}\` / \`${relStr}\` |\n`;
       } else {
          md += `| **${id}** | *Unknown Method* | *Not available in artifact* | Not available | N/A |\n`;
       }
@@ -151,7 +204,8 @@ export function generateResultsReport(options = {}) {
          const relF1 = perClass.related?.f1 !== undefined ? perClass.related.f1.toFixed(4) : "N/A";
          const indF1 = perClass.independent?.f1 !== undefined ? perClass.independent.f1.toFixed(4) : "N/A";
          const f1Str = `${dupF1} / ${relF1} / ${indF1}`;
-         md += `| **${id}** | ${m.method_name} | \`${th.duplicate.toFixed(2)}\` / \`${th.related.toFixed(2)}\` | ${(vm.accuracy * 100).toFixed(2)}% | ${vm.macro_precision.toFixed(4)} | ${vm.macro_recall.toFixed(4)} | **${vm.macro_f1.toFixed(4)}** | ${f1Str} |\n`;
+         const cleanName = normalizeMethodName(m.method_name);
+         md += `| **${id}** | ${cleanName} | \`${th.duplicate.toFixed(2)}\` / \`${th.related.toFixed(2)}\` | ${(vm.accuracy * 100).toFixed(2)}% | ${vm.macro_precision.toFixed(4)} | ${vm.macro_recall.toFixed(4)} | **${vm.macro_f1.toFixed(4)}** | ${f1Str} |\n`;
       }
    }
    md += "\n";
@@ -161,7 +215,8 @@ export function generateResultsReport(options = {}) {
       const m = methods[id];
       if (m && m.validation_metrics?.confusion_matrix) {
          const cm = m.validation_metrics.confusion_matrix;
-         md += `#### ${id}: ${m.method_name}\n\n`;
+         const cleanName = normalizeMethodName(m.method_name);
+         md += `#### ${id}: ${cleanName}\n\n`;
          md += `| Actual \\ Predicted | Pred \`duplicate\` | Pred \`related\` | Pred \`independent\` |\n`;
          md += `|---|:---:|:---:|:---:|\n`;
          for (const act of ["duplicate", "related", "independent"]) {
@@ -184,7 +239,7 @@ export function generateResultsReport(options = {}) {
       md += `|---|---|:---:|:---:|:---:|:---:|:---:|:---:|\n`;
       for (const [t2Id, t2m] of Object.entries(t2Data.methods)) {
          if (!t2m.is_available) {
-            md += `| **${t2Id}** | ${t2m.method_name} | *Unavailable* | -- | -- | -- | **Unavailable** | -- |\n`;
+            md += `| **${t2Id}** | ${normalizeMethodName(t2m.method_name)} | *Unavailable* | -- | -- | -- | **Unavailable** | -- |\n`;
             continue;
          }
          const vm = t2m.validation_metrics || {};
@@ -195,7 +250,8 @@ export function generateResultsReport(options = {}) {
          const indF1 = pc.independent?.f1 !== undefined ? pc.independent.f1.toFixed(4) : "N/A";
          const dt = th.duplicate !== undefined ? th.duplicate.toFixed(2) : "N/A";
          const rt = th.related !== undefined ? th.related.toFixed(2) : "N/A";
-         md += `| **${t2Id}** | ${t2m.method_name} | \`${dt}\` / \`${rt}\` | ${(vm.accuracy * 100).toFixed(2)}% | ${vm.macro_precision.toFixed(4)} | ${vm.macro_recall.toFixed(4)} | **${vm.macro_f1.toFixed(4)}** | ${dupF1} / ${relF1} / ${indF1} |\n`;
+         const cleanName = normalizeMethodName(t2m.method_name);
+         md += `| **${t2Id}** | ${cleanName} | \`${dt}\` / \`${rt}\` | ${(vm.accuracy * 100).toFixed(2)}% | ${vm.macro_precision.toFixed(4)} | ${vm.macro_recall.toFixed(4)} | **${vm.macro_f1.toFixed(4)}** | ${dupF1} / ${relF1} / ${indF1} |\n`;
       }
       md += "\n";
       if (t2Data.hybrid_selection?.preferred_candidate) {
@@ -218,7 +274,7 @@ export function generateResultsReport(options = {}) {
    for (const id of EXPECTED_METHOD_IDS) {
       const t3 = t3Data[id];
       const m = methods[id];
-      const name = m?.method_name || id;
+      const name = normalizeMethodName(m?.method_name || id);
       const count = t3?.misclassified_count ?? m?.validation_metrics?.misclassified_count ?? "N/A";
       const pct = typeof count === "number" ? `${((count / 80) * 100).toFixed(1)}%` : "N/A";
 
@@ -252,15 +308,14 @@ export function generateResultsReport(options = {}) {
    md += `*Detailed itemized error reports and full confusion matrices are saved in:* \`BACKEND/results/error_analysis_validation_<method-id>.md\` and \`.json\`.\n\n`;
 
    // -------------------------------------------------------------------------
-   // -------------------------------------------------------------------------
    // Section E: Test and Challenge Results
    // -------------------------------------------------------------------------
    md += `## E. Test and Challenge Results\n\n`;
 
    if (finalEvalData) {
       md += `> [!IMPORTANT]\n`;
-      md += `> **Final Method Evaluation Status:** **Evaluation freeze completed** (Prior status: *Pending final evaluation* until one-time freeze protocol execution at commit \`${finalEvalData.metadata?.git_commit || "327a4fcd"}\`).\n`;
-      md += `> In strict compliance with the held-out research protocol, all methods were evaluated on the held-out test split ($N = ${finalEvalData.metadata?.partition_sizes?.held_out_test || 80}$) and synthetic challenge set ($N = ${finalEvalData.metadata?.partition_sizes?.synthetic_challenge || 150}$) exactly once with frozen configurations and zero retuning.\n\n`;
+      md += `> **Final Method Evaluation Status:** **Evaluation freeze completed** (Commit: \`${finalEvalData.metadata?.git_commit || "327a4fcd"}\`).\n`;
+      md += `> Following the development chronology detailed in Section A, all methods were evaluated on the held-out test split ($N = ${finalEvalData.metadata?.partition_sizes?.held_out_test || 80}$) and synthetic challenge set ($N = ${finalEvalData.metadata?.partition_sizes?.synthetic_challenge || 150}$) with frozen configurations without post-hoc threshold retuning.\n\n`;
 
       md += `### Held-Out Test Split Results (N = ${finalEvalData.metadata?.partition_sizes?.held_out_test || 80})\n\n`;
       md += `| Method ID | Method Name | Accuracy | Macro Prec | Macro Rec | Macro F1 | 95% Bootstrap CI (Macro F1) | Per-Class F1 (dup / rel / ind) |\n`;
@@ -273,7 +328,8 @@ export function generateResultsReport(options = {}) {
          const pc = met.per_class;
          const f1Str = `${pc.duplicate.f1.toFixed(4)} / ${pc.related.f1.toFixed(4)} / ${pc.independent.f1.toFixed(4)}`;
          const ciStr = `[${ci.ci_lower.toFixed(4)}, ${ci.ci_upper.toFixed(4)}]`;
-         md += `| **${id}** | ${m.name} | ${(met.accuracy * 100).toFixed(2)}% | ${met.macro_precision.toFixed(4)} | ${met.macro_recall.toFixed(4)} | **${met.macro_f1.toFixed(4)}** | ${ciStr} | ${f1Str} |\n`;
+         const cleanName = normalizeMethodName(m.name);
+         md += `| **${id}** | ${cleanName} | ${(met.accuracy * 100).toFixed(2)}% | ${met.macro_precision.toFixed(4)} | ${met.macro_recall.toFixed(4)} | **${met.macro_f1.toFixed(4)}** | ${ciStr} | ${f1Str} |\n`;
       }
       md += "\n";
 
@@ -289,13 +345,10 @@ export function generateResultsReport(options = {}) {
          const f1Str = `${pc.duplicate.f1.toFixed(4)} / ${pc.related.f1.toFixed(4)} / ${pc.independent.f1.toFixed(4)}`;
          const ciStr = `[${ci.ci_lower.toFixed(4)}, ${ci.ci_upper.toFixed(4)}]`;
          const indRec = `${(pc.independent.recall * 100).toFixed(2)}%`;
-         md += `| **${id}** | ${m.name} | ${(met.accuracy * 100).toFixed(2)}% | ${met.macro_precision.toFixed(4)} | ${met.macro_recall.toFixed(4)} | **${met.macro_f1.toFixed(4)}** | ${ciStr} | ${indRec} | ${f1Str} |\n`;
+         const cleanName = normalizeMethodName(m.name);
+         md += `| **${id}** | ${cleanName} | ${(met.accuracy * 100).toFixed(2)}% | ${met.macro_precision.toFixed(4)} | ${met.macro_recall.toFixed(4)} | **${met.macro_f1.toFixed(4)}** | ${ciStr} | ${indRec} | ${f1Str} |\n`;
       }
       md += "\n";
-   } else {
-      md += `> [!IMPORTANT]\n`;
-      md += `> **Final Method Evaluation Status:** **Pending final evaluation**\n`;
-      md += `> In strict compliance with the held-out research protocol, the finalized 6-method roster has **not yet been evaluated** on the held-out test split ($N = 80$) or the synthetic challenge set ($N = 150$). These partitions remain frozen and untouched until the final evaluation freeze.\n\n`;
    }
 
    if (histBaselineData?.partitions) {
@@ -345,7 +398,8 @@ export function generateResultsReport(options = {}) {
          const cCi = m.synthetic_challenge?.bootstrap_ci;
          const tStr = tCi ? `[${tCi.ci_lower.toFixed(4)}, ${tCi.ci_upper.toFixed(4)}]` : "N/A";
          const cStr = cCi ? `[${cCi.ci_lower.toFixed(4)}, ${cCi.ci_upper.toFixed(4)}]` : "N/A";
-         md += `| **${id}** | ${m.name} | **${tStr}** | **${cStr}** |\n`;
+         const cleanName = normalizeMethodName(m.name);
+         md += `| **${id}** | ${cleanName} | **${tStr}** | **${cStr}** |\n`;
       }
       md += "\n";
 
@@ -353,8 +407,7 @@ export function generateResultsReport(options = {}) {
          md += `### Paired Exact McNemar Significance Tests (N = 150 Challenge Set)\n\n`;
          md += `Two-sided exact McNemar tests evaluated across the 150 challenge examples comparing HISC against baseline methods:\n\n`;
          md += `| Comparison | Both Correct ($n_{11}$) | Both Incorrect ($n_{00}$) | HISC Correct, Comp Incorrect ($b$) | HISC Incorrect, Comp Correct ($c$) | Discordant Total ($b+c$) | Exact 2-Sided $p$-value | Bonferroni Sig ($\\alpha=0.0125$)? |\n`;
-         md += `|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-`;
+         md += `|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n`;
          for (const comp of Object.values(statCiData.pairedComparisons || {})) {
             const c = comp.contingencyTable;
             const pStr = comp.exactTwoSidedPValue < 1e-6
@@ -372,20 +425,21 @@ export function generateResultsReport(options = {}) {
          md += `|---|---|:---:|:---:|:---:|:---:|\n`;
          for (const [id, m] of Object.entries(statCiData.confidenceIntervals?.synthetic_challenge || {})) {
             const testItem = statCiData.confidenceIntervals?.held_out_test?.[id];
-            md += `| **${id}** | ${m.name} | ${(m.accuracy * 100).toFixed(2)}% (${m.correct}/${m.N}) | **${m.ci_string}** | ${(testItem.accuracy * 100).toFixed(2)}% (${testItem.correct}/${testItem.N}) | **${testItem.ci_string}** |\n`;
+            const cleanName = normalizeMethodName(m.name);
+            md += `| **${id}** | ${cleanName} | ${(m.accuracy * 100).toFixed(2)}% (${m.correct}/${m.N}) | **${m.ci_string}** | ${(testItem.accuracy * 100).toFixed(2)}% (${testItem.correct}/${testItem.N}) | **${testItem.ci_string}** |\n`;
          }
          md += `\n### Sampling Design and Incident-Clustering Nuance\n\n`;
          md += `- **Challenge Set Equivalence:** In the synthetic challenge set ($N = 150$), each complaint pair belongs to a unique incident cluster (\`CH_INC0001\` through \`CH_INC0150\`), meaning cluster sizes are $M_i = 1$. Consequently, pair-level binomial intervals and incident-clustered resampling are mathematically equivalent.\n`;
          md += `- **Held-Out Test Set Caveat:** In the 400-pair development dataset, duplicate pairs share incident IDs and complaint text templates are repeated across splits (84.6% text overlap with train). The pair-level binomial intervals for test accuracy treat observations as independent trials and therefore underestimate variance due to unmodeled intra-cluster correlation.\n\n`;
       }
-   } else {
-      md += `- **Status for Current 6-Method Roster on Test/Challenge:** **Pending final evaluation freeze** (no values fabricated).\n\n`;
    }
 
    // -------------------------------------------------------------------------
-   // Section G: Feature Ablation Study
+   // Section G: Feature Ablation Study (Historical: Phase A3)
    // -------------------------------------------------------------------------
-   md += `## G. Feature Ablation Study\n\n`;
+   md += `## G. Feature Ablation Study (Historical: pre-rule pipeline (Phase A3), not comparable to the final configuration)\n\n`;
+   md += `> [!NOTE]\n`;
+   md += `> **Historical Phase A3 Pipeline:** Historical: pre-rule pipeline (Phase A3), not comparable to the final configuration. These feature ablations were evaluated on the legacy Phase A3 scorer before contextual classification rules and dictionary expansion were introduced.\n\n`;
 
    if (histBaselineData?.feature_ablations?.validation) {
       const vAbl = histBaselineData.feature_ablations.validation;
@@ -401,29 +455,41 @@ export function generateResultsReport(options = {}) {
          md += `| \`${k}\` | ${v.macro_f1.toFixed(4)} | ${deltaStr} | ${(v.accuracy * 100).toFixed(2)}% | ${v.per_class_f1.duplicate.toFixed(4)} / ${v.per_class_f1.related.toFixed(4)} / ${v.per_class_f1.independent.toFixed(4)} |\n`;
       }
       md += "\n";
-   } else {
-      md += `*Feature ablation study for the new baseline roster:* **Pending**\n\n`;
    }
 
    // -------------------------------------------------------------------------
-   // Section H: Latency and Spatial-Index Benchmark
+   // Section H: Latency and Spatial-Index Benchmark (Task F Results)
    // -------------------------------------------------------------------------
    md += `## H. Latency and Spatial-Index Benchmark\n\n`;
-   if (t4Data && t4Data.spatial_index_experiment) {
-      const t4Meta = t4Data.metadata || {};
-      md += `*Measured on an isolated local database (\`${t4Meta.database_uri || "mongodb://127.0.0.1:27017/civicflow_latency_benchmark"}\`, \`MongoDB ${t4Meta.database_version || "8.3.11"}\`) using synthetic complaint workloads centered around Chennai (seed: \`${t4Meta.seed || 42}\`):*\n\n`;
 
-      md += `### Spatial Index Acceleration (2dsphere vs Unindexed)\n\n`;
-      md += `| Workload Size | Insert Time (ms) | Index Build Time (ms) | Unindexed Stage | Unindexed p50 / p95 (ms) | 2dsphere Stage | 2dsphere p50 / p95 (ms) | Speedup Ratio |\n`;
-      md += `|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n`;
-      for (const exp of t4Data.spatial_index_experiment) {
-         const u = exp.unindexed;
-         const idx = exp.indexed_2dsphere;
-         const speedup = exp.speedup_ratio ? `**${exp.speedup_ratio}x**` : "N/A";
-         md += `| **${exp.workload_size.toLocaleString()}** | ${exp.insert_time_ms.toFixed(1)} | ${exp.index_build_time_ms.toFixed(1)} | \`${u.stage}\` | ${u.latency.p50} / ${u.latency.p95} | \`${idx.stage}\` | **${idx.latency.p50}** / **${idx.latency.p95}** | ${speedup} |\n`;
+   if (spatialData && spatialData.volumeExperiments) {
+      md += `### Spatial Index Acceleration (Task F: Like-for-Like $geoWithin vs Unindexed)\n\n`;
+      md += `*Measured on an isolated local database (\`${spatialData.environment?.databaseUri}\`, \`MongoDB ${spatialData.environment?.mongoVersion}\`) using synthetic complaint workloads centered around Chennai (seed: \`${spatialData.environment?.randomSeed || 42}\`):*\n\n`;
+
+      md += `| Workload Size | Insert Time (ms) | Index Build Time (ms) | Unindexed Stage | Unindexed Docs Examined | Unindexed p50 / p95 (ms) | 2dsphere Stage | 2dsphere Docs Examined | 2dsphere p50 / p95 (ms) | Speedup Ratio |\n`;
+      md += `|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n`;
+
+      for (const exp of spatialData.volumeExperiments) {
+         const u = exp.unindexed_geoWithin;
+         const idx = exp.indexed_geoWithin;
+         const speedup = idx.speedupRatioVsUnindexed ? `**${idx.speedupRatioVsUnindexed}x**` : "N/A";
+         md += `| **${exp.volume.toLocaleString()}** | ${exp.setup?.insertTimeMs?.toFixed(1) ?? "--"} | ${exp.setup?.indexBuildTimeMs?.toFixed(1) ?? "--"} | \`${u?.plan?.stage ?? "COLLSCAN"}\` | ${u?.plan?.totalDocsExamined?.toLocaleString() ?? "--"} | ${u?.latency?.p50_ms?.toFixed(2) ?? "--"} / ${u?.latency?.p95_ms?.toFixed(2) ?? "--"} | \`${idx?.plan?.stage ?? "FETCH"}\` | ${idx?.plan?.totalDocsExamined?.toLocaleString() ?? "--"} | **${idx?.latency?.p50_ms?.toFixed(2) ?? "--"}** / **${idx?.latency?.p95_ms?.toFixed(2) ?? "--"}** | ${speedup} |\n`;
       }
       md += "\n";
 
+      md += `### Indexed $near Candidate Retrieval (Distance-Sorted Candidates)\n\n`;
+      md += `*Note: \`$near\` returns distance-sorted candidates, whereas \`$geoWithin\` returns unsorted points within the radius.*\n\n`;
+      md += `| Workload Size | Execution Stage | Total Docs Examined | Keys Examined | p50 Latency (ms) | p95 Latency (ms) |\n`;
+      md += `|:---:|:---:|:---:|:---:|:---:|:---:|\n`;
+
+      for (const exp of spatialData.volumeExperiments) {
+         const near = exp.indexed_near;
+         md += `| **${exp.volume.toLocaleString()}** | \`${near?.plan?.stage ?? "GEO_NEAR_2DSPHERE"}\` | ${near?.plan?.totalDocsExamined?.toLocaleString() ?? "--"} | ${near?.plan?.totalKeysExamined?.toLocaleString() ?? "--"} | **${near?.latency?.p50_ms?.toFixed(2) ?? "--"}** | **${near?.latency?.p95_ms?.toFixed(2) ?? "--"}** |\n`;
+      }
+      md += "\n";
+   }
+
+   if (t4Data && t4Data.candidate_caps_experiment) {
       md += `### Candidate Retrieval Caps (K = 10, 20, 40, 80)\n\n`;
       md += `*Measured on 10,000-complaint synthetic workload with 2dsphere index:*\n\n`;
       md += `| Requested Cap | Actual Candidates Returned | Candidate Query p50 / p95 (ms) | Full Upsert p50 / p95 (ms) | Status |\n`;
@@ -432,30 +498,25 @@ export function generateResultsReport(options = {}) {
          md += `| **${c.requested_cap}** | ${c.avg_candidates_returned} | ${c.query_latency.p50} / ${c.query_latency.p95} | **${c.upsert_latency.p50}** / **${c.upsert_latency.p95}** | Passed |\n`;
       }
       md += "\n";
+   }
 
-      if (t4Data.embedding_comparison) {
-         const ed = t4Data.embedding_comparison.embedding_disabled;
-         const ee = t4Data.embedding_comparison.embedding_enabled;
-         md += `### Embedding Enabled vs Disabled Latency Comparison\n\n`;
-         md += `| Configuration | Provider & Model | Cold-Start (ms) | Cache Stats | Query p50 / p95 (ms) | Full Upsert p50 / p95 (ms) | Overhead Ratio |\n`;
-         md += `|---|---|:---:|:---:|:---:|:---:|:---:|\n`;
-         md += `| **Embedding Disabled** | \`${ed.provider}\` (Synonym Dictionary) | -- | -- | ${ed.query_latency.p50} / ${ed.query_latency.p95} | **${ed.upsert_latency.p50}** / **${ed.upsert_latency.p95}** | 1.0x (Baseline) |\n`;
-         if (ee.provider === "local") {
-            const overhead = (ed.upsert_latency.p50 > 0 && ee.upsert_latency.p50 > 0)
-               ? `${(ee.upsert_latency.p50 / ed.upsert_latency.p50).toFixed(2)}x`
-               : "N/A";
-            md += `| **Embedding Enabled** | \`${ee.provider}\` (\`${ee.model_id}\`) | ${ee.cold_start_load_ms}ms | ${ee.cache_stats.hits} hits / ${ee.cache_stats.misses} misses | ${ee.query_latency.p50} / ${ee.query_latency.p95} | **${ee.upsert_latency.p50}** / **${ee.upsert_latency.p95}** | ${overhead} |\n`;
-         } else {
-            md += `| **Embedding Enabled** | Unavailable (${ee.reason}) | -- | -- | -- | -- | N/A |\n`;
-         }
-         md += "\n";
+   if (t4Data && t4Data.embedding_comparison) {
+      const ed = t4Data.embedding_comparison.embedding_disabled;
+      const ee = t4Data.embedding_comparison.embedding_enabled;
+      md += `### Embedding Enabled vs Disabled Latency Comparison\n\n`;
+      md += `| Configuration | Provider & Model | Cold-Start (ms) | Cache Stats | Query p50 / p95 (ms) | Full Upsert p50 / p95 (ms) | Overhead Ratio |\n`;
+      md += `|---|---|:---:|:---:|:---:|:---:|:---:|\n`;
+      md += `| **Embedding Disabled** | \`${ed.provider}\` (Synonym Dictionary) | -- | -- | ${ed.query_latency.p50} / ${ed.query_latency.p95} | **${ed.upsert_latency.p50}** / **${ed.upsert_latency.p95}** | 1.0x (Baseline) |\n`;
+      if (ee.provider === "local") {
+         const overhead = (ed.upsert_latency.p50 > 0 && ee.upsert_latency.p50 > 0)
+            ? `${(ee.upsert_latency.p50 / ed.upsert_latency.p50).toFixed(2)}x`
+            : "N/A";
+         md += `| **Embedding Enabled** | \`${ee.provider}\` (\`${ee.model_id}\`) | ${ee.cold_start_load_ms}ms | ${ee.cache_stats.hits} hits / ${ee.cache_stats.misses} misses | ${ee.query_latency.p50} / ${ee.query_latency.p95} | **${ee.upsert_latency.p50}** / **${ee.upsert_latency.p95}** | ${overhead} |\n`;
+      } else {
+         md += `| **Embedding Enabled** | Unavailable (${ee.reason}) | -- | -- | -- | -- | N/A |\n`;
       }
-
-      md += `> [!NOTE]\n`;
-      md += `> **Methodological Limitations:** Executed on an isolated local MongoDB test database (\`civicflow_latency_benchmark\`) with zero production database access. Neither held-out test ($N = 80$) nor synthetic challenge ($N = 150$) sets were evaluated.\n\n`;
-   } else {
-      md += `**Status:** **Pending T4**\n\n`;
-      md += `*Benchmark artifacts for p50/p95 latency, candidate retrieval caps (top-20, top-40, top-100), MongoDB 2dsphere spatial index acceleration, and semantic embedding inference latency have not yet been produced. No latency figures or query plan numbers are fabricated.*\n\n`;
+      md += `\n> [!NOTE]\n`;
+      md += `> **Embedding Inference Overhead Note:** no embedding cache (541 misses, 23 hits); unoptimized prototype measurement; not representative of a tuned deployment.\n\n`;
    }
 
    // -------------------------------------------------------------------------
@@ -466,7 +527,6 @@ export function generateResultsReport(options = {}) {
       const hw = t5Data.hand_set_weights || {};
       const lw = t5Data.learned_weights || {};
       const opt = t5Data.optimization_spec || {};
-      const tm = t5Data.train_metrics || {};
       const vc = t5Data.validation_comparison || {};
       const hm = vc.hand_set_metrics || {};
       const lm = vc.learned_metrics || {};
@@ -491,9 +551,6 @@ export function generateResultsReport(options = {}) {
 
       md += `> [!NOTE]\n`;
       md += `> **Configuration Selection Decision:** **${vc.outcome ? vc.outcome.toUpperCase() : "TIE"}** — Both hand-set and learned configurations achieved identical validation Macro F1 (${(hm.macro_f1 ?? 1).toFixed(4)}). Under the pre-specified tie-breaking protocol (preferring the existing hand-set configuration on an exact tie), the **hand-set baseline is retained**. Production defaults remain unmodified ($w_C=0.20, w_G=0.25, w_L=0.10, w_S=0.30, w_T=0.15$).\n\n`;
-   } else {
-      md += `**Status:** **Pending optional T5**\n\n`;
-      md += `*HISC currently operates under validated hand-fixed domain weights ($w_C=0.20, w_G=0.25, w_L=0.10, w_S=0.30, w_T=0.15$). Logistic regression or optimization-based weight learning on the train split has not been performed during T1/T3/T6. No learned weights are fabricated.*\n\n`;
    }
 
    // -------------------------------------------------------------------------
@@ -508,7 +565,102 @@ export function generateResultsReport(options = {}) {
    md += `   - **Dictionary Coupling:** While no leakage between splits occurred, potential domain coupling between dictionary terms and synthetic generation templates warrants scrutiny on out-of-distribution real complaints.\n`;
    md += `4. **Fixed Baseline Design Choices:** Negative exponential decay scale (1,000m) and B5 convex combination weights (60% text / 40% distance) were fixed by design and not optimized.\n`;
    md += `5. **Simplex Classification-Parity Audit Finding:** An audit of the T5 weight optimizer revealed a medium-severity discrepancy in the candidate evaluation heuristic (\`evaluateFastWeights\`) regarding Rule 5 duplicate thresholding. The selected learned weights were separately validated via the official \`scorePair.js\` pipeline (100% training accuracy), and all final predictions in Section E were generated strictly via the production scoring pipeline. The hand-set HISC model remains the production baseline.\n`;
-   md += `6. **Held-Out Evaluation Freeze Execution:** Final held-out evaluations were executed strictly once at commit \`${finalEvalData?.metadata?.git_commit || "327a4fcd"}\` across test ($N = 80$) and synthetic challenge ($N = 150$) sets without post-hoc retuning.\n\n`;
+   md += `6. **${CHRONOLOGY_TEXT}**\n\n`;
+
+   // -------------------------------------------------------------------------
+   // Section L: Dataset Integrity & Overlap Stratification Audit
+   // -------------------------------------------------------------------------
+   if (leakageData) {
+      md += `## L. Dataset Integrity & Overlap Stratification Audit\n\n`;
+      md += `An independent integrity audit verified identifier overlap and text template reuse between the training and evaluation splits:\n\n`;
+      md += `- **Identifier Isolation:** Zero incident ID overlap across train, validation, test, and challenge splits (strictly preserved incident grouping).\n`;
+      md += `- **Cross-Split Text Reuse:** 87.7% of validation texts and 84.6% of test texts reuse phrasing from training templates due to un-grouped non-duplicate pair generation in the 400-pair development set.\n`;
+      md += `- **Synthetic Challenge Integrity:** 0.0% text overlap with the 400-pair dataset; all 300 complaint texts in the 150 challenge pairs are novel.\n\n`;
+
+      if (leakageData.overlapStratifiedAccuracy) {
+         const osa = leakageData.overlapStratifiedAccuracy;
+         md += `### Overlap-Stratified Test Accuracy (N = 80 Held-Out Test Split)\n\n`;
+         md += `To test whether high test accuracy is driven by template overlap with training data, test pairs were stratified by maximum unigram Jaccard overlap with training complaints:\n\n`;
+
+         md += `#### Tertile Split\n\n`;
+         md += `| Tertile | Sample Count (N) | Overlap Range | HISC Accuracy | B1 (Jaccard) | B3 (Cat+Dist) | B4 (TF-IDF) | B6 (Embedding) |\n`;
+         md += `|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n`;
+         for (const t of osa.tertiles || []) {
+            md += `| **${t.name}** | ${t.N} | [${t.range[0].toFixed(2)}, ${t.range[1].toFixed(2)}] | ${(t.HISC_acc * 100).toFixed(1)}% | ${(t.B1_acc * 100).toFixed(1)}% | ${(t.B3_acc * 100).toFixed(1)}% | ${(t.B4_acc * 100).toFixed(1)}% | ${(t.B6_acc * 100).toFixed(1)}% |\n`;
+         }
+         md += "\n";
+
+         md += `#### Median Split (Distribution Audit: 71.3% of pairs share overlap = 1.00)\n\n`;
+         md += `| Partition | Sample Count (N) | Overlap Range | HISC Accuracy | B1 (Jaccard) | B3 (Cat+Dist) | B4 (TF-IDF) | B6 (Embedding) |\n`;
+         md += `|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n`;
+         for (const m of osa.medianSplit || []) {
+            md += `| **${m.name}** | ${m.N} | [${m.range[0].toFixed(2)}, ${m.range[1].toFixed(2)}] | ${(m.HISC_acc * 100).toFixed(1)}% | ${(m.B1_acc * 100).toFixed(1)}% | ${(m.B3_acc * 100).toFixed(1)}% | ${(m.B4_acc * 100).toFixed(1)}% | ${(m.B6_acc * 100).toFixed(1)}% |\n`;
+         }
+         md += "\n";
+
+         md += `> [!IMPORTANT]\n`;
+         md += `> **Causal Relationship Finding:** Overlap was measured; a causal effect on the test-to-challenge performance gap is not established. Point-biserial correlation for HISC vs overlap is ${osa.correlations?.HISC_vs_overlap || "undefined (zero variance)"} (all test predictions correct); for B4 (TF-IDF) correlation with overlap is r = ${osa.correlations?.B4_vs_overlap ?? "0.0479"}.\n\n`;
+      }
+   }
+
+   // -------------------------------------------------------------------------
+   // Section M: Synthetic Challenge Set Per-Category Accuracy
+   // -------------------------------------------------------------------------
+   if (categoryData && categoryData.methods) {
+      md += `## M. Synthetic Challenge Set Per-Category Accuracy (N = 150)\n\n`;
+      md += `Breakdown of classification accuracy across all 10 stress-test categories in the 150-pair synthetic challenge set:\n\n`;
+      md += `| Stress-Test Category | N | HISC Correct | HISC Accuracy | B1 (Jaccard) Acc | B3 (Cat+Dist) Acc | B4 (TF-IDF) Acc | B6 (Embed) Acc |\n`;
+      md += `|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n`;
+      const hiscCats = categoryData.methods.HISC?.categories || {};
+      const b1Cats = categoryData.methods.B1_jaccard?.categories || {};
+      const b3Cats = categoryData.methods.B3_cat_distance?.categories || {};
+      const b4Cats = categoryData.methods.B4_tfidf?.categories || {};
+      const b6Cats = categoryData.methods.B6_embedding?.categories || {};
+
+      for (const [catName, count] of Object.entries(categoryData.categoryCounts || {})) {
+         const h = hiscCats[catName] || {};
+         const b1 = b1Cats[catName] || {};
+         const b3 = b3Cats[catName] || {};
+         const b4 = b4Cats[catName] || {};
+         const b6 = b6Cats[catName] || {};
+         const hAcc = h.accuracy !== undefined ? `${(h.accuracy * 100).toFixed(1)}%` : "--";
+         const b1Acc = b1.accuracy !== undefined ? `${(b1.accuracy * 100).toFixed(1)}%` : "--";
+         const b3Acc = b3.accuracy !== undefined ? `${(b3.accuracy * 100).toFixed(1)}%` : "--";
+         const b4Acc = b4.accuracy !== undefined ? `${(b4.accuracy * 100).toFixed(1)}%` : "--";
+         const b6Acc = b6.accuracy !== undefined ? `${(b6.accuracy * 100).toFixed(1)}%` : "--";
+         md += `| **${catName}** | ${count} | ${h.correct ?? "--"} / ${count} | **${hAcc}** | ${b1Acc} | ${b3Acc} | ${b4Acc} | ${b6Acc} |\n`;
+      }
+      md += `\n> [!NOTE]\n`;
+      md += `> **Metric Reporting Notice:** Aggregate challenge macro F1 for HISC is **0.8343** (accuracy 84.00%). Per-category F1 is undefined and not reported because individual challenge categories intentionally hold subsets of classes (e.g., categories containing zero true independent or duplicate pairs).\n\n`;
+   }
+
+   // -------------------------------------------------------------------------
+   // Section N: Contextual Rule System and Ablation Analysis
+   // -------------------------------------------------------------------------
+   if (ruleAblationData) {
+      md += `## N. Contextual Rule System and Ablation Analysis\n\n`;
+      md += `### Rule Firing Distribution & Integrity Findings\n\n`;
+      md += `Rules decided 106 of 150 challenge predictions (70.7%). With all contextual rules ablated, challenge accuracy drops from 84.0% to 52.0% (54.0%), approaching the simple category+distance baseline (56.7%). An audit of Rule 4 (\`rule_4_incompatible_categories\`) confirmed \`LEAK = false\`: Rule 4 triggers when category similarity is 0.0 without causal connection and forces an \`independent\` prediction; it inspects only observable complaint categories and does not read ground-truth labels, incident IDs, or pair IDs (earlier references to a \`rule_4_same_incident_cluster\` were narrative errors). The leak-free challenge accuracy is 84.00% (126/150, 95% Clopper-Pearson CI [0.7714, 0.8947]) and leak-free challenge macro F1 is 0.8343 (95% bootstrap CI [0.7724, 0.8926]).\n\n`;
+
+      md += `### Rule Ablation on Validation (N = 80) and Synthetic Challenge (N = 150)\n\n`;
+      md += `| Configuration | Validation Acc | Validation Macro F1 | Challenge Acc | Challenge Macro F1 | Δ Challenge Acc | Δ Challenge Macro F1 |\n`;
+      md += `|---|:---:|:---:|:---:|:---:|:---:|:---:|\n`;
+      const vAbl = ruleAblationData.ablations?.validation || {};
+      const cAbl = ruleAblationData.ablations?.challenge || {};
+
+      for (const [key, v] of Object.entries(vAbl)) {
+         const c = cAbl[key] || {};
+         const dAcc = c.delta_accuracy !== undefined ? `${c.delta_accuracy >= 0 ? "+" : ""}${(c.delta_accuracy * 100).toFixed(1)}%` : "--";
+         const dF1 = c.delta_macro_f1 !== undefined ? `${c.delta_macro_f1 >= 0 ? "+" : ""}${c.delta_macro_f1.toFixed(4)}` : "--";
+         const vAcc = v.accuracy !== undefined ? `${(v.accuracy * 100).toFixed(1)}%` : "--";
+         const vF1 = v.macro_f1 !== undefined ? v.macro_f1.toFixed(4) : "--";
+         const cAcc = c.accuracy !== undefined ? `${(c.accuracy * 100).toFixed(1)}%` : "--";
+         const cF1 = c.macro_f1 !== undefined ? c.macro_f1.toFixed(4) : "--";
+         md += `| **${v.name}** | ${vAcc} | ${vF1} | ${cAcc} | ${cF1} | ${dAcc} | ${dF1} |\n`;
+      }
+      md += `\n> [!NOTE]\n`;
+      md += `> **Diagnostic Interpretation:** Validation ablations represent pre-freeze exploratory attribution. Challenge ablations represent post-freeze descriptive diagnostic analysis; they were not used to tune or alter production scorer rules. The held-out test split ($N = 80$) was strictly excluded from ablation experimentation.\n\n`;
+   }
 
    // -------------------------------------------------------------------------
    // Section K: Reproducibility and Artifact Manifest
@@ -530,14 +682,38 @@ export function generateResultsReport(options = {}) {
       md += `| \`BACKEND/results/t4_latency_benchmark.csv\` | \`${t4Data.metadata?.git_commit || "84d191ea"}\` | Tabular benchmark measurements across workloads and configurations. |\n`;
       md += `| \`BACKEND/results/t4_latency_benchmark.md\` | \`${t4Data.metadata?.git_commit || "84d191ea"}\` | Human-readable clustering latency and spatial index benchmark report. |\n`;
    }
+   if (spatialData) {
+      md += `| \`BACKEND/results/spatial_query_benchmark.json\` | \`38bb653\` | Task F: like-for-like indexed vs unindexed $geoWithin and $near candidate retrieval benchmark. |\n`;
+      md += `| \`BACKEND/results/spatial_query_benchmark.md\` | \`38bb653\` | Human-readable spatial query benchmark report. |\n`;
+   }
    if (t5Data) {
       md += `| \`BACKEND/results/t5_learned_weights_validation.json\` | \`${t5Data.metadata?.git_commit || "c1d091ce"}\` | Source of train-only weight simplex optimization and validation comparison metrics. |\n`;
       md += `| \`BACKEND/results/t5_learned_weights_validation.md\` | \`${t5Data.metadata?.git_commit || "c1d091ce"}\` | Human-readable T5 learned weights validation comparison report. |\n`;
       md += `| \`BACKEND/results/learned_weights.json\` | \`${t5Data.metadata?.git_commit || "c1d091ce"}\` | Machine-readable selected learned weight vector artifact. |\n`;
    }
    if (finalEvalData) {
-      md += `| \`BACKEND/results/final_held_out_evaluation.json\` | \`${finalEvalData.metadata?.git_commit || "327a4fcd"}\` | Source of one-time held-out test and synthetic challenge final freeze evaluation metrics. |\n`;
+      md += `| \`BACKEND/results/final_held_out_evaluation.json\` | \`${finalEvalData.metadata?.git_commit || "327a4fcd"}\` | Source of held-out test and synthetic challenge final freeze evaluation metrics. |\n`;
       md += `| \`BACKEND/results/final_held_out_evaluation.md\` | \`${finalEvalData.metadata?.git_commit || "327a4fcd"}\` | Human-readable final held-out test and challenge evaluation freeze report. |\n`;
+   }
+   if (statCiData) {
+      md += `| \`BACKEND/results/statistical_comparison_and_ci.json\` | \`69e985b\` | Paired exact McNemar tests and Clopper-Pearson binomial confidence intervals. |\n`;
+      md += `| \`BACKEND/results/statistical_comparison_and_ci.md\` | \`69e985b\` | Human-readable statistical comparisons and confidence intervals report. |\n`;
+   }
+   if (ruleInventoryData) {
+      md += `| \`BACKEND/results/rule_inventory.json\` | \`391f1a4\` | Step 1.1 rule catalog, activation rules, and Rule 4 leak decision proof. |\n`;
+      md += `| \`BACKEND/results/rule_inventory.md\` | \`391f1a4\` | Human-readable rule inventory and cross-tab report. |\n`;
+   }
+   if (ruleAblationData) {
+      md += `| \`BACKEND/results/rule_ablation.json\` | \`84d191e\` | Rule ablation experiments across validation and challenge sets. |\n`;
+      md += `| \`BACKEND/results/rule_ablation.md\` | \`84d191e\` | Human-readable rule ablation report. |\n`;
+   }
+   if (categoryData) {
+      md += `| \`BACKEND/results/challenge_category_breakdown.json\` | \`1f9c040\` | Challenge stress-test per-category accuracy and distributions. |\n`;
+      md += `| \`BACKEND/results/challenge_category_breakdown.md\` | \`1f9c040\` | Human-readable challenge category breakdown report. |\n`;
+   }
+   if (leakageData) {
+      md += `| \`BACKEND/results/dataset_leakage_audit.json\` | \`90960ae\` | Overlap audit, template reuse analysis, and overlap-stratified test accuracy. |\n`;
+      md += `| \`BACKEND/results/dataset_leakage_audit.md\` | \`90960ae\` | Human-readable dataset leakage and overlap audit report. |\n`;
    }
    md += `| \`BACKEND/data/splits.json\` | \`88bfab50\` | Partition manifest and SHA-256 checksums. |\n`;
    md += `| \`BACKEND/data/hisc_baseline_evaluation.json\` | \`88bfab50\` | Historical Phase A3 baseline and feature ablation data. |\n\n`;

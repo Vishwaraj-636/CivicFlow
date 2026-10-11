@@ -1,9 +1,9 @@
-# CivicFlow Error Analysis — Validation Split: HISC (Hierarchical Incident Stream Clustering) (`HISC`)
+# CivicFlow Error Analysis — Validation Split: HISC (Hybrid Incident Similarity and Clustering) (`HISC`)
 
 ## 1. Executive Summary & Evaluation Context
 
 - **Method ID:** `HISC`
-- **Method Name:** HISC (Hierarchical Incident Stream Clustering)
+- **Method Name:** HISC (Hybrid Incident Similarity and Clustering)
 - **Formula:** Weighted multi-attribute affinity: S = 0.20*Cat + 0.25*Geo + 0.10*Lex + 0.30*Sem + 0.15*Time with contextual classification rules. Default thresholds: 0.60 / 0.35.
 - **Split:** `validation` ($N = 80$ pairs)
 - **Source Evaluation Artifact:** `BACKEND/results/t1_validation_baseline_comparison.json`
@@ -50,7 +50,7 @@ Across all 6 evaluated methods on the identical 80-pair validation split, the er
 
 | Method ID | Method Name | Errors | Accuracy | Macro F1 | Primary Failure Pattern |
 |---|---|:---:|:---:|:---:|---|
-| **HISC** | HISC (Hierarchical Incident Stream Clustering) | **0** / 80 | 100.00% | **1.0000** | None (zero validation errors) |
+| **HISC** | HISC (Hybrid Incident Similarity and Clustering) | **0** / 80 | 100.00% | **1.0000** | None (zero validation errors) |
 | **B1_jaccard** | B1: Text Jaccard Similarity | **24** / 80 | 70.00% | **0.6792** | Lexical paraphrasing gap; missed duplicates (14) & missed related (9) |
 | **B2_distance** | B2: Distance-Only Similarity | **19** / 80 | 76.25% | **0.7563** | Spatial conflation; over-clusters related into duplicate (12) |
 | **B3_cat_distance** | B3: Category Plus Distance | **0** / 80 | 100.00% | **1.0000** | None (zero validation errors) |

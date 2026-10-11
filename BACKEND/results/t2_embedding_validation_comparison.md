@@ -35,7 +35,7 @@
 
 | Method Category | Method ID | Method Name | Validation Macro F1 | Validation Accuracy |
 |---|---|---|:---:|:---:|
-| T1 Baseline | **HISC** | HISC (Hierarchical Incident Stream Clustering) | **1.0000** | 100.00% |
+| T1 Baseline | **HISC** | HISC (Hybrid Incident Similarity and Clustering) | **1.0000** | 100.00% |
 | T1 Baseline | **B1_jaccard** | B1: Text Jaccard Similarity | **0.6792** | 70.00% |
 | T1 Baseline | **B2_distance** | B2: Distance-Only Similarity | **0.7563** | 76.25% |
 | T1 Baseline | **B3_cat_distance** | B3: Category Plus Distance | **1.0000** | 100.00% |

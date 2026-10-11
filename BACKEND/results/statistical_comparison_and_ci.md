@@ -41,7 +41,7 @@ Exact binomial confidence intervals for classification accuracy across all 11 ev
 
 | Method ID | Method Name | Correct / 150 | Accuracy | 95% Clopper–Pearson CI |
 | :--- | :--- | :---: | :---: | :---: |
-| `HISC` | HISC (Hierarchical Incident Stream Clustering) | 126 / 150 | 84.0% | `[0.7714, 0.8947]` |
+| `HISC` | HISC (Hybrid Incident Similarity and Clustering) | 126 / 150 | 84.0% | `[0.7714, 0.8947]` |
 | `B1_jaccard` | B1: Text Jaccard Similarity | 35 / 150 | 23.3% | `[0.1682, 0.3093]` |
 | `B2_distance` | B2: Distance-Only Similarity | 73 / 150 | 48.7% | `[0.4043, 0.5695]` |
 | `B3_cat_distance` | B3: Category Plus Distance | 85 / 150 | 56.7% | `[0.4834, 0.6473]` |
@@ -57,7 +57,7 @@ Exact binomial confidence intervals for classification accuracy across all 11 ev
 
 | Method ID | Method Name | Correct / 80 | Accuracy | 95% Clopper–Pearson CI |
 | :--- | :--- | :---: | :---: | :---: |
-| `HISC` | HISC (Hierarchical Incident Stream Clustering) | 80 / 80 | 100.0% | `[0.9549, 1.0000]` |
+| `HISC` | HISC (Hybrid Incident Similarity and Clustering) | 80 / 80 | 100.0% | `[0.9549, 1.0000]` |
 | `B1_jaccard` | B1: Text Jaccard Similarity | 48 / 80 | 60.0% | `[0.4844, 0.7080]` |
 | `B2_distance` | B2: Distance-Only Similarity | 64 / 80 | 80.0% | `[0.6956, 0.8811]` |
 | `B3_cat_distance` | B3: Category Plus Distance | 80 / 80 | 100.0% | `[0.9549, 1.0000]` |

@@ -50,7 +50,7 @@ Across all 6 evaluated methods on the identical 80-pair validation split, the er
 
 | Method ID | Method Name | Errors | Accuracy | Macro F1 | Primary Failure Pattern |
 |---|---|:---:|:---:|:---:|---|
-| **HISC** | HISC (Hierarchical Incident Stream Clustering) | **0** / 80 | 100.00% | **1.0000** | None (zero validation errors) |
+| **HISC** | HISC (Hybrid Incident Similarity and Clustering) | **0** / 80 | 100.00% | **1.0000** | None (zero validation errors) |
 | **B1_jaccard** | B1: Text Jaccard Similarity | **24** / 80 | 70.00% | **0.6792** | Lexical paraphrasing gap; missed duplicates (14) & missed related (9) |
 | **B2_distance** | B2: Distance-Only Similarity | **19** / 80 | 76.25% | **0.7563** | Spatial conflation; over-clusters related into duplicate (12) |
 | **B3_cat_distance** | B3: Category Plus Distance | **0** / 80 | 100.00% | **1.0000** | None (zero validation errors) |

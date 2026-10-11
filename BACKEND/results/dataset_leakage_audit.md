@@ -26,7 +26,7 @@
    - **Exact Text Overlap with 400-pair Dataset:** **0 instances (0.0%)**.
    - **Near-Duplicate Overlap (Jaccard > 0.80):** **0 instances (0.0%)**.
    - Every single complaint in the 150-pair challenge set is authored with entirely novel phrasing.
-   - **Significance:** This finding provides an objective explanation for why all methods (HISC, B3, B4, Embeddings) experienced a significant performance drop from the held-out test split (Macro F1 ~0.84) to the synthetic challenge set (Macro F1 ~0.49–0.54). The held-out test split was artificially aided by synthetic text template leakage, whereas the challenge set is a truly un-leaked evaluation.
+   - **Significance:** Text overlap between development splits was measured; whether it explains the test-to-challenge gap is not established. The held-out test split exhibits high template text reuse, whereas the challenge set is a separate stress test authored with novel phrasing.
 
 ---
 

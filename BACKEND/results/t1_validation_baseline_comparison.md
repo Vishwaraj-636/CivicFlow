@@ -20,7 +20,7 @@
 
 | Method ID | Method Name | Selected Thresholds (Dup / Rel) | Accuracy | Macro Prec | Macro Rec | Macro F1 | Per-Class F1 (dup / rel / ind) |
 |---|---|:---:|:---:|:---:|:---:|:---:|:---:|
-| **HISC** | HISC (Hierarchical Incident Stream Clustering) | `0.60` / `0.10` | 100.00% | 1.0000 | 1.0000 | **1.0000** | 1.0000 / 1.0000 / 1.0000 |
+| **HISC** | HISC (Hybrid Incident Similarity and Clustering) | `0.60` / `0.10` | 100.00% | 1.0000 | 1.0000 | **1.0000** | 1.0000 / 1.0000 / 1.0000 |
 | **B1_jaccard** | B1: Text Jaccard Similarity | `0.35` / `0.20` | 70.00% | 0.7694 | 0.6865 | **0.6792** | 0.5882 / 0.6552 / 0.7941 |
 | **B2_distance** | B2: Distance-Only Similarity | `0.85` / `0.20` | 76.25% | 0.7606 | 0.7599 | **0.7563** | 0.6415 / 0.6275 / 1.0000 |
 | **B3_cat_distance** | B3: Category Plus Distance | `0.90` / `0.35` | 100.00% | 1.0000 | 1.0000 | **1.0000** | 1.0000 / 1.0000 / 1.0000 |
@@ -29,7 +29,7 @@
 
 ## 3. Method Specifications and Formulas
 
-### HISC: HISC (Hierarchical Incident Stream Clustering)
+### HISC: HISC (Hybrid Incident Similarity and Clustering)
 
 - **Formula:** Weighted multi-attribute affinity: S = 0.20*Cat + 0.25*Geo + 0.10*Lex + 0.30*Sem + 0.15*Time with contextual classification rules. Default thresholds: 0.60 / 0.35.
 - **Fitting:** Hand-fixed domain weights; no training set fitting.
