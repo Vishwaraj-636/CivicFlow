@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import ContinueWithGoogle from '../../../components/googleAuth/ContinueWithGoogle';
 import { useAuth } from '../hook/useAuth';
@@ -11,6 +11,17 @@ const Login = () => {
    const [showPassword, setShowPassword] = useState(false);
    const [error, setError] = useState('');
    const [isSubmitting, setIsSubmitting] = useState(false);
+   const [showColdStartNotice, setShowColdStartNotice] = useState(false);
+
+   useEffect(() => {
+      let timer;
+      if (isSubmitting) {
+         timer = setTimeout(() => setShowColdStartNotice(true), 8000);
+      } else {
+         setShowColdStartNotice(false);
+      }
+      return () => clearTimeout(timer);
+   }, [isSubmitting]);
 
    // Redirect already-authenticated users away from the login page
    if (initialized && isAuthenticated) {
@@ -146,6 +157,12 @@ const Login = () => {
                         </>
                      )}
                   </button>
+
+                  {showColdStartNotice && isSubmitting && (
+                     <p className="mt-3 text-xs text-center text-[#52606D] bg-[#F0F4F8] border border-[#D0DBE5] rounded-lg p-2.5">
+                        The server is waking up. This can take a minute on the free plan.
+                     </p>
+                  )}
 
                   <div className="relative my-6">
                      <div className="absolute inset-0 flex items-center">
