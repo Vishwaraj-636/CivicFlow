@@ -7,7 +7,8 @@
       "test": "node --test",
       "dev": "npx nodemon --exec \"cls && node server.js\"",
       "start": "node server.js",
-      "evaluate:incidents": "node src/evaluation/incidentAlgorithmEvaluation.js"
+      "evaluate:incidents": "node src/evaluation/incidentAlgorithmEvaluation.js",
+      "results:report": "node src/evaluation/generateResultsReport.js"
    },
    "keywords": [],
    "author": "",

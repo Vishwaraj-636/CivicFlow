@@ -16,6 +16,8 @@ import {
 import { loadDatasetPartitions } from "../src/evaluation/hiscEvaluationHarness.js";
 import { SUPPORTED_CLASSES } from "../src/evaluation/metricsCalculator.js";
 
+import os from "node:os";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -31,11 +33,16 @@ const EXPECTED_METHOD_IDS = [
 describe("CIVICFLOW Phase T3 — Reproducible Error Analysis", () => {
    describe("1. Error Analysis Generator & Schema Validation", () => {
       it("generates complete error analysis reports for all 6 T1 methods", () => {
-         const results = runErrorAnalysisGeneration();
-         for (const id of EXPECTED_METHOD_IDS) {
-            assert.ok(results[id], `Missing generator output for method ${id}`);
-            assert.ok(fs.existsSync(results[id].jsonPath), `JSON artifact not found for ${id}`);
-            assert.ok(fs.existsSync(results[id].mdPath), `Markdown artifact not found for ${id}`);
+         const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "civicflow-t3-test-"));
+         try {
+            const results = runErrorAnalysisGeneration({ resultsDir: tempDir });
+            for (const id of EXPECTED_METHOD_IDS) {
+               assert.ok(results[id], `Missing generator output for method ${id}`);
+               assert.ok(fs.existsSync(results[id].jsonPath), `JSON artifact not found for ${id}`);
+               assert.ok(fs.existsSync(results[id].mdPath), `Markdown artifact not found for ${id}`);
+            }
+         } finally {
+            fs.rmSync(tempDir, { recursive: true, force: true });
          }
       });
 
