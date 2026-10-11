@@ -625,26 +625,23 @@ export function generateResultsReport(options = {}) {
    if (categoryData && categoryData.methods) {
       md += `## M. Synthetic Challenge Set Per-Category Accuracy (N = 150)\n\n`;
       md += `Breakdown of classification accuracy across all 10 stress-test categories in the 150-pair synthetic challenge set:\n\n`;
-      md += `| Stress-Test Category | N | HISC Correct | HISC Accuracy | B1 (Jaccard) Acc | B3 (Cat+Dist) Acc | B4 (TF-IDF) Acc | B6 (Embed) Acc |\n`;
-      md += `|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n`;
+      md += `| Stress-Test Category | N | HISC Correct | HISC Accuracy | B3 (Cat+Dist) Correct | B3 Accuracy | B4 (TF-IDF) Correct | B4 Accuracy | HISC-embed Correct | HISC-embed Accuracy |\n`;
+      md += `|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n`;
       const hiscCats = categoryData.methods.HISC?.categories || {};
-      const b1Cats = categoryData.methods.B1_jaccard?.categories || {};
-      const b3Cats = categoryData.methods.B3_cat_distance?.categories || {};
-      const b4Cats = categoryData.methods.B4_tfidf?.categories || {};
-      const b6Cats = categoryData.methods.B6_embedding?.categories || {};
+      const b3Cats = categoryData.methods.B3?.categories || {};
+      const b4Cats = categoryData.methods.B4?.categories || {};
+      const embedCats = categoryData.methods.HISC_embed?.categories || {};
 
       for (const [catName, count] of Object.entries(categoryData.categoryCounts || {})) {
          const h = hiscCats[catName] || {};
-         const b1 = b1Cats[catName] || {};
          const b3 = b3Cats[catName] || {};
          const b4 = b4Cats[catName] || {};
-         const b6 = b6Cats[catName] || {};
+         const emb = embedCats[catName] || {};
          const hAcc = h.accuracy !== undefined ? `${(h.accuracy * 100).toFixed(1)}%` : "--";
-         const b1Acc = b1.accuracy !== undefined ? `${(b1.accuracy * 100).toFixed(1)}%` : "--";
          const b3Acc = b3.accuracy !== undefined ? `${(b3.accuracy * 100).toFixed(1)}%` : "--";
          const b4Acc = b4.accuracy !== undefined ? `${(b4.accuracy * 100).toFixed(1)}%` : "--";
-         const b6Acc = b6.accuracy !== undefined ? `${(b6.accuracy * 100).toFixed(1)}%` : "--";
-         md += `| **${catName}** | ${count} | ${h.correct ?? "--"} / ${count} | **${hAcc}** | ${b1Acc} | ${b3Acc} | ${b4Acc} | ${b6Acc} |\n`;
+         const embAcc = emb.accuracy !== undefined ? `${(emb.accuracy * 100).toFixed(1)}%` : "--";
+         md += `| **${catName}** | ${count} | ${h.correct ?? "--"} / ${count} | **${hAcc}** | ${b3.correct ?? "--"} / ${count} | ${b3Acc} | ${b4.correct ?? "--"} / ${count} | ${b4Acc} | ${emb.correct ?? "--"} / ${count} | ${embAcc} |\n`;
       }
       md += `\n> [!NOTE]\n`;
       md += `> **Metric Reporting Notice:** Aggregate challenge macro F1 for HISC is **0.8343** (accuracy 84.00%). Per-category F1 is undefined and not reported because individual challenge categories intentionally hold subsets of classes (e.g., categories containing zero true independent or duplicate pairs).\n\n`;
@@ -656,7 +653,7 @@ export function generateResultsReport(options = {}) {
    if (ruleAblationData) {
       md += `## N. Contextual Rule System and Ablation Analysis\n\n`;
       md += `### Rule Firing Distribution & Integrity Findings\n\n`;
-      md += `Rules decided 106 of 150 challenge predictions (70.7%). With all contextual rules ablated, challenge accuracy drops from 84.0% to 52.0% (54.0%), approaching the simple category+distance baseline (56.7%). An audit of Rule 4 (\`rule_4_incompatible_categories\`) confirmed \`LEAK = false\`: Rule 4 triggers when category similarity is 0.0 without causal connection and forces an \`independent\` prediction; it inspects only observable complaint categories and does not read ground-truth labels, incident IDs, or pair IDs (earlier references to a \`rule_4_same_incident_cluster\` were narrative errors). The leak-free challenge accuracy is 84.00% (126/150, 95% Clopper-Pearson CI [0.7714, 0.8947]) and leak-free challenge macro F1 is 0.8343 (95% bootstrap CI [0.7724, 0.8926]).\n\n`;
+      md += `Rules decided 124 of 150 challenge predictions (82.7%; 51 hard overrides and 73 duplicate gate rules, leaving 26 decided by bare score threshold). With all contextual rules ablated, challenge accuracy drops from 84.00% to 52.00% (and macro F1 drops to 0.4198), approaching the simple category+distance baseline (56.7%). An audit of Rule 4 (\`rule_4_incompatible_categories\`) confirmed \`LEAK = false\`: Rule 4 triggers when category similarity is 0.0 without causal connection and forces an \`independent\` prediction; it inspects only observable complaint categories and does not read ground-truth labels, incident IDs, or pair IDs (earlier references to a \`rule_4_same_incident_cluster\` were narrative errors). The leak-free challenge accuracy is 84.00% (126/150, 95% Clopper-Pearson CI [0.7714, 0.8947]) and leak-free challenge macro F1 is 0.8343 (95% bootstrap CI [0.7724, 0.8926]).\n\n`;
 
       md += `### Rule Ablation on Validation (N = 80) and Synthetic Challenge (N = 150)\n\n`;
       md += `| Configuration | Validation Acc | Validation Macro F1 | Challenge Acc | Challenge Macro F1 | Δ Challenge Acc | Δ Challenge Macro F1 |\n`;

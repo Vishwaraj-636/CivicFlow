@@ -427,18 +427,18 @@ To test whether high test accuracy is driven by template overlap with training d
 
 Breakdown of classification accuracy across all 10 stress-test categories in the 150-pair synthetic challenge set:
 
-| Stress-Test Category | N | HISC Correct | HISC Accuracy | B1 (Jaccard) Acc | B3 (Cat+Dist) Acc | B4 (TF-IDF) Acc | B6 (Embed) Acc |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Paraphrases with Novel Vocabulary** | 15 | 15 / 15 | **100.0%** | -- | -- | -- | -- |
-| **Typos and Spelling Variations** | 15 | 15 / 15 | **100.0%** | -- | -- | -- | -- |
-| **Tanglish and Colloquial Phrasing** | 15 | 15 / 15 | **100.0%** | -- | -- | -- | -- |
-| **Very Short and Vague Descriptions** | 15 | 11 / 15 | **73.3%** | -- | -- | -- | -- |
-| **Same Location, Different Issue** | 15 | 9 / 15 | **60.0%** | -- | -- | -- | -- |
-| **Same Issue, Geographically Distant** | 15 | 14 / 15 | **93.3%** | -- | -- | -- | -- |
-| **Temporally Distant at Same Location** | 10 | 5 / 10 | **50.0%** | -- | -- | -- | -- |
-| **Similar Wording, Distinct Incidents** | 13 | 5 / 13 | **38.5%** | -- | -- | -- | -- |
-| **Cascading Related Failures** | 15 | 15 / 15 | **100.0%** | -- | -- | -- | -- |
-| **True Duplicates with Disparate Phrasing** | 22 | 22 / 22 | **100.0%** | -- | -- | -- | -- |
+| Stress-Test Category | N | HISC Correct | HISC Accuracy | B3 (Cat+Dist) Correct | B3 Accuracy | B4 (TF-IDF) Correct | B4 Accuracy | HISC-embed Correct | HISC-embed Accuracy |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Paraphrases with Novel Vocabulary** | 15 | 15 / 15 | **100.0%** | 11 / 15 | 73.3% | 6 / 15 | 40.0% | 15 / 15 | 100.0% |
+| **Typos and Spelling Variations** | 15 | 15 / 15 | **100.0%** | 11 / 15 | 73.3% | 7 / 15 | 46.7% | 14 / 15 | 93.3% |
+| **Tanglish and Colloquial Phrasing** | 15 | 15 / 15 | **100.0%** | 12 / 15 | 80.0% | 9 / 15 | 60.0% | 12 / 15 | 80.0% |
+| **Very Short and Vague Descriptions** | 15 | 11 / 15 | **73.3%** | 7 / 15 | 46.7% | 8 / 15 | 53.3% | 11 / 15 | 73.3% |
+| **Same Location, Different Issue** | 15 | 9 / 15 | **60.0%** | 5 / 15 | 33.3% | 2 / 15 | 13.3% | 9 / 15 | 60.0% |
+| **Same Issue, Geographically Distant** | 15 | 14 / 15 | **93.3%** | 2 / 15 | 13.3% | 2 / 15 | 13.3% | 13 / 15 | 86.7% |
+| **Temporally Distant at Same Location** | 10 | 5 / 10 | **50.0%** | 0 / 10 | 0.0% | 4 / 10 | 40.0% | 5 / 10 | 50.0% |
+| **Similar Wording, Distinct Incidents** | 13 | 5 / 13 | **38.5%** | 0 / 13 | 0.0% | 0 / 13 | 0.0% | 5 / 13 | 38.5% |
+| **Cascading Related Failures** | 15 | 15 / 15 | **100.0%** | 15 / 15 | 100.0% | 2 / 15 | 13.3% | 15 / 15 | 100.0% |
+| **True Duplicates with Disparate Phrasing** | 22 | 22 / 22 | **100.0%** | 22 / 22 | 100.0% | 11 / 22 | 50.0% | 21 / 22 | 95.5% |
 
 > [!NOTE]
 > **Metric Reporting Notice:** Aggregate challenge macro F1 for HISC is **0.8343** (accuracy 84.00%). Per-category F1 is undefined and not reported because individual challenge categories intentionally hold subsets of classes (e.g., categories containing zero true independent or duplicate pairs).
@@ -447,7 +447,7 @@ Breakdown of classification accuracy across all 10 stress-test categories in the
 
 ### Rule Firing Distribution & Integrity Findings
 
-Rules decided 106 of 150 challenge predictions (70.7%). With all contextual rules ablated, challenge accuracy drops from 84.0% to 52.0% (54.0%), approaching the simple category+distance baseline (56.7%). An audit of Rule 4 (`rule_4_incompatible_categories`) confirmed `LEAK = false`: Rule 4 triggers when category similarity is 0.0 without causal connection and forces an `independent` prediction; it inspects only observable complaint categories and does not read ground-truth labels, incident IDs, or pair IDs (earlier references to a `rule_4_same_incident_cluster` were narrative errors). The leak-free challenge accuracy is 84.00% (126/150, 95% Clopper-Pearson CI [0.7714, 0.8947]) and leak-free challenge macro F1 is 0.8343 (95% bootstrap CI [0.7724, 0.8926]).
+Rules decided 124 of 150 challenge predictions (82.7%; 51 hard overrides and 73 duplicate gate rules, leaving 26 decided by bare score threshold). With all contextual rules ablated, challenge accuracy drops from 84.00% to 52.00% (and macro F1 drops to 0.4198), approaching the simple category+distance baseline (56.7%). An audit of Rule 4 (`rule_4_incompatible_categories`) confirmed `LEAK = false`: Rule 4 triggers when category similarity is 0.0 without causal connection and forces an `independent` prediction; it inspects only observable complaint categories and does not read ground-truth labels, incident IDs, or pair IDs (earlier references to a `rule_4_same_incident_cluster` were narrative errors). The leak-free challenge accuracy is 84.00% (126/150, 95% Clopper-Pearson CI [0.7714, 0.8947]) and leak-free challenge macro F1 is 0.8343 (95% bootstrap CI [0.7724, 0.8926]).
 
 ### Rule Ablation on Validation (N = 80) and Synthetic Challenge (N = 150)
 
