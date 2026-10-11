@@ -11,6 +11,7 @@ export const REPORT_PATHS = {
    docsDir: path.resolve(__dirname, "../../../docs"),
    outputFile: path.resolve(__dirname, "../../../docs/RESULTS.md"),
    t1Json: path.resolve(__dirname, "../../results/t1_validation_baseline_comparison.json"),
+   t2Json: path.resolve(__dirname, "../../results/t2_embedding_validation_comparison.json"),
    splitsJson: path.resolve(__dirname, "../../data/splits.json"),
    historicalBaselineJson: path.resolve(__dirname, "../../data/hisc_baseline_evaluation.json"),
 };
@@ -45,12 +46,14 @@ export function readJsonSafe(filePath) {
  */
 export function generateResultsReport(options = {}) {
    const t1Path = options.t1Json ?? REPORT_PATHS.t1Json;
+   const t2Path = options.t2Json ?? REPORT_PATHS.t2Json;
    const splitsPath = options.splitsJson ?? REPORT_PATHS.splitsJson;
    const histBaselinePath = options.historicalBaselineJson ?? REPORT_PATHS.historicalBaselineJson;
    const resultsDir = options.resultsDir ?? REPORT_PATHS.resultsDir;
    const outputPath = options.outputFile ?? REPORT_PATHS.outputFile;
 
    const t1Data = readJsonSafe(t1Path);
+   const t2Data = readJsonSafe(t2Path);
    const splitsData = readJsonSafe(splitsPath);
    const histBaselineData = readJsonSafe(histBaselinePath);
 
@@ -160,6 +163,37 @@ export function generateResultsReport(options = {}) {
    md += `> [!IMPORTANT]\n`;
    md += `> **Interpretation of Validation Performance:**\n`;
    md += `> Both **HISC** and **B3 (Category + Distance)** achieve 100.00% Macro F1 and 100.00% Accuracy on this validation set. This result reflects the clean separability of categories and spatial coordinates in the synthetic generator pipeline for standard incidents. **This should not be interpreted as proof of real-world perfection or robust handling of adversarial noise**, which is evaluated by the synthetic challenge set.\n\n`;
+
+   // Subsection: Local Sentence Embedding Variants (T2 Evaluation)
+   md += `### Local Sentence Embedding Variants (T2 Evaluation)\n\n`;
+   if (t2Data && t2Data.methods) {
+      const t2Meta = t2Data.metadata || {};
+      md += `*Evaluated locally in-process using \`${t2Meta.model_id || "Xenova/all-MiniLM-L6-v2"}\` (${t2Meta.quantized ? "int8 quantized" : "full"}, dimension ${t2Meta.model_dimension || 384}, provider: \`${t2Meta.provider || "local"}\`) on the 80-pair validation split:*\n\n`;
+      md += `| Method ID | Method Name | Selected Thresholds | Accuracy | Macro Prec | Macro Rec | Macro F1 | Per-Class F1 (dup / rel / ind) |\n`;
+      md += `|---|---|:---:|:---:|:---:|:---:|:---:|:---:|\n`;
+      for (const [t2Id, t2m] of Object.entries(t2Data.methods)) {
+         if (!t2m.is_available) {
+            md += `| **${t2Id}** | ${t2m.method_name} | *Unavailable* | -- | -- | -- | **Unavailable** | -- |\n`;
+            continue;
+         }
+         const vm = t2m.validation_metrics || {};
+         const th = t2m.selected_thresholds || {};
+         const pc = vm.per_class || {};
+         const dupF1 = pc.duplicate?.f1 !== undefined ? pc.duplicate.f1.toFixed(4) : "N/A";
+         const relF1 = pc.related?.f1 !== undefined ? pc.related.f1.toFixed(4) : "N/A";
+         const indF1 = pc.independent?.f1 !== undefined ? pc.independent.f1.toFixed(4) : "N/A";
+         const dt = th.duplicate !== undefined ? th.duplicate.toFixed(2) : "N/A";
+         const rt = th.related !== undefined ? th.related.toFixed(2) : "N/A";
+         md += `| **${t2Id}** | ${t2m.method_name} | \`${dt}\` / \`${rt}\` | ${(vm.accuracy * 100).toFixed(2)}% | ${vm.macro_precision.toFixed(4)} | ${vm.macro_recall.toFixed(4)} | **${vm.macro_f1.toFixed(4)}** | ${dupF1} / ${relF1} / ${indF1} |\n`;
+      }
+      md += "\n";
+      if (t2Data.hybrid_selection?.preferred_candidate) {
+         md += `> [!NOTE]\n`;
+         md += `> **Hybrid Candidate Selection:** Preferred candidate is **\`${t2Data.hybrid_selection.preferred_candidate}\`** (${t2Data.hybrid_selection.rationale})\n\n`;
+      }
+   } else {
+      md += `**Status:** **Pending T2 local embedding evaluation** (artifacts not yet generated).\n\n`;
+   }
 
    // -------------------------------------------------------------------------
    // Section D: Error Analysis
@@ -314,6 +348,10 @@ export function generateResultsReport(options = {}) {
    md += `| \`BACKEND/results/t1_validation_baseline_comparison.md\` | \`${meta.git_commit || "1fd9d723"}\` | Human-readable validation baseline comparison report. |\n`;
    md += `| \`BACKEND/results/error_analysis_validation_*.json\` | \`6694cda7\` | Per-method structured error analysis and failure breakdown. |\n`;
    md += `| \`BACKEND/results/error_analysis_validation_*.md\` | \`6694cda7\` | Per-method detailed error analysis reports. |\n`;
+   if (t2Data) {
+      md += `| \`BACKEND/results/t2_embedding_validation_comparison.json\` | \`${t2Data.metadata?.git_commit || "96dab681"}\` | Source of local embedding baseline (B6) and HISC embedding/hybrid metrics and thresholds. |\n`;
+      md += `| \`BACKEND/results/t2_embedding_validation_comparison.md\` | \`${t2Data.metadata?.git_commit || "96dab681"}\` | Human-readable T2 local embedding validation comparison report. |\n`;
+   }
    md += `| \`BACKEND/data/splits.json\` | \`88bfab50\` | Partition manifest and SHA-256 checksums. |\n`;
    md += `| \`BACKEND/data/hisc_baseline_evaluation.json\` | \`88bfab50\` | Historical Phase A3 baseline and feature ablation data. |\n\n`;
 

@@ -15,6 +15,7 @@ export const DEFAULT_HISC_CONFIG = {
    },
    enabledFeatures: {},
    semanticMode: "synonym",
+   embeddingProvider: "none",
 };
 
 /**
@@ -89,6 +90,7 @@ export const loadConfig = (customConfig = {}) => {
 
    const enabledFeatures = config.enabledFeatures ?? DEFAULT_HISC_CONFIG.enabledFeatures;
    const semanticMode = config.semanticMode ?? DEFAULT_HISC_CONFIG.semanticMode;
+   const embeddingProvider = config.embeddingProvider ?? process.env.EMBEDDING_PROVIDER ?? DEFAULT_HISC_CONFIG.embeddingProvider ?? "none";
 
    return {
       radiusInMeters,
@@ -104,6 +106,7 @@ export const loadConfig = (customConfig = {}) => {
       weights,
       enabledFeatures,
       semanticMode,
+      embeddingProvider,
    };
 };
 

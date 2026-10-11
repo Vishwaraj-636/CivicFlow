@@ -275,7 +275,26 @@ export const scorePair = (a, b, opts = {}) => {
    const lexical = intersectionRatio(tokensA, tokensB);
    const semanticTokensA = new Set([...tokensA, ...conceptsA]);
    const semanticTokensB = new Set([...tokensB, ...conceptsB]);
-   const semantic = intersectionRatio(semanticTokensA, semanticTokensB);
+   const dictSemantic = intersectionRatio(semanticTokensA, semanticTokensB);
+
+   let semantic = dictSemantic;
+   let usedFallback = false;
+
+   if (typeof opts.semanticScore === "number" && Number.isFinite(opts.semanticScore)) {
+      semantic = Math.min(1, Math.max(0, opts.semanticScore));
+   } else if (typeof opts.embeddingCosine === "number" && Number.isFinite(opts.embeddingCosine)) {
+      const mode = opts.semanticMode ?? config.semanticMode ?? "synonym";
+      if (mode === "embedding") {
+         semantic = Math.min(1, Math.max(0, opts.embeddingCosine));
+      } else if (mode === "hybrid_mean") {
+         semantic = Math.min(1, Math.max(0, 0.5 * dictSemantic + 0.5 * opts.embeddingCosine));
+      } else if (mode === "hybrid_max") {
+         semantic = Math.min(1, Math.max(0, Math.max(dictSemantic, opts.embeddingCosine)));
+      }
+   } else if ((opts.semanticMode ?? config.semanticMode) && (opts.semanticMode ?? config.semanticMode) !== "synonym") {
+      // Embedding was requested by semanticMode, but no valid embedding cosine was supplied -> fallback to dictionary
+      usedFallback = true;
+   }
 
    const catSim = categoryScore(a?.category, b?.category);
    const causallyConnected = hasCausalOrSharedConcept(conceptsA, conceptsB);
@@ -322,6 +341,7 @@ export const scorePair = (a, b, opts = {}) => {
       distance: { value: distance, enumerable: false, writable: true, configurable: true },
       hours: { value: hours, enumerable: false, writable: true, configurable: true },
       context: { value: context, enumerable: false, writable: true, configurable: true },
+      usedFallback: { value: usedFallback, enumerable: false, writable: true, configurable: true },
    });
 
    return result;

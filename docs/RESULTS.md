@@ -105,6 +105,20 @@ All metrics below are dynamically read from `BACKEND/results/t1_validation_basel
 > **Interpretation of Validation Performance:**
 > Both **HISC** and **B3 (Category + Distance)** achieve 100.00% Macro F1 and 100.00% Accuracy on this validation set. This result reflects the clean separability of categories and spatial coordinates in the synthetic generator pipeline for standard incidents. **This should not be interpreted as proof of real-world perfection or robust handling of adversarial noise**, which is evaluated by the synthetic challenge set.
 
+### Local Sentence Embedding Variants (T2 Evaluation)
+
+*Evaluated locally in-process using `Xenova/all-MiniLM-L6-v2` (int8 quantized, dimension 384, provider: `local`) on the 80-pair validation split:*
+
+| Method ID | Method Name | Selected Thresholds | Accuracy | Macro Prec | Macro Rec | Macro F1 | Per-Class F1 (dup / rel / ind) |
+|---|---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **B6_embedding** | B6: Embedding Cosine Similarity Only | `0.70` / `0.35` | 92.50% | 0.9313 | 0.9187 | **0.9212** | 0.8636 / 0.9000 / 1.0000 |
+| **HISC_embed** | HISC-embed (Embedding-Backed Semantic Affinity) | `0.75` / `0.10` | 100.00% | 1.0000 | 1.0000 | **1.0000** | 1.0000 / 1.0000 / 1.0000 |
+| **HISC_hybrid_mean** | HISC-hybrid-mean (Mean of Dictionary & Embedding) | `0.70` / `0.10` | 100.00% | 1.0000 | 1.0000 | **1.0000** | 1.0000 / 1.0000 / 1.0000 |
+| **HISC_hybrid_max** | HISC-hybrid-max (Maximum of Dictionary & Embedding) | `0.75` / `0.10` | 100.00% | 1.0000 | 1.0000 | **1.0000** | 1.0000 / 1.0000 / 1.0000 |
+
+> [!NOTE]
+> **Hybrid Candidate Selection:** Preferred candidate is **`HISC_hybrid_max`** (Both candidates achieved 1.0000 Macro F1 and 1.0000 Accuracy; HISC_hybrid_max selected via Rule 5 (larger threshold margin: 0.65 vs 0.60).)
+
 ## D. Error Analysis
 
 Per-method error analysis integrated from verified T3 artifacts (`BACKEND/results/error_analysis_validation_<method-id>.json`):
@@ -217,6 +231,8 @@ When the final evaluation freeze is executed, all methods on the frozen roster w
 | `BACKEND/results/t1_validation_baseline_comparison.md` | `040d2e78a3c87b8ad31924d0a6d4b2e6115c59eb` | Human-readable validation baseline comparison report. |
 | `BACKEND/results/error_analysis_validation_*.json` | `6694cda7` | Per-method structured error analysis and failure breakdown. |
 | `BACKEND/results/error_analysis_validation_*.md` | `6694cda7` | Per-method detailed error analysis reports. |
+| `BACKEND/results/t2_embedding_validation_comparison.json` | `96dab68126197b506f401501adb893ccb4464d47` | Source of local embedding baseline (B6) and HISC embedding/hybrid metrics and thresholds. |
+| `BACKEND/results/t2_embedding_validation_comparison.md` | `96dab68126197b506f401501adb893ccb4464d47` | Human-readable T2 local embedding validation comparison report. |
 | `BACKEND/data/splits.json` | `88bfab50` | Partition manifest and SHA-256 checksums. |
 | `BACKEND/data/hisc_baseline_evaluation.json` | `88bfab50` | Historical Phase A3 baseline and feature ablation data. |
 
