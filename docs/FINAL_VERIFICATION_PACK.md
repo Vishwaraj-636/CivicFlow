@@ -110,23 +110,25 @@ All 4 protected files maintained strict immutability throughout all execution ph
 | *No Rule Fired (Scorer Decided)* | 14 | 37 | 0 | 44 | 45.45% |
 
 ### Leave-One-Rule-Out Ablation (Challenge Set)
+> [!WARNING]
+> **SUPERSEDED BY CORRECTIONS_PACK:** The ablation numbers and rule numbering below reflect an earlier exploratory draft. They are superseded by [`docs/CORRECTIONS_PACK.md`](file:///c:/Projects/CivicFlow/docs/CORRECTIONS_PACK.md): all-rules-removed achieves **52.00% accuracy** and **0.4198 macro F1**. The figures "0.4930", "54.00%", and "85.3%" have origin undetermined; do not cite.
+
 | Ablation Configuration | Challenge Acc | Challenge Macro F1 | Delta vs HISC |
 |---|:---:|:---:|:---:|
 | **HISC Full Pipeline** | **84.00%** | **0.8343** | Reference |
-| Ablate `rule_1` (Proximity) | 58.00% | 0.5421 | -26.00% |
-| Ablate `rule_2` (Category) | 71.33% | 0.6984 | -12.67% |
-| Ablate `rule_3` (Distance >1km) | 84.00% | 0.8351 | +0.00% |
-| Ablate `rule_4` (Time >720h) | 84.00% | 0.8343 | +0.00% |
-| **All Rules Removed (Pure Scorer)** | **54.00%** | **0.4930** | -30.00% |
+| Ablate `rule_1` (Distant Boundary >3000m) | 76.67% | 0.7620 | -7.33% |
+| Ablate `rule_2` (Temporal Boundary >720h) | 84.00% | 0.8371 | +0.00% |
+| Ablate `rule_3` (Operational Radius >1000m) | 84.00% | 0.8351 | +0.00% |
+| Ablate `rule_4` (Incompatible Categories) | 77.33% | 0.7688 | -6.67% |
+| Ablate `rule_5` (Duplicate Tight Constraints) | 73.33% | 0.7157 | -10.67% |
+| **All Rules Removed (Pure Scorer)** | **52.00%** | **0.4198** | -32.00% |
 
 ---
 
-## S5. Metric Definition Findings (0.4930 & 85.3%)
+## S5. Metric Definition Findings (0.4930 & 85.3% — Retracted)
 
-1. **Pure Scorer Macro F1 (0.4930):**
-   When all contextual rules are removed, HISC's weighted score alone achieves **54.00% accuracy** and **0.4930 macro F1** on the challenge set, placing it near the naive category+distance baseline (B3 at 56.67%). This confirms empirically that rules provide the primary discriminant power on adversarial edge cases.
-2. **Category Aggregate F1 Artifact (85.3% / Ill-Defined F1):**
-   In Step 1.3, an investigation of `challengeCategoryBreakdown.js` revealed that per-category subsets lacked class balance for all three labels, resulting in ill-defined per-category F1 metrics. Per-category evaluation was refactored to report exact sample counts ($N$), correct predictions, and accuracy only.
+> [!WARNING]
+> **SUPERSEDED & RETRACTED:** "0.4930" and "85.3%" have **origin undetermined; do not cite**. All-rules-removed on the challenge set actually achieves **52.00% accuracy** and **0.4198 macro F1** (never predicting independent because min score is 0.2298 > 0.10). See [`docs/CORRECTIONS_PACK.md`](file:///c:/Projects/CivicFlow/docs/CORRECTIONS_PACK.md) for the verified ground truth.
 
 ---
 
