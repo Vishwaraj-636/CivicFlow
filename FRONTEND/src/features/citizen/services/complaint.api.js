@@ -1,7 +1,8 @@
 import axios from "axios";
+import { API_BASE_URL } from "../../../config/api.config.js";
 
 const complaintApiInstance = axios.create({
-   baseURL: "http://localhost:3000/api",
+   baseURL: API_BASE_URL,
    withCredentials: true,
 });
 
@@ -24,6 +25,14 @@ function normalizeComplaintData(complaintData) {
 
 export async function createComplaint(complaintData) {
    const response = await complaintApiInstance.post("/complaints", normalizeComplaintData(complaintData));
+   return response.data;
+}
+
+export async function getSimilarComplaints({ lat, lng, category, text }, signal) {
+   const response = await complaintApiInstance.get("/complaints/similar", {
+      params: { lat, lng, category, text },
+      signal,
+   });
    return response.data;
 }
 

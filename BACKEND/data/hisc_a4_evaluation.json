@@ -1,0 +1,1774 @@
+{
+  "metadata": {
+    "evaluation_harness_version": "2.0.0",
+    "evaluation_date": "2026-10-10T23:20:00.000Z",
+    "seed": 42,
+    "bootstrap_iterations": 1000,
+    "source_dataset": "civicflow_400_labeled_complaint_pairs.csv",
+    "source_checksum_sha256": "b4653ac507f422a3b6f5ffadb291d5440eab0cb07174f2398ad72739e86a33f2",
+    "splits_manifest": "splits.json",
+    "splits_seed": 42,
+    "hisc_baseline_config": {
+      "radiusInMeters": 1000,
+      "temporalWindowHours": 720,
+      "duplicateThreshold": 0.6,
+      "relatedThreshold": 0.35,
+      "weights": {
+        "category": 0.2,
+        "geographic": 0.25,
+        "lexical": 0.1,
+        "semantic": 0.3,
+        "temporal": 0.15
+      }
+    },
+    "evaluation_phase": "Phase A4 — HISC Vocabulary and Cross-Asset Improvements"
+  },
+  "partitions": {
+    "train": {
+      "sample_count": 240,
+      "label_distribution": {
+        "duplicate": 72,
+        "related": 84,
+        "independent": 84
+      },
+      "metrics": {
+        "sample_count": 240,
+        "correct_count": 239,
+        "incorrect_count": 1,
+        "accuracy": 0.9958,
+        "macro_precision": 0.9961,
+        "macro_recall": 0.9954,
+        "macro_f1": 0.9957,
+        "micro_precision": 0.9958,
+        "micro_recall": 0.9958,
+        "micro_f1": 0.9958,
+        "weighted_precision": 0.9959,
+        "weighted_recall": 0.9958,
+        "weighted_f1": 0.9958,
+        "per_class": {
+          "duplicate": {
+            "true_positive": 71,
+            "false_positive": 0,
+            "false_negative": 1,
+            "true_negative": 168,
+            "support": 72,
+            "precision": 1,
+            "recall": 0.9861,
+            "f1": 0.993
+          },
+          "related": {
+            "true_positive": 84,
+            "false_positive": 1,
+            "false_negative": 0,
+            "true_negative": 155,
+            "support": 84,
+            "precision": 0.9882,
+            "recall": 1,
+            "f1": 0.9941
+          },
+          "independent": {
+            "true_positive": 84,
+            "false_positive": 0,
+            "false_negative": 0,
+            "true_negative": 156,
+            "support": 84,
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "confusion_matrix": {
+          "duplicate": {
+            "duplicate": 71,
+            "related": 1,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 0,
+            "related": 84,
+            "independent": 0
+          },
+          "independent": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 84
+          }
+        },
+        "misclassified_count": 1,
+        "misclassified_pairs": [
+          {
+            "pair_id": "P0082",
+            "actual_label": "duplicate",
+            "predicted_label": "related",
+            "score": 0.5997,
+            "features": {
+              "category": 1,
+              "geographic": 0.8418977429401594,
+              "lexical": 0.125,
+              "semantic": 0.1,
+              "temporal": 0.9780228724846005
+            },
+            "distance_meters": 172,
+            "hours": 16,
+            "category_a": "Waste & Cleanliness",
+            "category_b": "Waste & Cleanliness",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 172 meters apart",
+              "Submitted within 16 hours"
+            ]
+          }
+        ]
+      },
+      "bootstrap_macro_f1": {
+        "metric": "macro_f1",
+        "mean": 0.9958,
+        "standard_error": 0.0043,
+        "ci_lower": 0.9861,
+        "ci_upper": 1,
+        "confidence_level": 0.95,
+        "iterations": 1000,
+        "seed": 42
+      }
+    },
+    "val": {
+      "sample_count": 80,
+      "label_distribution": {
+        "duplicate": 24,
+        "related": 28,
+        "independent": 28
+      },
+      "metrics": {
+        "sample_count": 80,
+        "correct_count": 80,
+        "incorrect_count": 0,
+        "accuracy": 1,
+        "macro_precision": 1,
+        "macro_recall": 1,
+        "macro_f1": 1,
+        "micro_precision": 1,
+        "micro_recall": 1,
+        "micro_f1": 1,
+        "weighted_precision": 1,
+        "weighted_recall": 1,
+        "weighted_f1": 1,
+        "per_class": {
+          "duplicate": {
+            "true_positive": 24,
+            "false_positive": 0,
+            "false_negative": 0,
+            "true_negative": 56,
+            "support": 24,
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "related": {
+            "true_positive": 28,
+            "false_positive": 0,
+            "false_negative": 0,
+            "true_negative": 52,
+            "support": 28,
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "independent": {
+            "true_positive": 28,
+            "false_positive": 0,
+            "false_negative": 0,
+            "true_negative": 52,
+            "support": 28,
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "confusion_matrix": {
+          "duplicate": {
+            "duplicate": 24,
+            "related": 0,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 0,
+            "related": 28,
+            "independent": 0
+          },
+          "independent": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 28
+          }
+        },
+        "misclassified_count": 0,
+        "misclassified_pairs": []
+      },
+      "bootstrap_macro_f1": {
+        "metric": "macro_f1",
+        "mean": 1,
+        "standard_error": 0,
+        "ci_lower": 1,
+        "ci_upper": 1,
+        "confidence_level": 0.95,
+        "iterations": 1000,
+        "seed": 42
+      }
+    },
+    "test": {
+      "sample_count": 80,
+      "label_distribution": {
+        "duplicate": 24,
+        "related": 28,
+        "independent": 28
+      },
+      "metrics": {
+        "sample_count": 80,
+        "correct_count": 80,
+        "incorrect_count": 0,
+        "accuracy": 1,
+        "macro_precision": 1,
+        "macro_recall": 1,
+        "macro_f1": 1,
+        "micro_precision": 1,
+        "micro_recall": 1,
+        "micro_f1": 1,
+        "weighted_precision": 1,
+        "weighted_recall": 1,
+        "weighted_f1": 1,
+        "per_class": {
+          "duplicate": {
+            "true_positive": 24,
+            "false_positive": 0,
+            "false_negative": 0,
+            "true_negative": 56,
+            "support": 24,
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "related": {
+            "true_positive": 28,
+            "false_positive": 0,
+            "false_negative": 0,
+            "true_negative": 52,
+            "support": 28,
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          },
+          "independent": {
+            "true_positive": 28,
+            "false_positive": 0,
+            "false_negative": 0,
+            "true_negative": 52,
+            "support": 28,
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "confusion_matrix": {
+          "duplicate": {
+            "duplicate": 24,
+            "related": 0,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 0,
+            "related": 28,
+            "independent": 0
+          },
+          "independent": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 28
+          }
+        },
+        "misclassified_count": 0,
+        "misclassified_pairs": []
+      },
+      "bootstrap_macro_f1": {
+        "metric": "macro_f1",
+        "mean": 1,
+        "standard_error": 0,
+        "ci_lower": 1,
+        "ci_upper": 1,
+        "confidence_level": 0.95,
+        "iterations": 1000,
+        "seed": 42
+      }
+    },
+    "original_all": {
+      "sample_count": 400,
+      "label_distribution": {
+        "duplicate": 120,
+        "related": 140,
+        "independent": 140
+      },
+      "metrics": {
+        "sample_count": 400,
+        "correct_count": 399,
+        "incorrect_count": 1,
+        "accuracy": 0.9975,
+        "macro_precision": 0.9976,
+        "macro_recall": 0.9972,
+        "macro_f1": 0.9974,
+        "micro_precision": 0.9975,
+        "micro_recall": 0.9975,
+        "micro_f1": 0.9975,
+        "weighted_precision": 0.9975,
+        "weighted_recall": 0.9975,
+        "weighted_f1": 0.9975,
+        "per_class": {
+          "duplicate": {
+            "true_positive": 119,
+            "false_positive": 0,
+            "false_negative": 1,
+            "true_negative": 280,
+            "support": 120,
+            "precision": 1,
+            "recall": 0.9917,
+            "f1": 0.9958
+          },
+          "related": {
+            "true_positive": 140,
+            "false_positive": 1,
+            "false_negative": 0,
+            "true_negative": 259,
+            "support": 140,
+            "precision": 0.9929,
+            "recall": 1,
+            "f1": 0.9964
+          },
+          "independent": {
+            "true_positive": 140,
+            "false_positive": 0,
+            "false_negative": 0,
+            "true_negative": 260,
+            "support": 140,
+            "precision": 1,
+            "recall": 1,
+            "f1": 1
+          }
+        },
+        "confusion_matrix": {
+          "duplicate": {
+            "duplicate": 119,
+            "related": 1,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 0,
+            "related": 140,
+            "independent": 0
+          },
+          "independent": {
+            "duplicate": 0,
+            "related": 0,
+            "independent": 140
+          }
+        },
+        "misclassified_count": 1,
+        "misclassified_pairs": [
+          {
+            "pair_id": "P0082",
+            "actual_label": "duplicate",
+            "predicted_label": "related",
+            "score": 0.5997,
+            "features": {
+              "category": 1,
+              "geographic": 0.8418977429401594,
+              "lexical": 0.125,
+              "semantic": 0.1,
+              "temporal": 0.9780228724846005
+            },
+            "distance_meters": 172,
+            "hours": 16,
+            "category_a": "Waste & Cleanliness",
+            "category_b": "Waste & Cleanliness",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 172 meters apart",
+              "Submitted within 16 hours"
+            ]
+          }
+        ]
+      },
+      "bootstrap_macro_f1": {
+        "metric": "macro_f1",
+        "mean": 0.9973,
+        "standard_error": 0.0027,
+        "ci_lower": 0.9914,
+        "ci_upper": 1,
+        "confidence_level": 0.95,
+        "iterations": 1000,
+        "seed": 42
+      }
+    },
+    "synthetic_challenge": {
+      "sample_count": 150,
+      "label_distribution": {
+        "duplicate": 50,
+        "related": 43,
+        "independent": 57
+      },
+      "metrics": {
+        "sample_count": 150,
+        "correct_count": 125,
+        "incorrect_count": 25,
+        "accuracy": 0.8333,
+        "macro_precision": 0.8267,
+        "macro_recall": 0.8329,
+        "macro_f1": 0.8278,
+        "micro_precision": 0.8333,
+        "micro_recall": 0.8333,
+        "micro_f1": 0.8333,
+        "weighted_precision": 0.8337,
+        "weighted_recall": 0.8333,
+        "weighted_f1": 0.8314,
+        "per_class": {
+          "duplicate": {
+            "true_positive": 50,
+            "false_positive": 5,
+            "false_negative": 0,
+            "true_negative": 95,
+            "support": 50,
+            "precision": 0.9091,
+            "recall": 1,
+            "f1": 0.9524
+          },
+          "related": {
+            "true_positive": 32,
+            "false_positive": 13,
+            "false_negative": 11,
+            "true_negative": 94,
+            "support": 43,
+            "precision": 0.7111,
+            "recall": 0.7442,
+            "f1": 0.7273
+          },
+          "independent": {
+            "true_positive": 43,
+            "false_positive": 7,
+            "false_negative": 14,
+            "true_negative": 86,
+            "support": 57,
+            "precision": 0.86,
+            "recall": 0.7544,
+            "f1": 0.8037
+          }
+        },
+        "confusion_matrix": {
+          "duplicate": {
+            "duplicate": 50,
+            "related": 0,
+            "independent": 0
+          },
+          "related": {
+            "duplicate": 4,
+            "related": 32,
+            "independent": 7
+          },
+          "independent": {
+            "duplicate": 1,
+            "related": 13,
+            "independent": 43
+          }
+        },
+        "misclassified_count": 25,
+        "misclassified_pairs": [
+          {
+            "pair_id": "CH0053",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.5934,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.9544927290828995,
+              "lexical": 0.25,
+              "semantic": 0.2,
+              "temporal": 0.9986120751709083
+            },
+            "distance_meters": 47,
+            "hours": 1,
+            "category_a": "Roads & Transport",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 47 meters apart",
+              "Submitted within 1 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0054",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.6204,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.9694291225979269,
+              "lexical": 0.3333333333333333,
+              "semantic": 0.25,
+              "temporal": 0.9982653950580322
+            },
+            "distance_meters": 31,
+            "hours": 1.3,
+            "category_a": "Water & Utilities",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 31 meters apart",
+              "Submitted within 1 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0055",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.5805,
+            "features": {
+              "category": 0.4,
+              "geographic": 0.9694290396716191,
+              "lexical": 0.3333333333333333,
+              "semantic": 0.25,
+              "temporal": 0.9986120751709083
+            },
+            "distance_meters": 31,
+            "hours": 1,
+            "category_a": "Waste & Cleanliness",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 31 meters apart",
+              "Submitted within 1 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0056",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.6292,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.9613842953460624,
+              "lexical": 0.3333333333333333,
+              "semantic": 0.2857142857142857,
+              "temporal": 0.9983809417209113
+            },
+            "distance_meters": 39,
+            "hours": 1.2,
+            "category_a": "Street Infrastructure",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 39 meters apart",
+              "Submitted within 1 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0061",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.6608,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.9694220631017696,
+              "lexical": 0.3333333333333333,
+              "semantic": 0.38461538461538464,
+              "temporal": 0.9982653950580322
+            },
+            "distance_meters": 31,
+            "hours": 1.3,
+            "category_a": "Roads & Transport",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 31 meters apart",
+              "Submitted within 1 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0065",
+            "actual_label": "related",
+            "predicted_label": "independent",
+            "score": 0.5806,
+            "features": {
+              "category": 0,
+              "geographic": 0.96942725879697,
+              "lexical": 0.5,
+              "semantic": 0.46153846153846156,
+              "temporal": 0.9982653950580322
+            },
+            "distance_meters": 31,
+            "hours": 1.3,
+            "category_a": "Drainage & Flooding",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Complaints are 31 meters apart",
+              "Submitted within 1 hours",
+              "Shared descriptive terms"
+            ]
+          },
+          {
+            "pair_id": "CH0067",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.4244,
+            "features": {
+              "category": 0,
+              "geographic": 0.9694220631017696,
+              "lexical": 0.09090909090909091,
+              "semantic": 0.07692307692307693,
+              "temporal": 0.9993057966262922
+            },
+            "distance_meters": 31,
+            "hours": 0.5,
+            "category_a": "Roads & Transport",
+            "category_b": "Waste & Cleanliness",
+            "explanation": [
+              "Complaints are 31 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0069",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.6507,
+            "features": {
+              "category": 0.6,
+              "geographic": 0.9694224389739887,
+              "lexical": 0.38461538461538464,
+              "semantic": 0.3333333333333333,
+              "temporal": 0.9990745026112094
+            },
+            "distance_meters": 31,
+            "hours": 0.7,
+            "category_a": "Roads & Transport",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 31 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0071",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.5875,
+            "features": {
+              "category": 0.4,
+              "geographic": 0.9544932090503017,
+              "lexical": 0.3333333333333333,
+              "semantic": 0.2857142857142857,
+              "temporal": 0.9989588756797245
+            },
+            "distance_meters": 47,
+            "hours": 0.8,
+            "category_a": "Roads & Transport",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 47 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0073",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.4951,
+            "features": {
+              "category": 0.2,
+              "geographic": 0.9544840189729317,
+              "lexical": 0.16666666666666666,
+              "semantic": 0.16666666666666666,
+              "temporal": 0.9989588756797245
+            },
+            "distance_meters": 47,
+            "hours": 0.8,
+            "category_a": "Water & Utilities",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Compatible civic categories",
+              "Complaints are 47 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0075",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.4183,
+            "features": {
+              "category": 0,
+              "geographic": 0.9544959616956925,
+              "lexical": 0.08333333333333333,
+              "semantic": 0.07142857142857142,
+              "temporal": 0.9991901429262157
+            },
+            "distance_meters": 47,
+            "hours": 0.6,
+            "category_a": "Roads & Transport",
+            "category_b": "Waste & Cleanliness",
+            "explanation": [
+              "Complaints are 47 meters apart",
+              "Submitted within an hour"
+            ]
+          },
+          {
+            "pair_id": "CH0077",
+            "actual_label": "related",
+            "predicted_label": "independent",
+            "score": 0.5306,
+            "features": {
+              "category": 1,
+              "geographic": 0.07275187969020651,
+              "lexical": 0.42857142857142855,
+              "semantic": 0.4,
+              "temporal": 0.9972260766771478
+            },
+            "distance_meters": 2621,
+            "hours": 2,
+            "category_a": "Drainage & Flooding",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 2621 meters apart",
+              "Submitted within 2 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0091",
+            "actual_label": "related",
+            "predicted_label": "independent",
+            "score": 0.5651,
+            "features": {
+              "category": 1,
+              "geographic": 0.9694254405820284,
+              "lexical": 0.23529411764705882,
+              "semantic": 0.2222222222222222,
+              "temporal": 0.21671618891232203
+            },
+            "distance_meters": 31,
+            "hours": 1101,
+            "category_a": "Drainage & Flooding",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 31 meters apart",
+              "Submitted within 1101 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0092",
+            "actual_label": "related",
+            "predicted_label": "independent",
+            "score": 0.515,
+            "features": {
+              "category": 1,
+              "geographic": 0.9694220631017696,
+              "lexical": 0.11764705882352941,
+              "semantic": 0.10526315789473684,
+              "temporal": 0.19541321935182687
+            },
+            "distance_meters": 31,
+            "hours": 1175.5,
+            "category_a": "Roads & Transport",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 31 meters apart",
+              "Submitted within 1176 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0093",
+            "actual_label": "related",
+            "predicted_label": "independent",
+            "score": 0.5663,
+            "features": {
+              "category": 1,
+              "geographic": 0.975564769935084,
+              "lexical": 0.2,
+              "semantic": 0.25,
+              "temporal": 0.1824299730538359
+            },
+            "distance_meters": 25,
+            "hours": 1225,
+            "category_a": "Water & Utilities",
+            "category_b": "Water & Utilities",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 25 meters apart",
+              "Submitted within 1225 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0094",
+            "actual_label": "related",
+            "predicted_label": "independent",
+            "score": 0.5295,
+            "features": {
+              "category": 1,
+              "geographic": 0.9694224389739887,
+              "lexical": 0.15384615384615385,
+              "semantic": 0.15384615384615385,
+              "temporal": 0.17078307225592554
+            },
+            "distance_meters": 31,
+            "hours": 1272.5,
+            "category_a": "Waste & Cleanliness",
+            "category_b": "Waste & Cleanliness",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 31 meters apart",
+              "Submitted within 1273 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0095",
+            "actual_label": "related",
+            "predicted_label": "independent",
+            "score": 0.5544,
+            "features": {
+              "category": 1,
+              "geographic": 0.9755657961861112,
+              "lexical": 0.23076923076923078,
+              "semantic": 0.21428571428571427,
+              "temporal": 0.15442363826235925
+            },
+            "distance_meters": 25,
+            "hours": 1345,
+            "category_a": "Street Infrastructure",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 25 meters apart",
+              "Submitted within 1345 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0101",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.7506,
+            "features": {
+              "category": 1,
+              "geographic": 0.9694220631017696,
+              "lexical": 0.38461538461538464,
+              "semantic": 0.4,
+              "temporal": 0.9982653950580322
+            },
+            "distance_meters": 31,
+            "hours": 1.3,
+            "category_a": "Street Infrastructure",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 31 meters apart",
+              "Submitted within 1 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0102",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.805,
+            "features": {
+              "category": 1,
+              "geographic": 0.9544905237343148,
+              "lexical": 0.5,
+              "semantic": 0.5555555555555556,
+              "temporal": 0.9981498617678356
+            },
+            "distance_meters": 47,
+            "hours": 1.3,
+            "category_a": "Drainage & Flooding",
+            "category_b": "Drainage & Flooding",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 47 meters apart",
+              "Submitted within 1 hours",
+              "Shared descriptive terms"
+            ]
+          },
+          {
+            "pair_id": "CH0103",
+            "actual_label": "independent",
+            "predicted_label": "duplicate",
+            "score": 0.7191,
+            "features": {
+              "category": 1,
+              "geographic": 0.9544860906732413,
+              "lexical": 0.3076923076923077,
+              "semantic": 0.3333333333333333,
+              "temporal": 0.9982653950580322
+            },
+            "distance_meters": 47,
+            "hours": 1.3,
+            "category_a": "Roads & Transport",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 47 meters apart",
+              "Submitted within 1 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0104",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.6902,
+            "features": {
+              "category": 1,
+              "geographic": 0.969424008993125,
+              "lexical": 0.23076923076923078,
+              "semantic": 0.25,
+              "temporal": 0.9982653950580322
+            },
+            "distance_meters": 31,
+            "hours": 1.3,
+            "category_a": "Water & Utilities",
+            "category_b": "Water & Utilities",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 31 meters apart",
+              "Submitted within 1 hours"
+            ]
+          },
+          {
+            "pair_id": "CH0105",
+            "actual_label": "related",
+            "predicted_label": "duplicate",
+            "score": 0.81,
+            "features": {
+              "category": 1,
+              "geographic": 0.9397892215562957,
+              "lexical": 0.5384615384615384,
+              "semantic": 0.5714285714285714,
+              "temporal": 0.9986120751709083
+            },
+            "distance_meters": 62,
+            "hours": 1,
+            "category_a": "Street Infrastructure",
+            "category_b": "Street Infrastructure",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 62 meters apart",
+              "Submitted within 1 hours",
+              "Shared descriptive terms"
+            ]
+          },
+          {
+            "pair_id": "CH0108",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.8595,
+            "features": {
+              "category": 1,
+              "geographic": 0.6220992705997074,
+              "lexical": 0.875,
+              "semantic": 0.8888888888888888,
+              "temporal": 0.9989588756797245
+            },
+            "distance_meters": 475,
+            "hours": 0.8,
+            "category_a": "Water & Utilities",
+            "category_b": "Water & Utilities",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 475 meters apart",
+              "Submitted within an hour",
+              "High semantic similarity"
+            ]
+          },
+          {
+            "pair_id": "CH0109",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.9425,
+            "features": {
+              "category": 1,
+              "geographic": 0.7707027287444754,
+              "lexical": 1,
+              "semantic": 1,
+              "temporal": 0.9989588756797245
+            },
+            "distance_meters": 260,
+            "hours": 0.8,
+            "category_a": "Waste & Cleanliness",
+            "category_b": "Waste & Cleanliness",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 260 meters apart",
+              "Submitted within an hour",
+              "High semantic similarity"
+            ]
+          },
+          {
+            "pair_id": "CH0112",
+            "actual_label": "independent",
+            "predicted_label": "related",
+            "score": 0.7049,
+            "features": {
+              "category": 1,
+              "geographic": 0.5533991074747222,
+              "lexical": 0.5,
+              "semantic": 0.5555555555555556,
+              "temporal": 0.9991901429262157
+            },
+            "distance_meters": 592,
+            "hours": 0.6,
+            "category_a": "Roads & Transport",
+            "category_b": "Roads & Transport",
+            "explanation": [
+              "Same civic category",
+              "Complaints are 592 meters apart",
+              "Submitted within an hour",
+              "Shared descriptive terms"
+            ]
+          }
+        ]
+      },
+      "bootstrap_macro_f1": {
+        "metric": "macro_f1",
+        "mean": 0.8256,
+        "standard_error": 0.0312,
+        "ci_lower": 0.7633,
+        "ci_upper": 0.8831,
+        "confidence_level": 0.95,
+        "iterations": 1000,
+        "seed": 42
+      }
+    }
+  },
+  "validation_threshold_sweep": {
+    "evaluated_combinations": 41,
+    "baseline_configuration": {
+      "duplicate_threshold": 0.6,
+      "related_threshold": 0.35,
+      "accuracy": 1,
+      "macro_f1": 1,
+      "per_class_f1": {
+        "duplicate": 1,
+        "related": 1,
+        "independent": 1
+      }
+    },
+    "best_validation_candidate": {
+      "duplicate_threshold": 0.5,
+      "related_threshold": 0.25,
+      "accuracy": 1,
+      "macro_precision": 1,
+      "macro_recall": 1,
+      "macro_f1": 1,
+      "per_class_f1": {
+        "duplicate": 1,
+        "related": 1,
+        "independent": 1
+      }
+    },
+    "sweep_grid": [
+      {
+        "duplicate_threshold": 0.5,
+        "related_threshold": 0.25,
+        "accuracy": 1,
+        "macro_precision": 1,
+        "macro_recall": 1,
+        "macro_f1": 1,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 1,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.5,
+        "related_threshold": 0.3,
+        "accuracy": 1,
+        "macro_precision": 1,
+        "macro_recall": 1,
+        "macro_f1": 1,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 1,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.5,
+        "related_threshold": 0.35,
+        "accuracy": 1,
+        "macro_precision": 1,
+        "macro_recall": 1,
+        "macro_f1": 1,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 1,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.5,
+        "related_threshold": 0.4,
+        "accuracy": 1,
+        "macro_precision": 1,
+        "macro_recall": 1,
+        "macro_f1": 1,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 1,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.5,
+        "related_threshold": 0.45,
+        "accuracy": 0.9125,
+        "macro_precision": 0.9333,
+        "macro_recall": 0.9167,
+        "macro_f1": 0.9153,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 0.8571,
+          "independent": 0.8889
+        }
+      },
+      {
+        "duplicate_threshold": 0.55,
+        "related_threshold": 0.25,
+        "accuracy": 1,
+        "macro_precision": 1,
+        "macro_recall": 1,
+        "macro_f1": 1,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 1,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.55,
+        "related_threshold": 0.3,
+        "accuracy": 1,
+        "macro_precision": 1,
+        "macro_recall": 1,
+        "macro_f1": 1,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 1,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.55,
+        "related_threshold": 0.35,
+        "accuracy": 1,
+        "macro_precision": 1,
+        "macro_recall": 1,
+        "macro_f1": 1,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 1,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.55,
+        "related_threshold": 0.4,
+        "accuracy": 1,
+        "macro_precision": 1,
+        "macro_recall": 1,
+        "macro_f1": 1,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 1,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.55,
+        "related_threshold": 0.45,
+        "accuracy": 0.9125,
+        "macro_precision": 0.9333,
+        "macro_recall": 0.9167,
+        "macro_f1": 0.9153,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 0.8571,
+          "independent": 0.8889
+        }
+      },
+      {
+        "duplicate_threshold": 0.55,
+        "related_threshold": 0.5,
+        "accuracy": 0.7875,
+        "macro_precision": 0.8741,
+        "macro_recall": 0.7976,
+        "macro_f1": 0.7771,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 0.5641,
+          "independent": 0.7671
+        }
+      },
+      {
+        "duplicate_threshold": 0.6,
+        "related_threshold": 0.25,
+        "accuracy": 1,
+        "macro_precision": 1,
+        "macro_recall": 1,
+        "macro_f1": 1,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 1,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.6,
+        "related_threshold": 0.3,
+        "accuracy": 1,
+        "macro_precision": 1,
+        "macro_recall": 1,
+        "macro_f1": 1,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 1,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.6,
+        "related_threshold": 0.35,
+        "accuracy": 1,
+        "macro_precision": 1,
+        "macro_recall": 1,
+        "macro_f1": 1,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 1,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.6,
+        "related_threshold": 0.4,
+        "accuracy": 1,
+        "macro_precision": 1,
+        "macro_recall": 1,
+        "macro_f1": 1,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 1,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.6,
+        "related_threshold": 0.45,
+        "accuracy": 0.9125,
+        "macro_precision": 0.9333,
+        "macro_recall": 0.9167,
+        "macro_f1": 0.9153,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 0.8571,
+          "independent": 0.8889
+        }
+      },
+      {
+        "duplicate_threshold": 0.6,
+        "related_threshold": 0.5,
+        "accuracy": 0.7875,
+        "macro_precision": 0.8741,
+        "macro_recall": 0.7976,
+        "macro_f1": 0.7771,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 0.5641,
+          "independent": 0.7671
+        }
+      },
+      {
+        "duplicate_threshold": 0.65,
+        "related_threshold": 0.25,
+        "accuracy": 0.925,
+        "macro_precision": 0.9412,
+        "macro_recall": 0.9167,
+        "macro_f1": 0.9201,
+        "per_class_f1": {
+          "duplicate": 0.8571,
+          "related": 0.9032,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.65,
+        "related_threshold": 0.3,
+        "accuracy": 0.925,
+        "macro_precision": 0.9412,
+        "macro_recall": 0.9167,
+        "macro_f1": 0.9201,
+        "per_class_f1": {
+          "duplicate": 0.8571,
+          "related": 0.9032,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.65,
+        "related_threshold": 0.35,
+        "accuracy": 0.925,
+        "macro_precision": 0.9412,
+        "macro_recall": 0.9167,
+        "macro_f1": 0.9201,
+        "per_class_f1": {
+          "duplicate": 0.8571,
+          "related": 0.9032,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.65,
+        "related_threshold": 0.4,
+        "accuracy": 0.925,
+        "macro_precision": 0.9412,
+        "macro_recall": 0.9167,
+        "macro_f1": 0.9201,
+        "per_class_f1": {
+          "duplicate": 0.8571,
+          "related": 0.9032,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.65,
+        "related_threshold": 0.45,
+        "accuracy": 0.8375,
+        "macro_precision": 0.8593,
+        "macro_recall": 0.8333,
+        "macro_f1": 0.8366,
+        "per_class_f1": {
+          "duplicate": 0.8571,
+          "related": 0.7636,
+          "independent": 0.8889
+        }
+      },
+      {
+        "duplicate_threshold": 0.65,
+        "related_threshold": 0.5,
+        "accuracy": 0.7125,
+        "macro_precision": 0.7564,
+        "macro_recall": 0.7143,
+        "macro_f1": 0.7044,
+        "per_class_f1": {
+          "duplicate": 0.8571,
+          "related": 0.4889,
+          "independent": 0.7671
+        }
+      },
+      {
+        "duplicate_threshold": 0.7,
+        "related_threshold": 0.25,
+        "accuracy": 0.8375,
+        "macro_precision": 0.8943,
+        "macro_recall": 0.8194,
+        "macro_f1": 0.8134,
+        "per_class_f1": {
+          "duplicate": 0.6286,
+          "related": 0.8116,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.7,
+        "related_threshold": 0.3,
+        "accuracy": 0.8375,
+        "macro_precision": 0.8943,
+        "macro_recall": 0.8194,
+        "macro_f1": 0.8134,
+        "per_class_f1": {
+          "duplicate": 0.6286,
+          "related": 0.8116,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.7,
+        "related_threshold": 0.35,
+        "accuracy": 0.8375,
+        "macro_precision": 0.8943,
+        "macro_recall": 0.8194,
+        "macro_f1": 0.8134,
+        "per_class_f1": {
+          "duplicate": 0.6286,
+          "related": 0.8116,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.7,
+        "related_threshold": 0.4,
+        "accuracy": 0.8375,
+        "macro_precision": 0.8943,
+        "macro_recall": 0.8194,
+        "macro_f1": 0.8134,
+        "per_class_f1": {
+          "duplicate": 0.6286,
+          "related": 0.8116,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.7,
+        "related_threshold": 0.45,
+        "accuracy": 0.75,
+        "macro_precision": 0.8059,
+        "macro_recall": 0.7361,
+        "macro_f1": 0.7316,
+        "per_class_f1": {
+          "duplicate": 0.6286,
+          "related": 0.6774,
+          "independent": 0.8889
+        }
+      },
+      {
+        "duplicate_threshold": 0.7,
+        "related_threshold": 0.5,
+        "accuracy": 0.625,
+        "macro_precision": 0.6935,
+        "macro_recall": 0.6171,
+        "macro_f1": 0.6063,
+        "per_class_f1": {
+          "duplicate": 0.6286,
+          "related": 0.4231,
+          "independent": 0.7671
+        }
+      },
+      {
+        "duplicate_threshold": 0.75,
+        "related_threshold": 0.25,
+        "accuracy": 0.8125,
+        "macro_precision": 0.8837,
+        "macro_recall": 0.7917,
+        "macro_f1": 0.7781,
+        "per_class_f1": {
+          "duplicate": 0.5455,
+          "related": 0.7887,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.75,
+        "related_threshold": 0.3,
+        "accuracy": 0.8125,
+        "macro_precision": 0.8837,
+        "macro_recall": 0.7917,
+        "macro_f1": 0.7781,
+        "per_class_f1": {
+          "duplicate": 0.5455,
+          "related": 0.7887,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.75,
+        "related_threshold": 0.35,
+        "accuracy": 0.8125,
+        "macro_precision": 0.8837,
+        "macro_recall": 0.7917,
+        "macro_f1": 0.7781,
+        "per_class_f1": {
+          "duplicate": 0.5455,
+          "related": 0.7887,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.75,
+        "related_threshold": 0.4,
+        "accuracy": 0.8125,
+        "macro_precision": 0.8837,
+        "macro_recall": 0.7917,
+        "macro_f1": 0.7781,
+        "per_class_f1": {
+          "duplicate": 0.5455,
+          "related": 0.7887,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.75,
+        "related_threshold": 0.45,
+        "accuracy": 0.725,
+        "macro_precision": 0.7944,
+        "macro_recall": 0.7083,
+        "macro_f1": 0.6969,
+        "per_class_f1": {
+          "duplicate": 0.5455,
+          "related": 0.6562,
+          "independent": 0.8889
+        }
+      },
+      {
+        "duplicate_threshold": 0.75,
+        "related_threshold": 0.5,
+        "accuracy": 0.6,
+        "macro_precision": 0.6818,
+        "macro_recall": 0.5893,
+        "macro_f1": 0.5733,
+        "per_class_f1": {
+          "duplicate": 0.5455,
+          "related": 0.4074,
+          "independent": 0.7671
+        }
+      },
+      {
+        "duplicate_threshold": 0.8,
+        "related_threshold": 0.25,
+        "accuracy": 0.7625,
+        "macro_precision": 0.8652,
+        "macro_recall": 0.7361,
+        "macro_f1": 0.6972,
+        "per_class_f1": {
+          "duplicate": 0.3448,
+          "related": 0.7467,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.8,
+        "related_threshold": 0.3,
+        "accuracy": 0.7625,
+        "macro_precision": 0.8652,
+        "macro_recall": 0.7361,
+        "macro_f1": 0.6972,
+        "per_class_f1": {
+          "duplicate": 0.3448,
+          "related": 0.7467,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.8,
+        "related_threshold": 0.35,
+        "accuracy": 0.7625,
+        "macro_precision": 0.8652,
+        "macro_recall": 0.7361,
+        "macro_f1": 0.6972,
+        "per_class_f1": {
+          "duplicate": 0.3448,
+          "related": 0.7467,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.8,
+        "related_threshold": 0.4,
+        "accuracy": 0.7625,
+        "macro_precision": 0.8652,
+        "macro_recall": 0.7361,
+        "macro_f1": 0.6972,
+        "per_class_f1": {
+          "duplicate": 0.3448,
+          "related": 0.7467,
+          "independent": 1
+        }
+      },
+      {
+        "duplicate_threshold": 0.8,
+        "related_threshold": 0.45,
+        "accuracy": 0.675,
+        "macro_precision": 0.775,
+        "macro_recall": 0.6528,
+        "macro_f1": 0.6171,
+        "per_class_f1": {
+          "duplicate": 0.3448,
+          "related": 0.6176,
+          "independent": 0.8889
+        }
+      },
+      {
+        "duplicate_threshold": 0.8,
+        "related_threshold": 0.5,
+        "accuracy": 0.55,
+        "macro_precision": 0.663,
+        "macro_recall": 0.5337,
+        "macro_f1": 0.4971,
+        "per_class_f1": {
+          "duplicate": 0.3448,
+          "related": 0.3793,
+          "independent": 0.7671
+        }
+      }
+    ]
+  },
+  "feature_ablations": {
+    "validation": {
+      "partition": "validation",
+      "full_model": {
+        "macro_f1": 1,
+        "accuracy": 1,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 1,
+          "independent": 1
+        }
+      },
+      "ablations": {
+        "no_category": {
+          "feature_removed": "category",
+          "macro_precision": 0.9123,
+          "macro_recall": 0.8611,
+          "macro_f1": 0.8618,
+          "delta_macro_f1": -0.1382,
+          "accuracy": 0.875,
+          "per_class_f1": {
+            "duplicate": 0.7368,
+            "related": 0.8485,
+            "independent": 1
+          }
+        },
+        "no_geographic": {
+          "feature_removed": "geographic",
+          "macro_precision": 0.7718,
+          "macro_recall": 0.7183,
+          "macro_f1": 0.7177,
+          "delta_macro_f1": -0.2823,
+          "accuracy": 0.725,
+          "per_class_f1": {
+            "duplicate": 0.7368,
+            "related": 0.5926,
+            "independent": 0.8235
+          }
+        },
+        "no_lexical": {
+          "feature_removed": "lexical",
+          "macro_precision": 1,
+          "macro_recall": 1,
+          "macro_f1": 1,
+          "delta_macro_f1": 0,
+          "accuracy": 1,
+          "per_class_f1": {
+            "duplicate": 1,
+            "related": 1,
+            "independent": 1
+          }
+        },
+        "no_semantic": {
+          "feature_removed": "semantic",
+          "macro_precision": 1,
+          "macro_recall": 1,
+          "macro_f1": 1,
+          "delta_macro_f1": 0,
+          "accuracy": 1,
+          "per_class_f1": {
+            "duplicate": 1,
+            "related": 1,
+            "independent": 1
+          }
+        },
+        "no_temporal": {
+          "feature_removed": "temporal",
+          "macro_precision": 0.9412,
+          "macro_recall": 0.9167,
+          "macro_f1": 0.9201,
+          "delta_macro_f1": -0.0799,
+          "accuracy": 0.925,
+          "per_class_f1": {
+            "duplicate": 0.8571,
+            "related": 0.9032,
+            "independent": 1
+          }
+        }
+      }
+    },
+    "test": {
+      "partition": "test",
+      "full_model": {
+        "macro_f1": 1,
+        "accuracy": 1,
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 1,
+          "independent": 1
+        }
+      },
+      "ablations": {
+        "no_category": {
+          "feature_removed": "category",
+          "macro_precision": 0.9495,
+          "macro_recall": 0.9306,
+          "macro_f1": 0.9339,
+          "delta_macro_f1": -0.0661,
+          "accuracy": 0.9375,
+          "per_class_f1": {
+            "duplicate": 0.8837,
+            "related": 0.918,
+            "independent": 1
+          }
+        },
+        "no_geographic": {
+          "feature_removed": "geographic",
+          "macro_precision": 0.8794,
+          "macro_recall": 0.8591,
+          "macro_f1": 0.8623,
+          "delta_macro_f1": -0.1377,
+          "accuracy": 0.8625,
+          "per_class_f1": {
+            "duplicate": 0.8837,
+            "related": 0.8,
+            "independent": 0.9032
+          }
+        },
+        "no_lexical": {
+          "feature_removed": "lexical",
+          "macro_precision": 1,
+          "macro_recall": 1,
+          "macro_f1": 1,
+          "delta_macro_f1": 0,
+          "accuracy": 1,
+          "per_class_f1": {
+            "duplicate": 1,
+            "related": 1,
+            "independent": 1
+          }
+        },
+        "no_semantic": {
+          "feature_removed": "semantic",
+          "macro_precision": 1,
+          "macro_recall": 1,
+          "macro_f1": 1,
+          "delta_macro_f1": 0,
+          "accuracy": 1,
+          "per_class_f1": {
+            "duplicate": 1,
+            "related": 1,
+            "independent": 1
+          }
+        },
+        "no_temporal": {
+          "feature_removed": "temporal",
+          "macro_precision": 0.9677,
+          "macro_recall": 0.9583,
+          "macro_f1": 0.9608,
+          "delta_macro_f1": -0.0392,
+          "accuracy": 0.9625,
+          "per_class_f1": {
+            "duplicate": 0.9333,
+            "related": 0.9492,
+            "independent": 1
+          }
+        }
+      }
+    }
+  },
+  "limitations_and_leakage_protection": {
+    "clustering_vs_pairwise_protocol": "The current HISC algorithm implements online graph clustering via MongoDB collections (Complaint and IncidentCluster). The evaluation datasets (400 original pairs, 150 challenge pairs) are pairwise labeled relations. As a result, global partition-level clustering metrics (Adjusted Rand Index, Adjusted Mutual Information, BCubed F1) requiring full connected graph matrices cannot be computed without artificial graph synthesis. Instead, the evaluation rigorously measures pairwise link classification performance (duplicate, related, independent).",
+    "leakage_protection": "Zero incident_id leakage across train, val, and test partitions confirmed. Synthetic challenge set strictly separated from baseline fitting and validation threshold sweeping."
+  }
+}

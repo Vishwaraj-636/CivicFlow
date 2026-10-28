@@ -2,121 +2,91 @@ import { randomUUID } from "node:crypto";
 import Complaint from "../model/complaint.model.js";
 import IncidentCluster from "../model/incidentCluster.model.js";
 
-export const HISC_CONFIG = {
-   radiusInMeters: 1000,
-   temporalWindowHours: 24 * 30,
-   duplicateThreshold: 0.6,
-   relatedThreshold: 0.35,
-   weights: {
-      category: 0.2,
-      geographic: 0.25,
-      lexical: 0.1,
-      semantic: 0.3,
-      temporal: 0.15,
-   },
+import {
+   DEFAULT_HISC_CONFIG,
+   HISC_EVAL_PRESET,
+   HISC_PRESETS,
+   loadConfig,
+   getActivePresetName,
+} from "../hisc/config.js";
+
+import {
+   CIVIC_CONCEPT_DICTIONARY,
+   CAUSAL_CONCEPT_PAIRS,
+   CIVIC_STOP_WORDS,
+   normalizeCivicText,
+   extractCivicConcepts,
+   tokenize,
+   intersectionRatio,
+   hasOpposingDirections,
+   hasCausalOrSharedConcept,
+   distanceInMeters,
+   categoryScore,
+   classifyIncidentScore,
+   scorePair,
+} from "../hisc/scorePair.js";
+
+export const HISC_CONFIG = DEFAULT_HISC_CONFIG;
+export const resolveConfig = loadConfig;
+
+export {
+   DEFAULT_HISC_CONFIG,
+   HISC_EVAL_PRESET,
+   HISC_PRESETS,
+   getActivePresetName,
+   CIVIC_CONCEPT_DICTIONARY,
+   CAUSAL_CONCEPT_PAIRS,
+   CIVIC_STOP_WORDS,
+   normalizeCivicText,
+   extractCivicConcepts,
+   tokenize,
+   intersectionRatio,
+   hasOpposingDirections,
+   hasCausalOrSharedConcept,
+   distanceInMeters,
+   categoryScore,
+   classifyIncidentScore,
+   scorePair,
 };
 
-const synonymGroups = [
-   ["pothole", "crater", "road damage", "road defect"],
-   ["streetlight", "street lamp", "lamp post", "light pole"],
-   ["garbage", "waste", "trash", "rubbish"],
-   ["leak", "leakage", "burst", "broken pipe"],
-   ["flood", "flooding", "waterlogging", "inundation"],
-];
-
-const tokenize = (value = "") => String(value).toLowerCase()
-   .replace(/[^a-z0-9\s]/g, " ")
-   .split(/\s+/)
-   .filter((word) => word.length > 2);
-
-const expandedTokens = (value) => new Set(tokenize(value).flatMap((token) => {
-   const group = synonymGroups.find((items) => items.includes(token));
-   return group ? [...group, token] : [token];
-}));
-
-const intersectionRatio = (first, second) => {
-   const union = new Set([...first, ...second]);
-   if (!union.size) return 0;
-   return [...first].filter((token) => second.has(token)).length / union.size;
-};
-
-export const distanceInMeters = (first, second) => {
-   const [firstLng, firstLat] = first;
-   const [secondLng, secondLat] = second;
-   const earthRadius = 6371000;
-   const latitudeDelta = (secondLat - firstLat) * Math.PI / 180;
-   const longitudeDelta = (secondLng - firstLng) * Math.PI / 180;
-   const a = Math.sin(latitudeDelta / 2) ** 2
-      + Math.cos(firstLat * Math.PI / 180) * Math.cos(secondLat * Math.PI / 180)
-      * Math.sin(longitudeDelta / 2) ** 2;
-   return earthRadius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-};
-
-const categoryScore = (first, second) => {
-   if (first === second) return 1;
-   const families = [
-      ["Roads & Transport", "Street Infrastructure"],
-      ["Water & Utilities", "Drainage & Flooding"],
-      ["Waste & Cleanliness"],
-   ];
-   return families.some((family) => family.includes(first) && family.includes(second)) ? 0.6 : 0;
-};
-
-const featureExplanation = (features, distance, hours) => [
-   features.category >= 1 ? "Same civic category" : features.category > 0 ? "Compatible civic categories" : null,
-   `Complaints are ${Math.round(distance)} meters apart`,
-   `Submitted ${hours < 1 ? "within an hour" : `within ${Math.round(hours)} hours`}`,
-   features.semantic >= 0.7 ? "High semantic similarity" : features.lexical >= 0.5 ? "Shared descriptive terms" : null,
-].filter(Boolean);
-
-export const extractIncidentFeatures = (complaint, candidate, config = HISC_CONFIG) => {
-   const distance = distanceInMeters(complaint.location.coordinates, candidate.location.coordinates);
-   const hours = Math.abs(new Date(complaint.createdAt) - new Date(candidate.createdAt)) / 3600000;
-   const textA = `${complaint.title} ${complaint.description}`;
-   const textB = `${candidate.title} ${candidate.description}`;
-   const lexical = intersectionRatio(new Set(tokenize(textA)), new Set(tokenize(textB)));
-   const semantic = intersectionRatio(expandedTokens(textA), expandedTokens(textB));
-   const features = {
-      category: categoryScore(complaint.category, candidate.category),
-      geographic: Math.exp(-distance / config.radiusInMeters),
-      lexical,
-      semantic,
-      temporal: Math.exp(-hours / config.temporalWindowHours),
-   };
-   const enabledFeatures = config.enabledFeatures ?? {};
-   const activeWeights = Object.entries(config.weights ?? HISC_CONFIG.weights)
-      .filter(([feature]) => enabledFeatures[feature] !== false);
-   const totalWeight = activeWeights.reduce((total, [, weight]) => total + weight, 0) || 1;
-   const score = Math.min(1, Math.max(0,
-      activeWeights.reduce((total, [feature, weight]) => total + features[feature] * weight, 0) / totalWeight
-   ));
+export const extractIncidentFeatures = (complaint, candidate, rawConfig = HISC_CONFIG) => {
+   const config = resolveConfig(rawConfig);
+   const analysis = scorePair(complaint, candidate, config);
    return {
-      score,
-      features,
-      distance,
-      hours,
-      explanation: featureExplanation(features, distance, hours),
+      score: analysis.score,
+      features: analysis.features,
+      distance: analysis.distance,
+      hours: analysis.hours,
+      explanation: analysis.explanation,
+      context: analysis.context,
    };
 };
 
-export const classifyIncidentScore = (score, config = HISC_CONFIG) => {
-   if (score >= config.duplicateThreshold) return "duplicate";
-   if (score >= config.relatedThreshold) return "related";
-   return "independent";
+export const retrieveIncidentCandidates = async (complaint, rawConfig = HISC_CONFIG) => {
+   const config = resolveConfig(rawConfig);
+   return Complaint.find({
+      _id: { $ne: complaint._id },
+      status: { $nin: ["deleted", "closed"] },
+      createdAt: { $gte: new Date(new Date(complaint.createdAt).getTime() - config.temporalWindowHours * 3600000) },
+      location: { $near: { $geometry: complaint.location, $maxDistance: config.radiusInMeters } },
+   }).limit(40);
 };
 
-export const retrieveIncidentCandidates = async (complaint, config = HISC_CONFIG) => Complaint.find({
-   _id: { $ne: complaint._id },
-   status: { $nin: ["deleted", "closed"] },
-   createdAt: { $gte: new Date(new Date(complaint.createdAt).getTime() - config.temporalWindowHours * 3600000) },
-   location: { $near: { $geometry: complaint.location, $maxDistance: config.radiusInMeters } },
-}).limit(40);
-
-export const analyzeIncident = async (complaint, config = HISC_CONFIG) => {
+export const analyzeIncident = async (complaint, rawConfig = HISC_CONFIG) => {
+   const config = resolveConfig(rawConfig);
    const candidates = await retrieveIncidentCandidates(complaint, config);
    return candidates.map((candidate) => {
-      const analysis = extractIncidentFeatures(complaint, candidate, config);
-      return { complaint: candidate, classification: classifyIncidentScore(analysis.score, config), ...analysis };
+      const result = scorePair(complaint, candidate, config);
+      return {
+         complaint: candidate,
+         classification: result.label,
+         score: result.score,
+         features: result.features,
+         distance: result.distance,
+         hours: result.hours,
+         explanation: result.explanation,
+         context: result.context,
+      };
    }).filter((match) => match.classification !== "independent")
       .sort((first, second) => second.score - first.score);
 };
@@ -160,4 +130,4 @@ export const upsertIncidentCluster = async (complaint) => {
    return { complaint, incident: cluster, matches };
 };
 
-export default { analyzeIncident, extractIncidentFeatures, upsertIncidentCluster };
+export default { analyzeIncident, extractIncidentFeatures, upsertIncidentCluster, scorePair };

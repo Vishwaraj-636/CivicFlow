@@ -1,0 +1,70 @@
+{
+  "source_evaluation_artifact": "BACKEND/results/t1_validation_baseline_comparison.json",
+  "source_commit_hash": "040d2e78a3c87b8ad31924d0a6d4b2e6115c59eb",
+  "generation_timestamp": "2026-10-11T06:46:41.720Z",
+  "random_seed": null,
+  "randomness_note": "Deterministic enumeration; no stochastic sampling used.",
+  "split_name": "validation",
+  "method_id": "HISC",
+  "method_name": "HISC (Hierarchical Incident Stream Clustering)",
+  "formula": "Weighted multi-attribute affinity: S = 0.20*Cat + 0.25*Geo + 0.10*Lex + 0.30*Sem + 0.15*Time with contextual classification rules. Default thresholds: 0.60 / 0.35.",
+  "selected_thresholds": {
+    "duplicate": 0.6,
+    "related": 0.1
+  },
+  "sample_count": 80,
+  "misclassified_count": 0,
+  "accuracy": 1,
+  "macro_f1": 1,
+  "per_class": {
+    "duplicate": {
+      "true_positive": 24,
+      "false_positive": 0,
+      "false_negative": 0,
+      "true_negative": 56,
+      "support": 24,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1
+    },
+    "related": {
+      "true_positive": 28,
+      "false_positive": 0,
+      "false_negative": 0,
+      "true_negative": 52,
+      "support": 28,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1
+    },
+    "independent": {
+      "true_positive": 28,
+      "false_positive": 0,
+      "false_negative": 0,
+      "true_negative": 52,
+      "support": 28,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1
+    }
+  },
+  "confusion_matrix": {
+    "duplicate": {
+      "duplicate": 24,
+      "related": 0,
+      "independent": 0
+    },
+    "related": {
+      "duplicate": 0,
+      "related": 28,
+      "independent": 0
+    },
+    "independent": {
+      "duplicate": 0,
+      "related": 0,
+      "independent": 28
+    }
+  },
+  "misclassified_pairs": [],
+  "missing_fields_or_unavailable_explanations": []
+}

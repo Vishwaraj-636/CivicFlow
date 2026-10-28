@@ -1,0 +1,1152 @@
+[
+  {
+    "sample_index": 1,
+    "pair_id": "CH0019",
+    "challenge_category": "Typos and Spelling Variations",
+    "category_a": "Water & Utilities",
+    "complaint_a": "Sever water leekage from pipe in Tambaram west main road.",
+    "category_b": "Water & Utilities",
+    "complaint_b": "Water pipline brust and leek on Tambaram west main road.",
+    "location_a": {
+      "latitude": 12.9249,
+      "longitude": 80.1
+    },
+    "location_b": {
+      "latitude": 12.9248,
+      "longitude": 80.1002
+    },
+    "timestamp_a": "2026-03-19T06:30:00",
+    "timestamp_b": "2026-03-19T07:15:00",
+    "proposed_label": "duplicate",
+    "incident_id": "CH_INC0011",
+    "labeling_rationale": "Same water pipe leak in Tambaram with misspellings 'leekage', 'pipline', 'brust'.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 2,
+    "pair_id": "CH0147",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "category_a": "Waste & Cleanliness",
+    "complaint_a": "Stench from overflowing dustbin near Chromepet GST road bus stop.",
+    "category_b": "Waste & Cleanliness",
+    "complaint_b": "Uncollected waste overflowing from bin onto pavement at Chromepet GST road stop.",
+    "location_a": {
+      "latitude": 12.9516,
+      "longitude": 80.1462
+    },
+    "location_b": {
+      "latitude": 12.9517,
+      "longitude": 80.1463
+    },
+    "timestamp_a": "2026-07-19T07:45:00",
+    "timestamp_b": "2026-07-19T08:30:00",
+    "proposed_label": "duplicate",
+    "incident_id": "CH_INC0047",
+    "labeling_rationale": "Same uncollected waste bin overflowing onto the pavement at Chromepet GST bus stop.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 3,
+    "pair_id": "CH0100",
+    "challenge_category": "Temporally Distant at Same Location",
+    "category_a": "Water & Utilities",
+    "complaint_a": "Pipeline valve leak repaired outside Mylapore tank on March 22.",
+    "category_b": "Water & Utilities",
+    "complaint_b": "Domestic service connection pipe burst outside Mylapore tank on September 10.",
+    "location_a": {
+      "latitude": 13.0368,
+      "longitude": 80.2676
+    },
+    "location_b": {
+      "latitude": 13.037,
+      "longitude": 80.2678
+    },
+    "timestamp_a": "2026-03-22T08:00:00",
+    "timestamp_b": "2026-09-10T08:30:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Six months apart; municipal trunk valve repair vs distinct consumer service connection pipe burst.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 4,
+    "pair_id": "CH0039",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "category_a": "Water & Utilities",
+    "complaint_a": "Thanni pipe burst aagi drain canal kulla paayuthu Porur toll.",
+    "category_b": "Drainage & Flooding",
+    "complaint_b": "Porur toll stormwater canal overflowing with clear drinking water.",
+    "location_a": {
+      "latitude": 13.0382,
+      "longitude": 80.1565
+    },
+    "location_b": {
+      "latitude": 13.0384,
+      "longitude": 80.1567
+    },
+    "timestamp_a": "2026-04-09T07:15:00",
+    "timestamp_b": "2026-04-09T08:45:00",
+    "proposed_label": "related",
+    "incident_id": null,
+    "labeling_rationale": "Two distinct municipal problems connected by a direct causal flow: an upstream MetroWater pipeline burst (Water & Utilities) is discharging into and overflowing the separate municipal stormwater drain canal (Drainage & Flooding) with clear water at Porur toll.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 5,
+    "pair_id": "CH0016",
+    "challenge_category": "Typos and Spelling Variations",
+    "category_a": "Roads & Transport",
+    "complaint_a": "Big pot hole on road infront of Chromepet saravana store.",
+    "category_b": "Roads & Transport",
+    "complaint_b": "Massive pothol and roaddmg infront Chromepet saravana stores.",
+    "location_a": {
+      "latitude": 12.9516,
+      "longitude": 80.1462
+    },
+    "location_b": {
+      "latitude": 12.9515,
+      "longitude": 80.1463
+    },
+    "timestamp_a": "2026-03-16T11:00:00",
+    "timestamp_b": "2026-03-16T11:30:00",
+    "proposed_label": "duplicate",
+    "incident_id": "CH_INC0008",
+    "labeling_rationale": "Same road depression in front of Chromepet Saravana Store despite multiple typo tokens ('pothol', 'roaddmg').",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 6,
+    "pair_id": "CH0081",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "category_a": "Waste & Cleanliness",
+    "complaint_a": "Overflowing garbage bin and bad smell near Medavakkam junction.",
+    "category_b": "Waste & Cleanliness",
+    "complaint_b": "Overflowing garbage bin and bad smell near Koyambedu wholesale market.",
+    "location_a": {
+      "latitude": 12.9185,
+      "longitude": 80.1915
+    },
+    "location_b": {
+      "latitude": 13.0694,
+      "longitude": 80.1948
+    },
+    "timestamp_a": "2026-05-21T07:15:00",
+    "timestamp_b": "2026-05-21T07:30:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Identical waste overflow complaints 17 km apart in separate municipal zones.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 7,
+    "pair_id": "CH0003",
+    "challenge_category": "Paraphrases with Novel Vocabulary",
+    "category_a": "Waste & Cleanliness",
+    "complaint_a": "Decaying organic refuse and stench from discarded dumper bin near Tambaram vegetable market.",
+    "category_b": "Waste & Cleanliness",
+    "complaint_b": "Putrid scrap pile and overflowing municipal dumper opposite Tambaram market gate.",
+    "location_a": {
+      "latitude": 12.9249,
+      "longitude": 80.1
+    },
+    "location_b": {
+      "latitude": 12.925,
+      "longitude": 80.1002
+    },
+    "timestamp_a": "2026-03-03T07:45:00",
+    "timestamp_b": "2026-03-03T08:20:00",
+    "proposed_label": "duplicate",
+    "incident_id": "CH_INC0003",
+    "labeling_rationale": "Identical uncollected municipal dumper bin rotting at Tambaram market gate.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 8,
+    "pair_id": "CH0017",
+    "challenge_category": "Typos and Spelling Variations",
+    "category_a": "Street Infrastructure",
+    "complaint_a": "Streat lite not working near Medavakkam koot road.",
+    "category_b": "Street Infrastructure",
+    "complaint_b": "Stretlamp broken and off near Medavakkam koot road junction.",
+    "location_a": {
+      "latitude": 12.9185,
+      "longitude": 80.1915
+    },
+    "location_b": {
+      "latitude": 12.9184,
+      "longitude": 80.1917
+    },
+    "timestamp_a": "2026-03-17T19:30:00",
+    "timestamp_b": "2026-03-17T20:15:00",
+    "proposed_label": "duplicate",
+    "incident_id": "CH_INC0009",
+    "labeling_rationale": "Same defective street lamp at Medavakkam junction with typos 'streat lite' and 'stretlamp'.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 9,
+    "pair_id": "CH0112",
+    "challenge_category": "Similar Wording, Distinct Incidents",
+    "category_a": "Roads & Transport",
+    "complaint_a": "Pothole in left lane outside Sholinganallur TCS gate.",
+    "category_b": "Roads & Transport",
+    "complaint_b": "Pothole in right lane outside Sholinganallur Infosys gate.",
+    "location_a": {
+      "latitude": 12.901,
+      "longitude": 80.2279
+    },
+    "location_b": {
+      "latitude": 12.905,
+      "longitude": 80.2315
+    },
+    "timestamp_a": "2026-06-12T09:00:00",
+    "timestamp_b": "2026-06-12T09:35:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Separate road craters 600 meters apart outside different IT parks.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 10,
+    "pair_id": "CH0094",
+    "challenge_category": "Temporally Distant at Same Location",
+    "category_a": "Waste & Cleanliness",
+    "complaint_a": "Garbage bin damaged and lid missing at Tambaram market corner on June 12.",
+    "category_b": "Waste & Cleanliness",
+    "complaint_b": "Huge chronic dump created around the broken bin at Tambaram market corner on August 04.",
+    "location_a": {
+      "latitude": 12.9249,
+      "longitude": 80.1
+    },
+    "location_b": {
+      "latitude": 12.9251,
+      "longitude": 80.1002
+    },
+    "timestamp_a": "2026-06-12T08:30:00",
+    "timestamp_b": "2026-08-04T09:00:00",
+    "proposed_label": "related",
+    "incident_id": null,
+    "labeling_rationale": "Unresolved broken bin in June directly led to the establishment of an illegal chronic dumping spot by August.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 11,
+    "pair_id": "CH0011",
+    "challenge_category": "Paraphrases with Novel Vocabulary",
+    "category_a": "Street Infrastructure",
+    "complaint_a": "Bent pedestrian guardrail protruding into carriageway after vehicle collision outside Saidapet court.",
+    "category_b": "Roads & Transport",
+    "complaint_b": "Damaged kerbstone edging and dislodged pavers from the vehicle collision along Saidapet court bus lane.",
+    "location_a": {
+      "latitude": 13.0213,
+      "longitude": 80.2231
+    },
+    "location_b": {
+      "latitude": 13.0216,
+      "longitude": 80.2233
+    },
+    "timestamp_a": "2026-03-11T13:00:00",
+    "timestamp_b": "2026-03-11T14:30:00",
+    "proposed_label": "related",
+    "incident_id": null,
+    "labeling_rationale": "Vehicular collision outside Saidapet court sheared both the pedestrian railing and the road kerbstones at the same frontage.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 12,
+    "pair_id": "CH0050",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "category_a": "Drainage & Flooding",
+    "complaint_a": "Waterlogging Kathipara Guindy.",
+    "category_b": "Drainage & Flooding",
+    "complaint_b": "Water stagnant Kathipara underpass.",
+    "location_a": {
+      "latitude": 13.0067,
+      "longitude": 80.2025
+    },
+    "location_b": {
+      "latitude": 13.0068,
+      "longitude": 80.2024
+    },
+    "timestamp_a": "2026-04-20T14:10:00",
+    "timestamp_b": "2026-04-20T14:40:00",
+    "proposed_label": "duplicate",
+    "incident_id": "CH_INC0026",
+    "labeling_rationale": "Same stagnant rainwater under Kathipara underpass reported succinctly.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 13,
+    "pair_id": "CH0105",
+    "challenge_category": "Similar Wording, Distinct Incidents",
+    "category_a": "Street Infrastructure",
+    "complaint_a": "Street light pole 14 non functional due to underground cable fault along Guindy race course road.",
+    "category_b": "Street Infrastructure",
+    "complaint_b": "Street light pole 15 flickering and sparking from the same cable fault along Guindy race course road.",
+    "location_a": {
+      "latitude": 13.0067,
+      "longitude": 80.2025
+    },
+    "location_b": {
+      "latitude": 13.0071,
+      "longitude": 80.2029
+    },
+    "timestamp_a": "2026-06-05T19:30:00",
+    "timestamp_b": "2026-06-05T20:30:00",
+    "proposed_label": "related",
+    "incident_id": null,
+    "labeling_rationale": "Adjacent sequential lamp poles on the same feeder circuit experienced linked power surge and failure from a common cable fault.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 14,
+    "pair_id": "CH0121",
+    "challenge_category": "Cascading Related Failures",
+    "category_a": "Water & Utilities",
+    "complaint_a": "Water supply pipe leaking onto unpaved dirt verge in Porur market road.",
+    "category_b": "Waste & Cleanliness",
+    "complaint_b": "Water leak created putrid mud pit with stagnant filth outside Porur market shops.",
+    "location_a": {
+      "latitude": 13.0382,
+      "longitude": 80.1565
+    },
+    "location_b": {
+      "latitude": 13.0384,
+      "longitude": 80.1567
+    },
+    "timestamp_a": "2026-06-21T07:00:00",
+    "timestamp_b": "2026-06-21T08:30:00",
+    "proposed_label": "related",
+    "incident_id": null,
+    "labeling_rationale": "Underground pipe leak saturated soil and created an unsanitary stagnant mud pit.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 15,
+    "pair_id": "CH0120",
+    "challenge_category": "Cascading Related Failures",
+    "category_a": "Street Infrastructure",
+    "complaint_a": "Overhead cable snapped and hanging at windscreen level across Sholinganallur junction.",
+    "category_b": "Roads & Transport",
+    "complaint_b": "Traffic gridlock and scooter accident due to low hanging wire at Sholinganallur junction.",
+    "location_a": {
+      "latitude": 12.901,
+      "longitude": 80.2279
+    },
+    "location_b": {
+      "latitude": 12.9012,
+      "longitude": 80.228
+    },
+    "timestamp_a": "2026-06-20T17:30:00",
+    "timestamp_b": "2026-06-20T18:15:00",
+    "proposed_label": "related",
+    "incident_id": null,
+    "labeling_rationale": "Snapped telecom/power cable caused the ensuing traffic disruption and scooter accident.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 16,
+    "pair_id": "CH0045",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "category_a": "Drainage & Flooding",
+    "complaint_a": "Mazhai thanni thengi nikkuthu Guindy Kathipara bridge keela.",
+    "category_b": "Roads & Transport",
+    "complaint_b": "Salai la periya pallam Perungalathur bus stop GST road.",
+    "location_a": {
+      "latitude": 13.0067,
+      "longitude": 80.2025
+    },
+    "location_b": {
+      "latitude": 12.9048,
+      "longitude": 80.091
+    },
+    "timestamp_a": "2026-04-15T15:00:00",
+    "timestamp_b": "2026-04-15T15:45:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Unrelated issues (flooding in Guindy vs pothole in Perungalathur) 16 km apart.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 17,
+    "pair_id": "CH0102",
+    "challenge_category": "Similar Wording, Distinct Incidents",
+    "category_a": "Drainage & Flooding",
+    "complaint_a": "Stormwater drain inlet grate missing opposite Velachery railway station allowing trash inside.",
+    "category_b": "Drainage & Flooding",
+    "complaint_b": "Stormwater conduit blocked by trash 20 meters downstream of missing grate opposite Velachery railway station.",
+    "location_a": {
+      "latitude": 12.9759,
+      "longitude": 80.2212
+    },
+    "location_b": {
+      "latitude": 12.9762,
+      "longitude": 80.2215
+    },
+    "timestamp_a": "2026-06-02T10:00:00",
+    "timestamp_b": "2026-06-02T11:20:00",
+    "proposed_label": "related",
+    "incident_id": null,
+    "labeling_rationale": "Missing inlet grate allowed street trash ingress, directly causing the downstream drainage conduit blockage.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 18,
+    "pair_id": "CH0051",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "category_a": "Roads & Transport",
+    "complaint_a": "Pothole T Nagar Usman road.",
+    "category_b": "Roads & Transport",
+    "complaint_b": "Big hole Usman road.",
+    "location_a": {
+      "latitude": 13.0418,
+      "longitude": 80.2341
+    },
+    "location_b": {
+      "latitude": 13.0419,
+      "longitude": 80.234
+    },
+    "timestamp_a": "2026-04-21T10:00:00",
+    "timestamp_b": "2026-04-21T10:20:00",
+    "proposed_label": "duplicate",
+    "incident_id": "CH_INC0027",
+    "labeling_rationale": "Short reports describing the same road pothole on Usman Road.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 19,
+    "pair_id": "CH0126",
+    "challenge_category": "Cascading Related Failures",
+    "category_a": "Water & Utilities",
+    "complaint_a": "Underground water valve chamber lid missing on Anna Nagar 3rd avenue.",
+    "category_b": "Roads & Transport",
+    "complaint_b": "Deep wheel-trap pothole inside unlidded water valve pit on Anna Nagar 3rd avenue.",
+    "location_a": {
+      "latitude": 13.085,
+      "longitude": 80.2101
+    },
+    "location_b": {
+      "latitude": 13.0852,
+      "longitude": 80.2103
+    },
+    "timestamp_a": "2026-06-26T09:30:00",
+    "timestamp_b": "2026-06-26T10:45:00",
+    "proposed_label": "related",
+    "incident_id": null,
+    "labeling_rationale": "Missing valve chamber cover created a deep vehicular roadway wheel-trap.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 20,
+    "pair_id": "CH0083",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "category_a": "Drainage & Flooding",
+    "complaint_a": "Severe waterlogging after rain at Guindy Kathipara underpass.",
+    "category_b": "Drainage & Flooding",
+    "complaint_b": "Severe waterlogging after rain at Perungalathur bus stop GST road.",
+    "location_a": {
+      "latitude": 13.0067,
+      "longitude": 80.2025
+    },
+    "location_b": {
+      "latitude": 12.9048,
+      "longitude": 80.091
+    },
+    "timestamp_a": "2026-05-23T16:00:00",
+    "timestamp_b": "2026-05-23T16:20:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Rainwater stagnation in distinct catchments 16 km apart.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 21,
+    "pair_id": "CH0122",
+    "challenge_category": "Cascading Related Failures",
+    "category_a": "Waste & Cleanliness",
+    "complaint_a": "Massive pile of dry tree branches and garbage dumped against lamp post in Adyar.",
+    "category_b": "Street Infrastructure",
+    "complaint_b": "Lamp post caught fire due to burning garbage pile in Adyar.",
+    "location_a": {
+      "latitude": 13.0012,
+      "longitude": 80.2565
+    },
+    "location_b": {
+      "latitude": 13.0014,
+      "longitude": 80.2567
+    },
+    "timestamp_a": "2026-06-22T21:00:00",
+    "timestamp_b": "2026-06-22T21:45:00",
+    "proposed_label": "related",
+    "incident_id": null,
+    "labeling_rationale": "Garbage pile accumulated around pole ignited, scorching the lamp post electricals.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 22,
+    "pair_id": "CH0037",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "category_a": "Waste & Cleanliness",
+    "complaint_a": "Kachra nahi uthaya do din se Sholinganallur signal corner pe.",
+    "category_b": "Waste & Cleanliness",
+    "complaint_b": "Sholinganallur corner dumper bin full bad smell kachra pada hai.",
+    "location_a": {
+      "latitude": 12.901,
+      "longitude": 80.2279
+    },
+    "location_b": {
+      "latitude": 12.9012,
+      "longitude": 80.2278
+    },
+    "timestamp_a": "2026-04-07T09:00:00",
+    "timestamp_b": "2026-04-07T09:40:00",
+    "proposed_label": "duplicate",
+    "incident_id": "CH_INC0021",
+    "labeling_rationale": "Same uncollected dumper bin at Sholinganallur corner reported in Hinglish.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 23,
+    "pair_id": "CH0031",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "category_a": "Roads & Transport",
+    "complaint_a": "Salai romba mosama irukku near Medavakkam junction periya pallam.",
+    "category_b": "Roads & Transport",
+    "complaint_b": "Periya kuli on road at Medavakkam junction vandi poda mudiyala.",
+    "location_a": {
+      "latitude": 12.9185,
+      "longitude": 80.1915
+    },
+    "location_b": {
+      "latitude": 12.9186,
+      "longitude": 80.1914
+    },
+    "timestamp_a": "2026-04-01T08:00:00",
+    "timestamp_b": "2026-04-01T08:45:00",
+    "proposed_label": "duplicate",
+    "incident_id": "CH_INC0015",
+    "labeling_rationale": "Both complaints describe the same big pothole ('periya pallam' / 'periya kuli') at Medavakkam junction.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 24,
+    "pair_id": "CH0106",
+    "challenge_category": "Similar Wording, Distinct Incidents",
+    "category_a": "Street Infrastructure",
+    "complaint_a": "Broken bus shelter glass panel at Medavakkam junction southbound bus stop.",
+    "category_b": "Street Infrastructure",
+    "complaint_b": "Broken bus shelter glass panel at Medavakkam junction northbound bus stop.",
+    "location_a": {
+      "latitude": 12.9185,
+      "longitude": 80.1915
+    },
+    "location_b": {
+      "latitude": 12.9192,
+      "longitude": 80.1925
+    },
+    "timestamp_a": "2026-06-06T08:00:00",
+    "timestamp_b": "2026-06-06T09:30:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Two distinct physical bus shelters on opposite sides of a divided dual-carriageway requiring separate contractor work orders.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 25,
+    "pair_id": "CH0080",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "category_a": "Street Infrastructure",
+    "complaint_a": "Entire street dark due to non functioning streetlights in Chromepet.",
+    "category_b": "Street Infrastructure",
+    "complaint_b": "Entire street dark due to non functioning streetlights in Mylapore.",
+    "location_a": {
+      "latitude": 12.9516,
+      "longitude": 80.1462
+    },
+    "location_b": {
+      "latitude": 13.0368,
+      "longitude": 80.2676
+    },
+    "timestamp_a": "2026-05-20T19:30:00",
+    "timestamp_b": "2026-05-20T19:45:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Identical streetlight blackout complaints 16 km apart in separate power distribution circles.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 26,
+    "pair_id": "CH0078",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "category_a": "Waste & Cleanliness",
+    "complaint_a": "Garbage transfer station compactor broken down in Velachery.",
+    "category_b": "Waste & Cleanliness",
+    "complaint_b": "Uncleared local waste bins overflowing across neighboring Madipakkam wards.",
+    "location_a": {
+      "latitude": 12.9759,
+      "longitude": 80.2212
+    },
+    "location_b": {
+      "latitude": 12.965,
+      "longitude": 80.2
+    },
+    "timestamp_a": "2026-05-18T09:00:00",
+    "timestamp_b": "2026-05-18T13:00:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Geographically distant (2.5 km) transfer station facility breakdown vs local neighborhood ward bin overflow are distinct operational tickets.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 27,
+    "pair_id": "CH0116",
+    "challenge_category": "Cascading Related Failures",
+    "category_a": "Drainage & Flooding",
+    "complaint_a": "Open stormwater canal overflowing into road verge in Tambaram sanatorium.",
+    "category_b": "Street Infrastructure",
+    "complaint_b": "Streetlight junction box submerged by canal overflow water emitting sparks in Tambaram sanatorium.",
+    "location_a": {
+      "latitude": 12.9249,
+      "longitude": 80.1
+    },
+    "location_b": {
+      "latitude": 12.9251,
+      "longitude": 80.1002
+    },
+    "timestamp_a": "2026-06-16T15:00:00",
+    "timestamp_b": "2026-06-16T16:10:00",
+    "proposed_label": "related",
+    "incident_id": null,
+    "labeling_rationale": "Canal overflow submerged the electrical street junction box, causing short-circuit sparking.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 28,
+    "pair_id": "CH0133",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "category_a": "Drainage & Flooding",
+    "complaint_a": "Stagnant stormwater puddle under Guindy industrial estate flyover blocking left lane.",
+    "category_b": "Drainage & Flooding",
+    "complaint_b": "Monsoon rainwater pool 1 foot deep under Guindy flyover causing traffic bottleneck.",
+    "location_a": {
+      "latitude": 13.0067,
+      "longitude": 80.2025
+    },
+    "location_b": {
+      "latitude": 13.0068,
+      "longitude": 80.2024
+    },
+    "timestamp_a": "2026-07-05T14:00:00",
+    "timestamp_b": "2026-07-05T14:40:00",
+    "proposed_label": "duplicate",
+    "incident_id": "CH_INC0033",
+    "labeling_rationale": "Same rainwater pool under Guindy flyover obstructing traffic on the same afternoon.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 29,
+    "pair_id": "CH0139",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "category_a": "Water & Utilities",
+    "complaint_a": "Potable water line fractured with steady stream pouring into Saidapet bus stand lane.",
+    "category_b": "Water & Utilities",
+    "complaint_b": "Subsurface drinking water conduit leaking clear supply onto Saidapet bus stand road.",
+    "location_a": {
+      "latitude": 13.0213,
+      "longitude": 80.2231
+    },
+    "location_b": {
+      "latitude": 13.0215,
+      "longitude": 80.223
+    },
+    "timestamp_a": "2026-07-11T07:00:00",
+    "timestamp_b": "2026-07-11T07:45:00",
+    "proposed_label": "duplicate",
+    "incident_id": "CH_INC0039",
+    "labeling_rationale": "Same fractured drinking water line leaking onto the road at Saidapet bus stand.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 30,
+    "pair_id": "CH0132",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "category_a": "Water & Utilities",
+    "complaint_a": "Fresh drinking water pipeline blowout flooding the road outside Chromepet court.",
+    "category_b": "Water & Utilities",
+    "complaint_b": "Metrowater distribution supply line cracked and spewing water near Chromepet court complex.",
+    "location_a": {
+      "latitude": 12.9516,
+      "longitude": 80.1462
+    },
+    "location_b": {
+      "latitude": 12.9518,
+      "longitude": 80.1461
+    },
+    "timestamp_a": "2026-07-04T06:10:00",
+    "timestamp_b": "2026-07-04T06:55:00",
+    "proposed_label": "duplicate",
+    "incident_id": "CH_INC0032",
+    "labeling_rationale": "Same drinking water pipeline rupture flooding the road outside Chromepet court complex.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 31,
+    "pair_id": "CH0036",
+    "challenge_category": "Tanglish and Colloquial Phrasing",
+    "category_a": "Roads & Transport",
+    "complaint_a": "Sadak pe bada gaddha hai Usman road T Nagar gaadi girne ka darr hai.",
+    "category_b": "Roads & Transport",
+    "complaint_b": "T Nagar Usman road bada pothole bikes slip ho rahe hain.",
+    "location_a": {
+      "latitude": 13.0418,
+      "longitude": 80.2341
+    },
+    "location_b": {
+      "latitude": 13.042,
+      "longitude": 80.2342
+    },
+    "timestamp_a": "2026-04-06T10:30:00",
+    "timestamp_b": "2026-04-06T11:15:00",
+    "proposed_label": "duplicate",
+    "incident_id": "CH_INC0020",
+    "labeling_rationale": "Same deep road hazard on Usman Road described in Hinglish/colloquial phrasing.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 32,
+    "pair_id": "CH0140",
+    "challenge_category": "True Duplicates with Disparate Phrasing",
+    "category_a": "Street Infrastructure",
+    "complaint_a": "Illumination pole leaning at 45 degree angle outside Perungalathur railway gate.",
+    "category_b": "Street Infrastructure",
+    "complaint_b": "Streetlight mast structurally unstable and tilting towards road near Perungalathur railway gate.",
+    "location_a": {
+      "latitude": 12.9048,
+      "longitude": 80.091
+    },
+    "location_b": {
+      "latitude": 12.905,
+      "longitude": 80.0911
+    },
+    "timestamp_a": "2026-07-12T18:15:00",
+    "timestamp_b": "2026-07-12T19:00:00",
+    "proposed_label": "duplicate",
+    "incident_id": "CH_INC0040",
+    "labeling_rationale": "Same tilting streetlight pole outside Perungalathur railway gate.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 33,
+    "pair_id": "CH0115",
+    "challenge_category": "Cascading Related Failures",
+    "category_a": "Waste & Cleanliness",
+    "complaint_a": "Massive pile of commercial plastic packaging dumped at Velachery bypass corner.",
+    "category_b": "Drainage & Flooding",
+    "complaint_b": "Plastic packaging bags sucked into stormwater drain causing road flood at Velachery bypass corner.",
+    "location_a": {
+      "latitude": 12.9759,
+      "longitude": 80.2212
+    },
+    "location_b": {
+      "latitude": 12.9761,
+      "longitude": 80.2214
+    },
+    "timestamp_a": "2026-06-15T11:00:00",
+    "timestamp_b": "2026-06-15T12:30:00",
+    "proposed_label": "related",
+    "incident_id": null,
+    "labeling_rationale": "Dumped plastic packaging washed into the drain inlet, triggering localized roadway flooding.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 34,
+    "pair_id": "CH0056",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "category_a": "Street Infrastructure",
+    "complaint_a": "Broken railing Saidapet.",
+    "category_b": "Roads & Transport",
+    "complaint_b": "Curb broken Saidapet bus stop.",
+    "location_a": {
+      "latitude": 13.0213,
+      "longitude": 80.2231
+    },
+    "location_b": {
+      "latitude": 13.0215,
+      "longitude": 80.2234
+    },
+    "timestamp_a": "2026-04-26T13:00:00",
+    "timestamp_b": "2026-04-26T14:10:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Vague complaints for broken railing and broken curb at Saidapet bus stop without textual evidence of a shared vehicle collision.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 35,
+    "pair_id": "CH0028",
+    "challenge_category": "Typos and Spelling Variations",
+    "category_a": "Street Infrastructure",
+    "complaint_a": "Streat lite not working near Medavakkam koot road.",
+    "category_b": "Water & Utilities",
+    "complaint_b": "Water leekage on road near Medavakkam koot road.",
+    "location_a": {
+      "latitude": 12.9185,
+      "longitude": 80.1915
+    },
+    "location_b": {
+      "latitude": 12.9187,
+      "longitude": 80.1918
+    },
+    "timestamp_a": "2026-03-28T20:00:00",
+    "timestamp_b": "2026-03-28T20:25:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Same junction but distinct civic issues with typos (street lighting defect vs water leak).",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 36,
+    "pair_id": "CH0012",
+    "challenge_category": "Paraphrases with Novel Vocabulary",
+    "category_a": "Roads & Transport",
+    "complaint_a": "Deep asphalt fissure and tarmac peeling outside Medavakkam junction.",
+    "category_b": "Roads & Transport",
+    "complaint_b": "Sunken bitumen carriageway depression opposite Anna Nagar roundtana.",
+    "location_a": {
+      "latitude": 12.9185,
+      "longitude": 80.1915
+    },
+    "location_b": {
+      "latitude": 13.085,
+      "longitude": 80.2101
+    },
+    "timestamp_a": "2026-03-12T09:00:00",
+    "timestamp_b": "2026-03-12T09:30:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Similar novel road failure vocabulary but situated 19 km apart in completely separate municipal zones.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 37,
+    "pair_id": "CH0046",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "category_a": "Roads & Transport",
+    "complaint_a": "Road damage Medavakkam junction.",
+    "category_b": "Roads & Transport",
+    "complaint_b": "Bad road Medavakkam signal.",
+    "location_a": {
+      "latitude": 12.9185,
+      "longitude": 80.1915
+    },
+    "location_b": {
+      "latitude": 12.9186,
+      "longitude": 80.1916
+    },
+    "timestamp_a": "2026-04-16T08:15:00",
+    "timestamp_b": "2026-04-16T08:35:00",
+    "proposed_label": "duplicate",
+    "incident_id": "CH_INC0022",
+    "labeling_rationale": "Terse reports of the same damaged road surface at Medavakkam junction within 20 minutes.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 38,
+    "pair_id": "CH0070",
+    "challenge_category": "Same Location, Different Issue",
+    "category_a": "Waste & Cleanliness",
+    "complaint_a": "Dead animal carcass on roadside near Chromepet flyover entrance.",
+    "category_b": "Street Infrastructure",
+    "complaint_b": "Streetlight not turning on along Chromepet flyover entrance road.",
+    "location_a": {
+      "latitude": 12.9516,
+      "longitude": 80.1462
+    },
+    "location_b": {
+      "latitude": 12.9518,
+      "longitude": 80.1464
+    },
+    "timestamp_a": "2026-05-10T07:30:00",
+    "timestamp_b": "2026-05-10T08:15:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Co-located near flyover entrance but completely unrelated sanitary removal vs electrical repair.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 39,
+    "pair_id": "CH0086",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "category_a": "Waste & Cleanliness",
+    "complaint_a": "Construction waste dumped illegally on Perungalathur bypass.",
+    "category_b": "Waste & Cleanliness",
+    "complaint_b": "Construction waste dumped illegally on Anna Nagar 2nd avenue.",
+    "location_a": {
+      "latitude": 12.9048,
+      "longitude": 80.091
+    },
+    "location_b": {
+      "latitude": 13.085,
+      "longitude": 80.2101
+    },
+    "timestamp_a": "2026-05-26T11:00:00",
+    "timestamp_b": "2026-05-26T11:45:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Illegal debris dumping incidents situated 24 km apart.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 40,
+    "pair_id": "CH0014",
+    "challenge_category": "Paraphrases with Novel Vocabulary",
+    "category_a": "Water & Utilities",
+    "complaint_a": "Potable main conduit rupture gushing water at Tambaram bus terminus.",
+    "category_b": "Water & Utilities",
+    "complaint_b": "Drinking water distribution pipe blowout near Koyambedu market gate.",
+    "location_a": {
+      "latitude": 12.9249,
+      "longitude": 80.1
+    },
+    "location_b": {
+      "latitude": 13.0694,
+      "longitude": 80.1948
+    },
+    "timestamp_a": "2026-03-14T07:00:00",
+    "timestamp_b": "2026-03-14T07:45:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Similar technical failure descriptions occurring 18 km apart in separate distribution networks.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 41,
+    "pair_id": "CH0110",
+    "challenge_category": "Similar Wording, Distinct Incidents",
+    "category_a": "Roads & Transport",
+    "complaint_a": "Traffic signal pedestrian push button defective at Adyar signal north crosswalk.",
+    "category_b": "Roads & Transport",
+    "complaint_b": "Traffic signal pedestrian push button defective at Adyar signal south crosswalk.",
+    "location_a": {
+      "latitude": 13.0012,
+      "longitude": 80.2565
+    },
+    "location_b": {
+      "latitude": 13.0019,
+      "longitude": 80.2572
+    },
+    "timestamp_a": "2026-06-10T16:00:00",
+    "timestamp_b": "2026-06-10T16:45:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Separate signal hardware modules mounted on opposite crosswalk pedestrian posts.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 42,
+    "pair_id": "CH0073",
+    "challenge_category": "Same Location, Different Issue",
+    "category_a": "Water & Utilities",
+    "complaint_a": "Low water pressure in municipal pipe along Sholinganallur OMR road.",
+    "category_b": "Roads & Transport",
+    "complaint_b": "Damaged speed breaker without paint along Sholinganallur OMR road.",
+    "location_a": {
+      "latitude": 12.901,
+      "longitude": 80.2279
+    },
+    "location_b": {
+      "latitude": 12.9013,
+      "longitude": 80.2282
+    },
+    "timestamp_a": "2026-05-13T08:30:00",
+    "timestamp_b": "2026-05-13T09:15:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Water distribution pressure issue vs road speed bump painting at the same corridor.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 43,
+    "pair_id": "CH0061",
+    "challenge_category": "Same Location, Different Issue",
+    "category_a": "Roads & Transport",
+    "complaint_a": "Deep pothole outside Medavakkam police station.",
+    "category_b": "Street Infrastructure",
+    "complaint_b": "Damaged speed breaker reflector sign beside the pothole at Medavakkam police station.",
+    "location_a": {
+      "latitude": 12.9185,
+      "longitude": 80.1915
+    },
+    "location_b": {
+      "latitude": 12.9187,
+      "longitude": 80.1917
+    },
+    "timestamp_a": "2026-05-01T09:00:00",
+    "timestamp_b": "2026-05-01T10:15:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Distinct physical assets outside Medavakkam police station (road pothole vs speed breaker reflector sign) with no documented causal interaction.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 44,
+    "pair_id": "CH0128",
+    "challenge_category": "Cascading Related Failures",
+    "category_a": "Roads & Transport",
+    "complaint_a": "Heavy fallen tree limb blocking two carriageway lanes outside IIT Madras main gate.",
+    "category_b": "Street Infrastructure",
+    "complaint_b": "Traffic signal mast crushed and wiring severed by the fallen tree limb outside IIT Madras main gate.",
+    "location_a": {
+      "latitude": 13.0067,
+      "longitude": 80.2025
+    },
+    "location_b": {
+      "latitude": 13.007,
+      "longitude": 80.2028
+    },
+    "timestamp_a": "2026-06-28T16:00:00",
+    "timestamp_b": "2026-06-28T17:15:00",
+    "proposed_label": "related",
+    "incident_id": null,
+    "labeling_rationale": "Two distinct municipal problems caused by the same storm tree fall: the heavy fallen tree limb is obstructing two roadway carriageway lanes (Roads & Transport), while simultaneously having crushed the adjacent traffic signal mast and severed its wiring (Street Infrastructure).",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 45,
+    "pair_id": "CH0072",
+    "challenge_category": "Same Location, Different Issue",
+    "category_a": "Street Infrastructure",
+    "complaint_a": "Damaged pedestrian zebra crossing signage pole at T Nagar Panagal park.",
+    "category_b": "Waste & Cleanliness",
+    "complaint_b": "Litter and plastic waste scattered across lawn outside T Nagar Panagal park.",
+    "location_a": {
+      "latitude": 13.0418,
+      "longitude": 80.2341
+    },
+    "location_b": {
+      "latitude": 13.0421,
+      "longitude": 80.2344
+    },
+    "timestamp_a": "2026-05-12T16:00:00",
+    "timestamp_b": "2026-05-12T16:30:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Same park perimeter but traffic signage maintenance vs park waste cleaning.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 46,
+    "pair_id": "CH0059",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "category_a": "Water & Utilities",
+    "complaint_a": "Water leak Tambaram market.",
+    "category_b": "Water & Utilities",
+    "complaint_b": "Water leak Koyambedu market.",
+    "location_a": {
+      "latitude": 12.9249,
+      "longitude": 80.1
+    },
+    "location_b": {
+      "latitude": 13.0694,
+      "longitude": 80.1948
+    },
+    "timestamp_a": "2026-04-29T06:30:00",
+    "timestamp_b": "2026-04-29T07:15:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Terse water leak complaints 18 km apart in completely separate markets.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 47,
+    "pair_id": "CH0117",
+    "challenge_category": "Cascading Related Failures",
+    "category_a": "Roads & Transport",
+    "complaint_a": "Lorry rammed into road median divider outside Chromepet railway gate.",
+    "category_b": "Street Infrastructure",
+    "complaint_b": "Median streetlight mast collapsed across roadway after lorry crash outside Chromepet railway gate.",
+    "location_a": {
+      "latitude": 12.9516,
+      "longitude": 80.1462
+    },
+    "location_b": {
+      "latitude": 12.9517,
+      "longitude": 80.1463
+    },
+    "timestamp_a": "2026-06-17T04:30:00",
+    "timestamp_b": "2026-06-17T05:15:00",
+    "proposed_label": "related",
+    "incident_id": null,
+    "labeling_rationale": "Vehicle impact smashed the concrete divider and toppled the mounted street lamp mast across the roadway.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 48,
+    "pair_id": "CH0047",
+    "challenge_category": "Very Short and Vague Descriptions",
+    "category_a": "Street Infrastructure",
+    "complaint_a": "No light Velachery bypass.",
+    "category_b": "Street Infrastructure",
+    "complaint_b": "Light off Velachery bypass road.",
+    "location_a": {
+      "latitude": 12.9759,
+      "longitude": 80.2212
+    },
+    "location_b": {
+      "latitude": 12.9758,
+      "longitude": 80.2211
+    },
+    "timestamp_a": "2026-04-17T19:00:00",
+    "timestamp_b": "2026-04-17T19:25:00",
+    "proposed_label": "duplicate",
+    "incident_id": "CH_INC0023",
+    "labeling_rationale": "Both complaints report dark streetlights on Velachery bypass on the same evening.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 49,
+    "pair_id": "CH0084",
+    "challenge_category": "Same Issue, Geographically Distant",
+    "category_a": "Roads & Transport",
+    "complaint_a": "Damaged road median and missing reflectors on T Nagar Usman road.",
+    "category_b": "Roads & Transport",
+    "complaint_b": "Damaged road median and missing reflectors on Porur link road.",
+    "location_a": {
+      "latitude": 13.0418,
+      "longitude": 80.2341
+    },
+    "location_b": {
+      "latitude": 13.0382,
+      "longitude": 80.1565
+    },
+    "timestamp_a": "2026-05-24T10:00:00",
+    "timestamp_b": "2026-05-24T10:30:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Identical median reflector defects located 8 km apart on separate arterial roads.",
+    "review_status": "PENDING_USER_VERIFICATION"
+  },
+  {
+    "sample_index": 50,
+    "pair_id": "CH0069",
+    "challenge_category": "Same Location, Different Issue",
+    "category_a": "Roads & Transport",
+    "complaint_a": "Damaged road surface and potholes at Tambaram railway station bus stand.",
+    "category_b": "Street Infrastructure",
+    "complaint_b": "Bus shelter roof sheet detached and flapping at Tambaram railway station bus stand.",
+    "location_a": {
+      "latitude": 12.9249,
+      "longitude": 80.1
+    },
+    "location_b": {
+      "latitude": 12.9251,
+      "longitude": 80.1002
+    },
+    "timestamp_a": "2026-05-09T09:00:00",
+    "timestamp_b": "2026-05-09T09:40:00",
+    "proposed_label": "independent",
+    "incident_id": null,
+    "labeling_rationale": "Co-located at Tambaram bus stand but independent assets (road tarmac vs bus shelter structure).",
+    "review_status": "PENDING_USER_VERIFICATION"
+  }
+]

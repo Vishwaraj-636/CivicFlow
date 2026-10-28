@@ -1,19 +1,20 @@
 import axios from "axios";
+import { API_BASE_URL } from "../../../config/api.config.js";
 
 const authApiInstance = axios.create({
-   baseURL: "http://localhost:3000/api/auth",
+   baseURL: `${API_BASE_URL}/auth`,
    withCredentials: true,
-})
+});
 
 const requestApiInstance = axios.create({
-   baseURL: "http://localhost:3000/api",
+   baseURL: API_BASE_URL,
    withCredentials: true,
-})
+});
 
 const departmentApiInstance = axios.create({
-   baseURL: "http://localhost:3000/api",
+   baseURL: API_BASE_URL,
    withCredentials: true,
-})
+});
 
 export async function getDepartments() {
    const response = await departmentApiInstance.get("/departments");

@@ -1,0 +1,269 @@
+{
+  "metadata": {
+    "evaluation_phase": "T5 — Train-Only Learned HISC Weights",
+    "timestamp": "2026-10-11T08:14:07.768Z",
+    "git_commit": "c1d091ce1f735976fb4580fa4299f365cfd131e1",
+    "seed": 42,
+    "source_dataset": "civicflow_400_labeled_complaint_pairs.csv",
+    "source_checksum_sha256": "b4653ac507f422a3b6f5ffadb291d5440eab0cb07174f2398ad72739e86a33f2",
+    "splits_manifest": "splits.json",
+    "partition_sizes": {
+      "train": 240,
+      "val": 80,
+      "held_out_test": 80,
+      "challenge_set": 150
+    },
+    "safety_declarations": {
+      "train_only_optimization": true,
+      "validation_only_selection": true,
+      "test_and_challenge_withheld": true,
+      "production_defaults_unmodified": true
+    }
+  },
+  "optimization_spec": {
+    "feature_names": [
+      "category",
+      "geographic",
+      "lexical",
+      "semantic",
+      "temporal"
+    ],
+    "step_size": 0.05,
+    "total_configurations_examined": 10626,
+    "perfect_candidates_count": 1691,
+    "selected_candidate_index": 1099,
+    "primary_objective": "training_macro_f1",
+    "tie_break_hierarchy": [
+      "1. Highest training Macro F1",
+      "2. Highest training overall Accuracy",
+      "3. Highest training duplicate F1",
+      "4. Highest training related F1",
+      "5. Deterministic canonical enumeration order (lexicographic index)"
+    ],
+    "thresholds_used_on_train": {
+      "duplicate": 0.6,
+      "related": 0.35
+    }
+  },
+  "hand_set_weights": {
+    "category": 0.2,
+    "geographic": 0.25,
+    "lexical": 0.1,
+    "semantic": 0.3,
+    "temporal": 0.15
+  },
+  "learned_weights": {
+    "category": 0,
+    "geographic": 0.3,
+    "lexical": 0,
+    "semantic": 0.4,
+    "temporal": 0.3
+  },
+  "train_metrics": {
+    "sample_count": 240,
+    "correct_count": 240,
+    "incorrect_count": 0,
+    "accuracy": 1,
+    "macro_precision": 1,
+    "macro_recall": 1,
+    "macro_f1": 1,
+    "micro_precision": 1,
+    "micro_recall": 1,
+    "micro_f1": 1,
+    "weighted_precision": 1,
+    "weighted_recall": 1,
+    "weighted_f1": 1,
+    "per_class": {
+      "duplicate": {
+        "true_positive": 72,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 168,
+        "support": 72,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      },
+      "related": {
+        "true_positive": 84,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 156,
+        "support": 84,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      },
+      "independent": {
+        "true_positive": 84,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 156,
+        "support": 84,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      }
+    },
+    "confusion_matrix": {
+      "duplicate": {
+        "duplicate": 72,
+        "related": 0,
+        "independent": 0
+      },
+      "related": {
+        "duplicate": 0,
+        "related": 84,
+        "independent": 0
+      },
+      "independent": {
+        "duplicate": 0,
+        "related": 0,
+        "independent": 84
+      }
+    },
+    "misclassified_count": 0,
+    "misclassified_pairs": []
+  },
+  "validation_comparison": {
+    "hand_set_metrics": {
+      "sample_count": 80,
+      "correct_count": 80,
+      "incorrect_count": 0,
+      "accuracy": 1,
+      "macro_precision": 1,
+      "macro_recall": 1,
+      "macro_f1": 1,
+      "micro_precision": 1,
+      "micro_recall": 1,
+      "micro_f1": 1,
+      "weighted_precision": 1,
+      "weighted_recall": 1,
+      "weighted_f1": 1,
+      "per_class": {
+        "duplicate": {
+          "true_positive": 24,
+          "false_positive": 0,
+          "false_negative": 0,
+          "true_negative": 56,
+          "support": 24,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1
+        },
+        "related": {
+          "true_positive": 28,
+          "false_positive": 0,
+          "false_negative": 0,
+          "true_negative": 52,
+          "support": 28,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1
+        },
+        "independent": {
+          "true_positive": 28,
+          "false_positive": 0,
+          "false_negative": 0,
+          "true_negative": 52,
+          "support": 28,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1
+        }
+      },
+      "confusion_matrix": {
+        "duplicate": {
+          "duplicate": 24,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 28,
+          "independent": 0
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 28
+        }
+      },
+      "misclassified_count": 0,
+      "misclassified_pairs": []
+    },
+    "learned_metrics": {
+      "sample_count": 80,
+      "correct_count": 80,
+      "incorrect_count": 0,
+      "accuracy": 1,
+      "macro_precision": 1,
+      "macro_recall": 1,
+      "macro_f1": 1,
+      "micro_precision": 1,
+      "micro_recall": 1,
+      "micro_f1": 1,
+      "weighted_precision": 1,
+      "weighted_recall": 1,
+      "weighted_f1": 1,
+      "per_class": {
+        "duplicate": {
+          "true_positive": 24,
+          "false_positive": 0,
+          "false_negative": 0,
+          "true_negative": 56,
+          "support": 24,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1
+        },
+        "related": {
+          "true_positive": 28,
+          "false_positive": 0,
+          "false_negative": 0,
+          "true_negative": 52,
+          "support": 28,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1
+        },
+        "independent": {
+          "true_positive": 28,
+          "false_positive": 0,
+          "false_negative": 0,
+          "true_negative": 52,
+          "support": 28,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1
+        }
+      },
+      "confusion_matrix": {
+        "duplicate": {
+          "duplicate": 24,
+          "related": 0,
+          "independent": 0
+        },
+        "related": {
+          "duplicate": 0,
+          "related": 28,
+          "independent": 0
+        },
+        "independent": {
+          "duplicate": 0,
+          "related": 0,
+          "independent": 28
+        }
+      },
+      "misclassified_count": 0,
+      "misclassified_pairs": []
+    },
+    "outcome": "tie",
+    "winning_configuration": "hand_set",
+    "justification": "Learned weights matched hand-set validation macro F1 exactly. Hand-set configuration retained by tie-break rule.",
+    "decision": "Hand-set baseline retained (exact tie on validation Macro F1)."
+  },
+  "deferred_experiments": {
+    "embedding_weight_optimization": "Deferred to preserve direct 5-feature comparison without scope expansion."
+  }
+}

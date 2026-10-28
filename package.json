@@ -1,4 +1,9 @@
 {
+  "name": "civicflow-root",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "puppeteer": "^25.10.0"
   }

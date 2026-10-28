@@ -24,9 +24,9 @@ const CitizenDashboard = () => {
 
    const stats = {
       total: complaints.length,
-      submitted: complaints.filter((c) => c.status === "pending" || c.status === "submitted").length,
-      inProgress: complaints.filter((c) => c.status === "in_progress").length,
-      resolved: complaints.filter((c) => c.status === "resolved").length,
+      inReview: complaints.filter((c) => c.status === "submitted" || c.status === "in_review").length,
+      inProgress: complaints.filter((c) => c.status === "in_progress" || c.status === "assigned").length,
+      resolved: complaints.filter((c) => c.status === "resolved" || c.status === "closed").length,
    };
 
    return (
@@ -101,14 +101,14 @@ const CitizenDashboard = () => {
                      <p className="mt-1 text-xs text-[#87919B]">All recorded submissions</p>
                   </div>
 
-                  {/* Submitted */}
+                  {/* In Review */}
                   <div className="rounded-xl border border-[#E2E6E4] bg-white p-4 sm:p-5 transition-colors hover:border-[#CBD2CF]">
                      <div className="flex items-center justify-between">
-                        <p className="text-xs font-semibold uppercase tracking-wider text-[#52606D]">Submitted</p>
+                        <p className="text-xs font-semibold uppercase tracking-wider text-[#52606D]">In Review</p>
                         <span className="inline-block h-2 w-2 rounded-full bg-[#52606D]" />
                      </div>
                      <p className="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight text-[#17202A]">
-                        {loading ? "—" : stats.submitted}
+                        {loading ? "—" : stats.inReview}
                      </p>
                      <p className="mt-1 text-xs text-[#87919B]">Awaiting initial review</p>
                   </div>

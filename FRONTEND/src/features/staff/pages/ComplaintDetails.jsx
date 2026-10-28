@@ -16,6 +16,7 @@ import {
    rejectComplaint,
    resolveComplaint,
    updateComplaintStatus,
+   uploadComplaintMedia,
 } from "../services/staff.api";
 import ComplaintActionPanel from "../components/ComplaintActionPanel";
 import StatusUpdateModal from "../components/StatusUpdateModal";
@@ -146,7 +147,10 @@ const ComplaintDetails = () => {
       setIsUpdating(true);
       setActionError("");
       try {
-         await resolveComplaint(id, data.resolutionDescription, data.resolutionMedia);
+         const uploadedMedia = data.resolutionMedia?.length > 0
+            ? await uploadComplaintMedia(data.resolutionMedia)
+            : [];
+         await resolveComplaint(id, data.resolutionDescription, uploadedMedia);
          setResolveModalOpen(false);
          fetchComplaintDetails();
       } catch (err) {
@@ -326,6 +330,33 @@ const ComplaintDetails = () => {
                <div className="flex flex-wrap items-center gap-3 border-t border-[#D7E6E1] pt-3"><span className="text-xs font-semibold uppercase tracking-wider text-[#52606D]">Priority</span>{currentUser?.role === "admin" ? <select value={priority} onChange={handlePriorityChange} className="rounded-lg border border-[#CBD2CF] bg-white px-3 py-2 text-sm capitalize"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="urgent">Urgent</option></select> : <span className="rounded-full bg-[#EEF4FA] px-3 py-1 text-sm font-semibold capitalize text-[#24527A]">{priority} (automatic)</span>}<span className="text-xs text-[#87919B]">{currentUser?.role === "admin" ? "Administrator override" : "Calculated from category, wording, safety terms, and evidence"}</span></div>
             </section>
 
+            {/* Citizen Resolution Feedback Card (if citizen requested further attention / rejected resolution) */}
+            {(complaint.resolutionVerificationStatus === "rejected" || complaint.resolutionVerificationRemark || complaint.citizenFeedback) && (
+               <section aria-label="Citizen Feedback" className="rounded-xl border border-[#CBD2CF] bg-[#F1F3F2] p-5 shadow-2xs space-y-2">
+                  <div className="flex items-center justify-between">
+                     <div className="flex items-center gap-2">
+                        <span className="inline-block h-2 w-2 rounded-full bg-[#173B5E]" />
+                        <h2 className="text-xs font-bold uppercase tracking-wider text-[#173B5E]">
+                           Citizen Rejection Feedback
+                        </h2>
+                     </div>
+                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#EEF4FA] text-[#24527A] border border-[#D2E3F3]">
+                        Citizen reported issue still exists
+                     </span>
+                  </div>
+                  <div className="border-t border-[#E2E6E4] pt-3">
+                     <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#17202A] font-medium">
+                        {complaint.resolutionVerificationRemark || complaint.citizenFeedback || "Citizen reported that the problem still exists and requested further attention."}
+                     </p>
+                     {complaint.resolutionVerifiedAt && (
+                        <p className="mt-2 text-xs text-[#87919B]">
+                           Submitted on {new Date(complaint.resolutionVerifiedAt).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}
+                        </p>
+                     )}
+                  </div>
+               </section>
+            )}
+
             {/* Rejection Alert Banner (if applicable) */}
             {complaint.status === "rejected" && complaint.rejectionReason && (
                <div className="rounded-xl border border-[#F3D0D0] bg-[#FBF0F0] p-5 space-y-1">
@@ -423,6 +454,33 @@ const ComplaintDetails = () => {
                </section>
             )}
 
+            {/* Department Resolution Evidence */}
+            {complaint.resolutionMedia?.length > 0 && (
+               <section className="rounded-xl border border-[#C6E7D5] bg-[#ECF5F0]/30 p-5 sm:p-6 shadow-2xs space-y-4">
+                  <div className="flex items-center justify-between">
+                     <h2 className="text-base font-semibold tracking-tight text-[#28704F]">
+                        Department Resolution Evidence ({complaint.resolutionMedia.length})
+                     </h2>
+                     <span className="text-xs text-[#28704F]">Staff uploaded completion proof</span>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2 border-t border-[#C6E7D5] pt-4">
+                     {complaint.resolutionMedia.map((item) => item.type?.startsWith("video/") ? (
+                        <div key={item.fileId} className="rounded-lg overflow-hidden border border-[#CBD2CF] bg-black">
+                           <video src={item.url} controls className="max-h-72 w-full" />
+                        </div>
+                     ) : (
+                        <div key={item.fileId} className="rounded-lg overflow-hidden border border-[#CBD2CF] bg-[#F1F3F2]">
+                           <img
+                              src={item.url}
+                              alt="Resolution evidence"
+                              className="max-h-72 w-full object-cover"
+                           />
+                        </div>
+                     ))}
+                  </div>
+               </section>
+            )}
+
             {/* Geospatial Verification & Map */}
             <section className="rounded-xl border border-[#E2E6E4] bg-white p-5 sm:p-6 shadow-2xs space-y-4">
                <div className="flex items-center justify-between">
@@ -482,9 +540,10 @@ const ComplaintDetails = () => {
 
          <ResolveComplaintModal
             isOpen={isResolveModalOpen}
-            onClose={() => setResolveModalOpen(false)}
+            onClose={() => { setResolveModalOpen(false); setActionError(""); }}
             onSubmit={handleResolveSubmit}
             loading={isUpdating}
+            error={actionError}
          />
       </div>
    );

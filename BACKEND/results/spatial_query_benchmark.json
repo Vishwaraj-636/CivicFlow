@@ -1,0 +1,212 @@
+{
+  "timestamp": "2026-10-11T10:19:58.611Z",
+  "environment": {
+    "databaseUri": "mongodb://127.0.0.1:27017/civicflow_spatial_benchmark_isolated",
+    "mongoVersion": "8.3.11",
+    "mongooseVersion": "9.9.4",
+    "nodeVersion": "v22.16.0",
+    "platform": "win32",
+    "arch": "x64",
+    "randomSeed": 42
+  },
+  "querySpecification": {
+    "radiusMeters": 1000,
+    "radiusRadians": 0.00015679,
+    "centroidsCount": 5,
+    "repetitionsPerCase": 25,
+    "warmupCount": 5,
+    "queryShapes": {
+      "geoWithin": "location: { $geoWithin: { $centerSphere: [[lng, lat], radiusRadians] } }",
+      "near": "location: { $near: { $geometry: { type: 'Point', coordinates: [lng, lat] }, $maxDistance: radiusMeters } }"
+    },
+    "semanticComparisonNotice": "$geoWithin returns all points within spherical radius in arbitrary order. $near returns points sorted by distance from center. Both are evaluated at identical 1,000m radial thresholds."
+  },
+  "volumeExperiments": [
+    {
+      "volume": 1000,
+      "setup": {
+        "insertTimeMs": 62.82,
+        "indexBuildTimeMs": 37.2
+      },
+      "unindexed_geoWithin": {
+        "strategy": "Unindexed $geoWithin ($centerSphere)",
+        "plan": {
+          "stage": "COLLSCAN",
+          "totalDocsExamined": 1000,
+          "totalKeysExamined": 0,
+          "nReturned": 53
+        },
+        "latency": {
+          "p50_ms": 2.325,
+          "p90_ms": 3.414,
+          "p95_ms": 3.6,
+          "p99_ms": 3.723,
+          "mean_ms": 2.594,
+          "min_ms": 2.054,
+          "max_ms": 3.749
+        }
+      },
+      "indexed_geoWithin": {
+        "strategy": "Indexed $geoWithin ($centerSphere + 2dsphere)",
+        "plan": {
+          "stage": "FETCH",
+          "totalDocsExamined": 66,
+          "totalKeysExamined": 90,
+          "nReturned": 53
+        },
+        "latency": {
+          "p50_ms": 1.534,
+          "p90_ms": 1.886,
+          "p95_ms": 1.976,
+          "p99_ms": 2.263,
+          "mean_ms": 1.562,
+          "min_ms": 1.049,
+          "max_ms": 2.347
+        },
+        "speedupRatioVsUnindexed": 1.52
+      },
+      "indexed_near": {
+        "strategy": "Indexed $near ($near + 2dsphere, distance-sorted)",
+        "plan": {
+          "stage": "GEO_NEAR_2DSPHERE",
+          "totalDocsExamined": 66,
+          "totalKeysExamined": 108,
+          "nReturned": 53
+        },
+        "latency": {
+          "p50_ms": 1.572,
+          "p90_ms": 1.911,
+          "p95_ms": 1.957,
+          "p99_ms": 2.298,
+          "mean_ms": 1.63,
+          "min_ms": 1.305,
+          "max_ms": 2.404
+        }
+      }
+    },
+    {
+      "volume": 10000,
+      "setup": {
+        "insertTimeMs": 128.19,
+        "indexBuildTimeMs": 66.09
+      },
+      "unindexed_geoWithin": {
+        "strategy": "Unindexed $geoWithin ($centerSphere)",
+        "plan": {
+          "stage": "COLLSCAN",
+          "totalDocsExamined": 10000,
+          "totalKeysExamined": 0,
+          "nReturned": 594
+        },
+        "latency": {
+          "p50_ms": 16,
+          "p90_ms": 16.321,
+          "p95_ms": 16.425,
+          "p99_ms": 16.691,
+          "mean_ms": 15.966,
+          "min_ms": 15.244,
+          "max_ms": 16.767
+        }
+      },
+      "indexed_geoWithin": {
+        "strategy": "Indexed $geoWithin ($centerSphere + 2dsphere)",
+        "plan": {
+          "stage": "FETCH",
+          "totalDocsExamined": 741,
+          "totalKeysExamined": 766,
+          "nReturned": 594
+        },
+        "latency": {
+          "p50_ms": 5.606,
+          "p90_ms": 5.926,
+          "p95_ms": 5.999,
+          "p99_ms": 6.032,
+          "mean_ms": 5.573,
+          "min_ms": 5.136,
+          "max_ms": 6.04
+        },
+        "speedupRatioVsUnindexed": 2.85
+      },
+      "indexed_near": {
+        "strategy": "Indexed $near ($near + 2dsphere, distance-sorted)",
+        "plan": {
+          "stage": "GEO_NEAR_2DSPHERE",
+          "totalDocsExamined": 750,
+          "totalKeysExamined": 869,
+          "nReturned": 594
+        },
+        "latency": {
+          "p50_ms": 7.009,
+          "p90_ms": 7.74,
+          "p95_ms": 8.96,
+          "p99_ms": 10.863,
+          "mean_ms": 7.317,
+          "min_ms": 6.421,
+          "max_ms": 11.37
+        }
+      }
+    },
+    {
+      "volume": 50000,
+      "setup": {
+        "insertTimeMs": 467.14,
+        "indexBuildTimeMs": 238.14
+      },
+      "unindexed_geoWithin": {
+        "strategy": "Unindexed $geoWithin ($centerSphere)",
+        "plan": {
+          "stage": "COLLSCAN",
+          "totalDocsExamined": 50000,
+          "totalKeysExamined": 0,
+          "nReturned": 2915
+        },
+        "latency": {
+          "p50_ms": 75.026,
+          "p90_ms": 76.69,
+          "p95_ms": 86.155,
+          "p99_ms": 90.716,
+          "mean_ms": 76.123,
+          "min_ms": 73.029,
+          "max_ms": 91.44
+        }
+      },
+      "indexed_geoWithin": {
+        "strategy": "Indexed $geoWithin ($centerSphere + 2dsphere)",
+        "plan": {
+          "stage": "FETCH",
+          "totalDocsExamined": 3650,
+          "totalKeysExamined": 3677,
+          "nReturned": 2915
+        },
+        "latency": {
+          "p50_ms": 22.083,
+          "p90_ms": 32.599,
+          "p95_ms": 35.747,
+          "p99_ms": 40.754,
+          "mean_ms": 25.317,
+          "min_ms": 20.571,
+          "max_ms": 42.091
+        },
+        "speedupRatioVsUnindexed": 3.4
+      },
+      "indexed_near": {
+        "strategy": "Indexed $near ($near + 2dsphere, distance-sorted)",
+        "plan": {
+          "stage": "GEO_NEAR_2DSPHERE",
+          "totalDocsExamined": 3504,
+          "totalKeysExamined": 3775,
+          "nReturned": 2915
+        },
+        "latency": {
+          "p50_ms": 26.268,
+          "p90_ms": 26.944,
+          "p95_ms": 27.26,
+          "p99_ms": 27.333,
+          "mean_ms": 26.219,
+          "min_ms": 25.041,
+          "max_ms": 27.336
+        }
+      }
+    }
+  ]
+}

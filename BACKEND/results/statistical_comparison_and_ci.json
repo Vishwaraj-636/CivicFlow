@@ -1,0 +1,306 @@
+{
+  "evaluatedAt": "2026-10-11T10:03:38.413Z",
+  "sourceFreezeFile": "final_held_out_evaluation.json",
+  "sampleSizes": {
+    "held_out_test": 80,
+    "synthetic_challenge": 150
+  },
+  "pairedComparisons": {
+    "HISC_embed": {
+      "comparatorId": "HISC_embed",
+      "comparatorName": "HISC-embed (Local Embeddings)",
+      "sampleSize": 150,
+      "contingencyTable": {
+        "bothCorrect": 120,
+        "bothIncorrect": 24,
+        "hiscCorrectComparatorIncorrect": 6,
+        "hiscIncorrectComparatorCorrect": 0,
+        "totalDiscordant": 6
+      },
+      "exactTwoSidedPValue": 0.03125,
+      "significanceAlpha05": true,
+      "bonferroniAdjustedAlpha": 0.0125,
+      "significanceBonferroni": false
+    },
+    "B3_cat_distance": {
+      "comparatorId": "B3_cat_distance",
+      "comparatorName": "B3 (Category + Distance)",
+      "sampleSize": 150,
+      "contingencyTable": {
+        "bothCorrect": 83,
+        "bothIncorrect": 22,
+        "hiscCorrectComparatorIncorrect": 43,
+        "hiscIncorrectComparatorCorrect": 2,
+        "totalDiscordant": 45
+      },
+      "exactTwoSidedPValue": 5.8889782e-11,
+      "significanceAlpha05": true,
+      "bonferroniAdjustedAlpha": 0.0125,
+      "significanceBonferroni": true
+    },
+    "B4_tfidf": {
+      "comparatorId": "B4_tfidf",
+      "comparatorName": "B4 (TF-IDF Cosine)",
+      "sampleSize": 150,
+      "contingencyTable": {
+        "bothCorrect": 44,
+        "bothIncorrect": 17,
+        "hiscCorrectComparatorIncorrect": 82,
+        "hiscIncorrectComparatorCorrect": 7,
+        "totalDiscordant": 89
+      },
+      "exactTwoSidedPValue": 2.4283704e-17,
+      "significanceAlpha05": true,
+      "bonferroniAdjustedAlpha": 0.0125,
+      "significanceBonferroni": true
+    },
+    "B2_distance": {
+      "comparatorId": "B2_distance",
+      "comparatorName": "B2 (Distance-Only)",
+      "sampleSize": 150,
+      "contingencyTable": {
+        "bothCorrect": 73,
+        "bothIncorrect": 24,
+        "hiscCorrectComparatorIncorrect": 53,
+        "hiscIncorrectComparatorCorrect": 0,
+        "totalDiscordant": 53
+      },
+      "exactTwoSidedPValue": 2.220446e-16,
+      "significanceAlpha05": true,
+      "bonferroniAdjustedAlpha": 0.0125,
+      "significanceBonferroni": true
+    }
+  },
+  "confidenceIntervals": {
+    "confidenceLevel": 0.95,
+    "method": "Clopper-Pearson Exact Binomial (Beta Distribution Quantiles)",
+    "held_out_test": {
+      "HISC": {
+        "id": "HISC",
+        "name": "HISC (Hierarchical Incident Stream Clustering)",
+        "N": 80,
+        "correct": 80,
+        "accuracy": 1,
+        "ci_95_lower": 0.9549,
+        "ci_95_upper": 1,
+        "ci_string": "[0.9549, 1.0000]"
+      },
+      "B1_jaccard": {
+        "id": "B1_jaccard",
+        "name": "B1: Text Jaccard Similarity",
+        "N": 80,
+        "correct": 48,
+        "accuracy": 0.6,
+        "ci_95_lower": 0.4844,
+        "ci_95_upper": 0.708,
+        "ci_string": "[0.4844, 0.7080]"
+      },
+      "B2_distance": {
+        "id": "B2_distance",
+        "name": "B2: Distance-Only Similarity",
+        "N": 80,
+        "correct": 64,
+        "accuracy": 0.8,
+        "ci_95_lower": 0.6956,
+        "ci_95_upper": 0.8811,
+        "ci_string": "[0.6956, 0.8811]"
+      },
+      "B3_cat_distance": {
+        "id": "B3_cat_distance",
+        "name": "B3: Category Plus Distance",
+        "N": 80,
+        "correct": 80,
+        "accuracy": 1,
+        "ci_95_lower": 0.9549,
+        "ci_95_upper": 1,
+        "ci_string": "[0.9549, 1.0000]"
+      },
+      "B4_tfidf": {
+        "id": "B4_tfidf",
+        "name": "B4: TF-IDF Cosine Similarity",
+        "N": 80,
+        "correct": 56,
+        "accuracy": 0.7,
+        "ci_95_lower": 0.5872,
+        "ci_95_upper": 0.7974,
+        "ci_string": "[0.5872, 0.7974]"
+      },
+      "B5_tfidf_distance": {
+        "id": "B5_tfidf_distance",
+        "name": "B5: TF-IDF Cosine + Geographic Distance",
+        "N": 80,
+        "correct": 58,
+        "accuracy": 0.725,
+        "ci_95_lower": 0.6138,
+        "ci_95_upper": 0.819,
+        "ci_string": "[0.6138, 0.8190]"
+      },
+      "B6_embedding": {
+        "id": "B6_embedding",
+        "name": "B6: Embedding Cosine Similarity Only",
+        "N": 80,
+        "correct": 63,
+        "accuracy": 0.7875,
+        "ci_95_lower": 0.6817,
+        "ci_95_upper": 0.8711,
+        "ci_string": "[0.6817, 0.8711]"
+      },
+      "HISC_embed": {
+        "id": "HISC_embed",
+        "name": "HISC-embed (Embedding-Backed Semantic Affinity)",
+        "N": 80,
+        "correct": 80,
+        "accuracy": 1,
+        "ci_95_lower": 0.9549,
+        "ci_95_upper": 1,
+        "ci_string": "[0.9549, 1.0000]"
+      },
+      "HISC_hybrid_mean": {
+        "id": "HISC_hybrid_mean",
+        "name": "HISC-hybrid-mean (Mean of Dictionary & Embedding)",
+        "N": 80,
+        "correct": 80,
+        "accuracy": 1,
+        "ci_95_lower": 0.9549,
+        "ci_95_upper": 1,
+        "ci_string": "[0.9549, 1.0000]"
+      },
+      "HISC_hybrid_max": {
+        "id": "HISC_hybrid_max",
+        "name": "HISC-hybrid-max (Maximum of Dictionary & Embedding)",
+        "N": 80,
+        "correct": 80,
+        "accuracy": 1,
+        "ci_95_lower": 0.9549,
+        "ci_95_upper": 1,
+        "ci_string": "[0.9549, 1.0000]"
+      },
+      "HISC_learned_weights": {
+        "id": "HISC_learned_weights",
+        "name": "HISC-learned-weights (Train-Learned Simplex Weights)",
+        "N": 80,
+        "correct": 80,
+        "accuracy": 1,
+        "ci_95_lower": 0.9549,
+        "ci_95_upper": 1,
+        "ci_string": "[0.9549, 1.0000]"
+      }
+    },
+    "synthetic_challenge": {
+      "HISC": {
+        "id": "HISC",
+        "name": "HISC (Hierarchical Incident Stream Clustering)",
+        "N": 150,
+        "correct": 126,
+        "accuracy": 0.84,
+        "ci_95_lower": 0.7714,
+        "ci_95_upper": 0.8947,
+        "ci_string": "[0.7714, 0.8947]"
+      },
+      "B1_jaccard": {
+        "id": "B1_jaccard",
+        "name": "B1: Text Jaccard Similarity",
+        "N": 150,
+        "correct": 35,
+        "accuracy": 0.2333,
+        "ci_95_lower": 0.1682,
+        "ci_95_upper": 0.3093,
+        "ci_string": "[0.1682, 0.3093]"
+      },
+      "B2_distance": {
+        "id": "B2_distance",
+        "name": "B2: Distance-Only Similarity",
+        "N": 150,
+        "correct": 73,
+        "accuracy": 0.4867,
+        "ci_95_lower": 0.4043,
+        "ci_95_upper": 0.5695,
+        "ci_string": "[0.4043, 0.5695]"
+      },
+      "B3_cat_distance": {
+        "id": "B3_cat_distance",
+        "name": "B3: Category Plus Distance",
+        "N": 150,
+        "correct": 85,
+        "accuracy": 0.5667,
+        "ci_95_lower": 0.4834,
+        "ci_95_upper": 0.6473,
+        "ci_string": "[0.4834, 0.6473]"
+      },
+      "B4_tfidf": {
+        "id": "B4_tfidf",
+        "name": "B4: TF-IDF Cosine Similarity",
+        "N": 150,
+        "correct": 51,
+        "accuracy": 0.34,
+        "ci_95_lower": 0.2647,
+        "ci_95_upper": 0.4217,
+        "ci_string": "[0.2647, 0.4217]"
+      },
+      "B5_tfidf_distance": {
+        "id": "B5_tfidf_distance",
+        "name": "B5: TF-IDF Cosine + Geographic Distance",
+        "N": 150,
+        "correct": 53,
+        "accuracy": 0.3533,
+        "ci_95_lower": 0.2771,
+        "ci_95_upper": 0.4355,
+        "ci_string": "[0.2771, 0.4355]"
+      },
+      "B6_embedding": {
+        "id": "B6_embedding",
+        "name": "B6: Embedding Cosine Similarity Only",
+        "N": 150,
+        "correct": 43,
+        "accuracy": 0.2867,
+        "ci_95_lower": 0.2159,
+        "ci_95_upper": 0.3661,
+        "ci_string": "[0.2159, 0.3661]"
+      },
+      "HISC_embed": {
+        "id": "HISC_embed",
+        "name": "HISC-embed (Embedding-Backed Semantic Affinity)",
+        "N": 150,
+        "correct": 120,
+        "accuracy": 0.8,
+        "ci_95_lower": 0.727,
+        "ci_95_upper": 0.8608,
+        "ci_string": "[0.7270, 0.8608]"
+      },
+      "HISC_hybrid_mean": {
+        "id": "HISC_hybrid_mean",
+        "name": "HISC-hybrid-mean (Mean of Dictionary & Embedding)",
+        "N": 150,
+        "correct": 120,
+        "accuracy": 0.8,
+        "ci_95_lower": 0.727,
+        "ci_95_upper": 0.8608,
+        "ci_string": "[0.7270, 0.8608]"
+      },
+      "HISC_hybrid_max": {
+        "id": "HISC_hybrid_max",
+        "name": "HISC-hybrid-max (Maximum of Dictionary & Embedding)",
+        "N": 150,
+        "correct": 120,
+        "accuracy": 0.8,
+        "ci_95_lower": 0.727,
+        "ci_95_upper": 0.8608,
+        "ci_string": "[0.7270, 0.8608]"
+      },
+      "HISC_learned_weights": {
+        "id": "HISC_learned_weights",
+        "name": "HISC-learned-weights (Train-Learned Simplex Weights)",
+        "N": 150,
+        "correct": 126,
+        "accuracy": 0.84,
+        "ci_95_lower": 0.7714,
+        "ci_95_upper": 0.8947,
+        "ci_string": "[0.7714, 0.8947]"
+      }
+    }
+  },
+  "methodologicalCaveats": {
+    "multipleComparisons": "Four primary paired comparisons evaluated. Bonferroni adjusted alpha threshold is alpha / 4 = 0.0125. At this threshold, HISC vs B2, B3, and B4 remain overwhelmingly significant (p < 1e-10), while HISC vs HISC_embed (p = 0.03125) does not meet the family-wise error adjusted significance cutoff.",
+    "independenceAndIncidentClustering": "In the synthetic challenge set (N = 150), every pair belongs to a unique incident ID (CH_INC0001 through CH_INC0150), meaning cluster size is exactly 1 and pair bootstrap / binomial intervals are mathematically equivalent to incident-clustered resampling. Conversely, in the held-out test split (N = 80), duplicate pairs are clustered within incident IDs and text templates are shared with training (84.6% overlap), so pair-level intervals underestimate true variance."
+  }
+}

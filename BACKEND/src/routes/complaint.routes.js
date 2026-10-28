@@ -27,6 +27,7 @@ import {
    getEscalationSummary,
    verifyComplaintResolution,
    getMyNotifications,
+   getSimilarComplaints,
 } from "../controller/complaint.controller.js";
 import {
    validateCreateComplaint,
@@ -36,6 +37,8 @@ import {
    validateComplaintRejection,
    validateComplaintResolution,
 } from "../validator/complaint.validator.js";
+import { validateZod } from "../middleware/zodValidation.middleware.js";
+import { createComplaintSchema, similarComplaintsQuerySchema } from "../validator/zodSchemas.js";
 
 const router = express.Router();
 const mediaUpload = multer({
@@ -62,7 +65,7 @@ router.get("/admin/complaints/escalation-summary", authenticate, requireRole("ad
 router.post(
    "/complaints/media",
    authenticate,
-   requireRole("citizen"),
+   requireRole("citizen", "dept_staff", "admin"),
    parseMediaUpload,
    uploadComplaintMedia
 );
@@ -133,6 +136,7 @@ router.post(
    "/complaints",
    authenticate,
    requireRole("citizen"),
+   validateZod(createComplaintSchema),
    validateCreateComplaint,
    createComplaint
 );
@@ -184,6 +188,13 @@ router.post(
    authenticate,
    requireRole("citizen"),
    supportComplaint
+);
+
+router.get(
+   "/complaints/similar",
+   authenticate,
+   validateZod(similarComplaintsQuerySchema, "query"),
+   getSimilarComplaints
 );
 
 router.get(

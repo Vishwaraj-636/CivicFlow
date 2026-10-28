@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LocationPicker from "../../../components/maps/LocationPicker";
 import MediaPreview from "../../../components/media/MediaPreview";
 import MediaUploader from "../../../components/media/MediaUploader";
-import { createComplaint, uploadComplaintMedia } from "../services/complaint.api";
+import { createComplaint, uploadComplaintMedia, getSimilarComplaints, supportComplaint } from "../services/complaint.api";
+import SimilarComplaintsWarning from "../components/SimilarComplaintsWarning";
 import { COMPLAINT_CATEGORIES } from "../../../constants/complaintCategories";
 import useComplaintForm from "../hook/useComplaintForm";
 
@@ -20,6 +21,61 @@ const ReportComplaint = () => {
 
    const [error, setError] = useState("");
    const [saving, setSaving] = useState(false);
+   const [similarItems, setSimilarItems] = useState([]);
+   const [similarLoading, setSimilarLoading] = useState(false);
+   const [isDismissed, setIsDismissed] = useState(false);
+   const [submittedDespiteSimilar, setSubmittedDespiteSimilar] = useState(false);
+
+   useEffect(() => {
+      if (isDismissed) return;
+
+      const title = form.title || "";
+      const description = form.description || "";
+      const text = `${title} ${description}`.trim();
+      const lat = form.location?.latitude ?? form.location?.lat ?? form.location?.coordinates?.[1];
+      const lng = form.location?.longitude ?? form.location?.lng ?? form.location?.coordinates?.[0];
+
+      if (title.length + description.length < 15 || lat == null || lng == null || !form.category) {
+         setSimilarItems([]);
+         return;
+      }
+
+      const controller = new AbortController();
+      const timer = setTimeout(async () => {
+         setSimilarLoading(true);
+         try {
+            const items = await getSimilarComplaints(
+               { lat, lng, category: form.category, text },
+               controller.signal
+            );
+            setSimilarItems(Array.isArray(items) ? items : []);
+         } catch (err) {
+            if (err.name !== "CanceledError" && err.name !== "AbortError") {
+               setSimilarItems([]);
+            }
+         } finally {
+            setSimilarLoading(false);
+         }
+      }, 600);
+
+      return () => {
+         clearTimeout(timer);
+         controller.abort();
+      };
+   }, [form.title, form.description, form.location, form.category, isDismissed]);
+
+   const handleSupportSimilar = async (complaintId) => {
+      try {
+         await supportComplaint(complaintId);
+      } catch (err) {
+         console.warn("Unable to register support for similar complaint:", err);
+      }
+   };
+
+   const handleDismissDifferent = () => {
+      setIsDismissed(true);
+      setSubmittedDespiteSimilar(true);
+   };
 
    const handleRemoveImage = (index) => {
       handleMedia({
@@ -35,8 +91,18 @@ const ReportComplaint = () => {
       });
    };
 
+   const handlePreventEnterSubmit = (event) => {
+      if (event.key === "Enter") {
+         event.preventDefault();
+      }
+   };
+
    async function handleSubmit(event) {
       event.preventDefault();
+
+      if (saving) {
+         return;
+      }
 
       if (!form.category) {
          setError("Please select a complaint category.");
@@ -63,6 +129,7 @@ const ReportComplaint = () => {
             address: form.address.trim(),
             location: form.location,
             media: uploadedMedia,
+            submittedDespiteSimilar,
          };
 
          const complaint = await createComplaint(payload);
@@ -200,6 +267,7 @@ const ReportComplaint = () => {
                            maxLength={80}
                            value={form.title}
                            onChange={handleForm}
+                           onKeyDown={handlePreventEnterSubmit}
                            placeholder="Brief summary (e.g. Deep pothole causing hazard on 5th Main)"
                            className="w-full min-h-[44px] rounded-lg border border-[#CBD2CF] bg-white px-3.5 py-2.5 text-sm text-[#17202A] placeholder-[#87919B] transition focus:border-[#173B5E] focus:outline-none focus:ring-2 focus:ring-[#173B5E]/20"
                         />
@@ -281,11 +349,21 @@ const ReportComplaint = () => {
                         required
                         value={form.address}
                         onChange={handleForm}
+                        onKeyDown={handlePreventEnterSubmit}
                         placeholder="Door number, street name, locality, landmark"
                         className="w-full min-h-[44px] rounded-lg border border-[#CBD2CF] bg-white px-3.5 py-2.5 text-sm text-[#17202A] placeholder-[#87919B] transition focus:border-[#173B5E] focus:outline-none focus:ring-2 focus:ring-[#173B5E]/20"
                      />
                   </div>
                </section>
+
+               {/* SIMILAR COMPLAINTS WARNING (HISC-POWERED) */}
+               <SimilarComplaintsWarning
+                  similarItems={similarItems}
+                  loading={similarLoading}
+                  onSupport={handleSupportSimilar}
+                  onDismissDifferent={handleDismissDifferent}
+                  isDismissed={isDismissed}
+               />
 
                {/* Error Message */}
                {error && (

@@ -7,10 +7,12 @@ import { uploadMedia, validateMediaFile } from "../service/imagekit.service.js";
 import { upsertIncidentCluster } from "../service/incidentIntelligence.service.js";
 import { priorityExplanation, scoreComplaintPriority } from "../service/priorityScoring.service.js";
 import { calculateResolutionDeadline, getSlaHours } from "../service/sla.service.js";
-import { escalateOverdueComplaints, openComplaintStatuses } from "../service/complaintEscalation.service.js";
+import { escalateOverdueComplaints, openComplaintStatuses, lazyEscalateOverdueComplaints } from "../service/complaintEscalation.service.js";
 import Notification from "../model/notification.model.js";
 import { createNotification } from "../service/notification.service.js";
 import ComplaintSupport from "../model/complaintSupport.model.js";
+import { scorePair, distanceInMeters } from "../hisc/scorePair.js";
+import { DEFAULT_HISC_CONFIG } from "../hisc/config.js";
 
 const citizenQuery = (req) => ({ citizenId: req.user._id });
 
@@ -28,6 +30,7 @@ export const createComplaint = async (req, res) => {
          location: req.body.location,
          address: req.body.address,
          media: req.body.media,
+         submittedDespiteSimilar: Boolean(req.body.submittedDespiteSimilar),
          assignedDepartment: department?._id ?? null,
          complaintId: `CF-${randomUUID()}`,
          citizenId: req.user._id,
@@ -195,6 +198,7 @@ export const supportComplaint = async (req, res) => {
 
 export const getAdminComplaintMapData = async (req, res) => {
    try {
+      await lazyEscalateOverdueComplaints();
       const complaints = await Complaint.find({
          status: { $ne: "deleted" },
          "location.coordinates": { $exists: true, $size: 2 },
@@ -229,6 +233,7 @@ export const getAdminComplaintTrends = async (req, res) => {
    const periodExpression = { $dateToString: { format: formatByPeriod[period], date: "$createdAt" } };
 
    try {
+      await lazyEscalateOverdueComplaints();
       const [trend, categoryTrend, departmentTrend] = await Promise.all([
          Complaint.aggregate([
             { $match: dateMatch },
@@ -321,6 +326,7 @@ export const updateComplaint = async (req, res) => {
 
 export const listComplaintsForStaff = async (req, res) => {
    try {
+      await lazyEscalateOverdueComplaints();
       const filter = { status: { $ne: "deleted" } };
       if (req.user.role === "dept_staff") {
          filter.assignedDepartment = req.user.departmentId;
@@ -338,6 +344,7 @@ export const listComplaintsForStaff = async (req, res) => {
 
 export const getStaffComplaints = async (req, res) => {
    try {
+      await lazyEscalateOverdueComplaints();
       const complaints = await Complaint.find({
          assignedDepartment: req.user.departmentId,
          status: { $ne: "deleted" },
@@ -674,7 +681,7 @@ export const updateComplaintPriority = async (req, res) => {
 
 export const getEscalatedComplaints = async (req, res) => {
    try {
-      await escalateOverdueComplaints();
+      await lazyEscalateOverdueComplaints();
       const complaints = await Complaint.find({ escalated: true, status: { $ne: "deleted" } })
          .populate("assignedDepartment", "fullname code")
          .populate("assignedStaff", "fullname email")
@@ -688,7 +695,7 @@ export const getEscalatedComplaints = async (req, res) => {
 
 export const getEscalationSummary = async (req, res) => {
    try {
-      await escalateOverdueComplaints();
+      await lazyEscalateOverdueComplaints();
       const summary = await Complaint.aggregate([
          { $match: { escalated: true, status: { $ne: "deleted" } } },
          {
@@ -758,6 +765,68 @@ export const deleteComplaint = async (req, res) => {
       if (error.name === "CastError") {
          return res.status(400).json({ error: "Invalid complaint ID" });
       }
+      return res.status(500).json({ error: "Internal server error" });
+   }
+};
+
+export const getSimilarComplaints = async (req, res) => {
+   try {
+      const { lat, lng, category, text } = req.query;
+      const numLat = Number(lat);
+      const numLng = Number(lng);
+      const coordinates = [numLng, numLat];
+
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 3600000);
+      const candidates = await Complaint.find({
+         status: { $nin: ["deleted", "closed"] },
+         createdAt: { $gte: thirtyDaysAgo },
+         location: {
+            $near: {
+               $geometry: {
+                  type: "Point",
+                  coordinates,
+               },
+               $maxDistance: 1000,
+            },
+         },
+      }).limit(40);
+
+      const queryItem = {
+         location: { type: "Point", coordinates },
+         category,
+         title: text,
+         description: text,
+         text,
+         createdAt: new Date(),
+      };
+
+      const results = [];
+      for (const candidate of candidates) {
+         const analysis = scorePair(queryItem, candidate, DEFAULT_HISC_CONFIG);
+         if (analysis.label === "duplicate" || analysis.label === "related") {
+            const dist = distanceInMeters(coordinates, candidate.location?.coordinates);
+            results.push({
+               id: candidate._id.toString(),
+               _id: candidate._id,
+               title: candidate.title,
+               description: candidate.description ? candidate.description.slice(0, 160) : "",
+               category: candidate.category,
+               status: candidate.status,
+               distanceMeters: Math.round(dist),
+               createdAt: candidate.createdAt,
+               supportCount: candidate.supportCount ?? 0,
+               score: analysis.score,
+               label: analysis.label,
+               features: analysis.features,
+               explanation: analysis.explanation,
+            });
+         }
+      }
+
+      results.sort((a, b) => b.score - a.score);
+      return res.status(200).json(results.slice(0, 5));
+   } catch (error) {
+      console.error("Error finding similar complaints:", error);
       return res.status(500).json({ error: "Internal server error" });
    }
 };

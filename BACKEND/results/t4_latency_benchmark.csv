@@ -1,0 +1,13 @@
+experiment_type,workload_size,configuration,cap,stage,query_p50_ms,query_p95_ms,upsert_p50_ms,upsert_p95_ms,speedup_or_overhead
+spatial_index,1000,unindexed,40,LIMIT,4.388,5.161,N/A,N/A,1.0x
+spatial_index,1000,indexed_2dsphere,40,LIMIT,2.947,4.089,N/A,N/A,1.49x
+spatial_index,10000,unindexed,40,LIMIT,5.989,24.941,N/A,N/A,1.0x
+spatial_index,10000,indexed_2dsphere,40,LIMIT,2.866,3.318,N/A,N/A,2.09x
+spatial_index,50000,unindexed,40,LIMIT,6.255,31.303,N/A,N/A,1.0x
+spatial_index,50000,indexed_2dsphere,40,LIMIT,2.869,3.723,N/A,N/A,2.18x
+candidate_caps,10000,2dsphere_hisc,10,GEO_NEAR_2DSPHERE,2.104,2.407,3.041,3.196,N/A
+candidate_caps,10000,2dsphere_hisc,20,GEO_NEAR_2DSPHERE,2.309,2.762,5.067,5.882,N/A
+candidate_caps,10000,2dsphere_hisc,40,GEO_NEAR_2DSPHERE,2.861,3.23,8.736,9.266,N/A
+candidate_caps,10000,2dsphere_hisc,80,GEO_NEAR_2DSPHERE,3.106,3.927,15.944,17.626,N/A
+embedding_toggle,10000,embedding_disabled,40,GEO_NEAR_2DSPHERE,2.744,3.746,8.609,8.995,1.0x
+embedding_toggle,10000,embedding_enabled,40,GEO_NEAR_2DSPHERE,6.426,12.349,3186.149,4053.491,370.10x

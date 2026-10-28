@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: civicflow-app
+    env: node
+    plan: free
+    region: singapore
+    buildCommand: npm install --prefix BACKEND && npm install --prefix FRONTEND --include=dev && npm run build --prefix FRONTEND
+    startCommand: npm start --prefix BACKEND
+    healthCheckPath: /health
+    autoDeploy: false
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_CALLBACK_URL
+        sync: false
+      - key: IMAGE_KIT_PRIVATE_KEY
+        sync: false
+      - key: CLIENT_URL
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: COOKIE_SAME_SITE
+        value: lax
+      - key: TRUST_PROXY
+        value: "1"
+      - key: EMBEDDING_PROVIDER
+        value: none
+      - key: LLM_PROVIDER
+        value: gemini
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_MODEL
+        value: gemini-3.5-flash-lite

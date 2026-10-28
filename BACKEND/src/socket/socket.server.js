@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { Server } from "socket.io";
-import { config } from "../config/config.js";
+import { config, isOriginAllowed } from "../config/config.js";
 import User from "../model/user.model.js";
 import IncidentCluster from "../model/incidentCluster.model.js";
 import IncidentMessage from "../model/incidentMessage.model.js";
@@ -19,7 +19,7 @@ const loadAuthorizedIncident = async (incidentId, user) => {
 const tokenFromCookie = (cookieHeader = "") => cookieHeader.split(";").map((cookie) => cookie.trim()).find((cookie) => cookie.startsWith("token="))?.slice(6);
 
 export const attachSocketServer = (httpServer) => {
-   const io = new Server(httpServer, { cors: { origin: "http://localhost:5173", credentials: true } });
+   const io = new Server(httpServer, { cors: { origin: (origin, callback) => callback(null, isOriginAllowed(origin)), credentials: true } });
    io.use(async (socket, next) => {
       try {
          const token = socket.handshake.auth?.token

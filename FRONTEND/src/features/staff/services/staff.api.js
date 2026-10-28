@@ -1,7 +1,8 @@
 import axios from "axios";
+import { API_BASE_URL } from "../../../config/api.config.js";
 
 const staffApiInstance = axios.create({
-   baseURL: "http://localhost:3000/api",
+   baseURL: API_BASE_URL,
    withCredentials: true,
 });
 
@@ -35,6 +36,13 @@ export async function updateComplaintStatus(complaintId, newStatus, options = {}
       newStatus,
       ...options,
    });
+   return response.data;
+}
+
+export async function uploadComplaintMedia(files) {
+   const formData = new FormData();
+   files.forEach((file) => formData.append("files", file));
+   const response = await staffApiInstance.post("/complaints/media", formData);
    return response.data;
 }
 

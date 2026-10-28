@@ -1,7 +1,30 @@
-import { useState, useCallback, useEffect } from 'react';
-import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet';
 import MapMarker from './MapMarker';
 import { JAWG_ATTRIBUTION, JAWG_TILE_URL } from './mapTiles';
+
+/**
+ * Inner component: dynamically recenters and invalidates map size when coordinates update.
+ */
+function MapRecenter({ position, defaultZoom = 14 }) {
+   const map = useMap();
+   const prevPosRef = useRef(null);
+
+   useEffect(() => {
+      if (!position) return;
+      const [lat, lng] = position;
+      const prev = prevPosRef.current;
+      if (!prev || prev[0] !== lat || prev[1] !== lng) {
+         prevPosRef.current = [lat, lng];
+         const currentZoom = map.getZoom();
+         const nextZoom = currentZoom && currentZoom > defaultZoom ? currentZoom : defaultZoom;
+         map.setView(position, nextZoom);
+         map.invalidateSize();
+      }
+   }, [position, defaultZoom, map]);
+
+   return null;
+}
 
 /**
  * Inner component: captures map click events to allow location correction.
@@ -41,9 +64,15 @@ const LocationPicker = ({
    const [gpsLoading, setGpsLoading] = useState(false);
    const [gpsError, setGpsError] = useState('');
 
-   const markerPos = value
-      ? [value.latitude ?? value.lat, value.longitude ?? value.lng]
-      : null;
+   const markerPos =
+      value &&
+      !isNaN(Number(value.latitude ?? value.lat ?? value.coordinates?.[1])) &&
+      !isNaN(Number(value.longitude ?? value.lng ?? value.coordinates?.[0]))
+         ? [
+              Number(value.latitude ?? value.lat ?? value.coordinates?.[1]),
+              Number(value.longitude ?? value.lng ?? value.coordinates?.[0]),
+           ]
+         : null;
 
    const mapCenter = markerPos ?? defaultCenter;
 
@@ -94,6 +123,8 @@ const LocationPicker = ({
             >
                <TileLayer url={JAWG_TILE_URL} attribution={JAWG_ATTRIBUTION} />
 
+               <MapRecenter position={markerPos} defaultZoom={defaultZoom} />
+
                <MapClickHandler
                   onLocationChange={handleLocationChange}
                   correcting={correcting}
@@ -106,6 +137,7 @@ const LocationPicker = ({
 
             {/* "Use my location" button — overlaid on the map */}
             <button
+               type="button"
                onClick={handleGps}
                disabled={gpsLoading}
                title="Use my current location"
@@ -142,6 +174,7 @@ const LocationPicker = ({
 
             {/* Allow Correction */}
             <button
+               type="button"
                onClick={() => setCorrecting((c) => !c)}
                className={`text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors cursor-pointer ${correcting
                   ? 'bg-primary-accent/20 text-primary-accent border-primary-accent'

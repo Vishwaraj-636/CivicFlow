@@ -1,0 +1,381 @@
+{
+  "evaluatedAt": "2026-10-11T16:19:15.429Z",
+  "evaluationConfig": "HISC-eval (duplicateThreshold: 0.60, relatedThreshold: 0.10)",
+  "ruleDefinitions": {
+    "rule_1_distant_boundary": {
+      "name": "Rule 1: Distant Boundary (>3000m)",
+      "trigger": "distance > 3000",
+      "forcedLabel": "independent",
+      "rationale": "Reports separated by more than 3,000 meters cannot share a common local municipal incident root cause."
+    },
+    "rule_2_temporal_boundary": {
+      "name": "Rule 2: Temporal Boundary (>720h / 30d)",
+      "trigger": "hours > 720",
+      "forcedLabel": "independent",
+      "rationale": "Reports separated by more than 30 days belong to distinct temporal or seasonal maintenance cycles."
+    },
+    "rule_3_operational_radius": {
+      "name": "Rule 3: Operational Radius (>1000m Radius Gate)",
+      "trigger": "distance > radiusInMeters && (!causallyConnected || semantic < 0.20)",
+      "forcedLabel": "independent",
+      "rationale": "Pairs beyond operational radius (1,000m) require demonstrable causal or semantic affinity to remain associated."
+    },
+    "rule_4_incompatible_categories": {
+      "name": "Rule 4: Incompatible Categories Without Causal Link",
+      "trigger": "catSim === 0.0 && !causallyConnected",
+      "forcedLabel": "independent",
+      "rationale": "Completely disjoint categories with zero causal linkage cannot be clustered together."
+    },
+    "rule_5_duplicate": {
+      "name": "Rule 5a: Duplicate Spatial/Temporal Constraints",
+      "trigger": "score >= duplicateThreshold && catSim >= 0.9 && distance <= 250 && hours <= 168 && !opposingDir && (semantic > 0 || lexical > 0 || score >= 0.70)",
+      "forcedLabel": "duplicate",
+      "rationale": "Duplicate classification requires identical/compatible category within 250m and 7 days with non-zero semantic/lexical overlap."
+    },
+    "rule_5_opposing_direction": {
+      "name": "Rule 5b: Opposing Direction Override on High Score",
+      "trigger": "score >= duplicateThreshold && opposingDir",
+      "forcedLabel": "independent",
+      "rationale": "Opposing traffic or travel directions (e.g. northbound vs. southbound) represent separate infrastructure sides."
+    },
+    "rule_5_downgraded_related": {
+      "name": "Rule 5c: Duplicate Downgrade to Related",
+      "trigger": "score >= duplicateThreshold && (distance > 250 || hours > 168 || catSim < 0.9)",
+      "forcedLabel": "related",
+      "rationale": "Pairs crossing the duplicate numeric threshold but failing tight duplicate spatial/temporal bounds are downgraded to related."
+    },
+    "rule_opposing_direction_related": {
+      "name": "Rule 6: Opposing Direction Override on Moderate Score",
+      "trigger": "score >= relatedThreshold && opposingDir && catSim < 0.9",
+      "forcedLabel": "independent",
+      "rationale": "Opposing direction indicator forces independent classification for moderately scoring pairs."
+    },
+    "threshold": {
+      "name": "Pure Threshold Classification",
+      "trigger": "No contextual rule overrode classification; outcome decided strictly by duplicate/related thresholds",
+      "forcedLabel": "score-dependent (duplicate / related / independent)",
+      "rationale": "Standard numerical decision threshold."
+    }
+  },
+  "ruleActivations": {
+    "train": {
+      "count": 240,
+      "rules": {
+        "rule_1_distant_boundary": 82,
+        "rule_2_temporal_boundary": 0,
+        "rule_3_operational_radius": 2,
+        "rule_4_incompatible_categories": 0,
+        "rule_5_duplicate": 72,
+        "rule_5_opposing_direction": 0,
+        "rule_5_downgraded_related": 10,
+        "rule_opposing_direction_related": 0,
+        "threshold": 74
+      }
+    },
+    "val": {
+      "count": 80,
+      "rules": {
+        "rule_1_distant_boundary": 26,
+        "rule_2_temporal_boundary": 0,
+        "rule_3_operational_radius": 2,
+        "rule_4_incompatible_categories": 0,
+        "rule_5_duplicate": 24,
+        "rule_5_opposing_direction": 0,
+        "rule_5_downgraded_related": 1,
+        "rule_opposing_direction_related": 0,
+        "threshold": 27
+      }
+    },
+    "challenge": {
+      "count": 150,
+      "rules": {
+        "rule_1_distant_boundary": 22,
+        "rule_2_temporal_boundary": 10,
+        "rule_3_operational_radius": 2,
+        "rule_4_incompatible_categories": 12,
+        "rule_5_duplicate": 55,
+        "rule_5_opposing_direction": 5,
+        "rule_5_downgraded_related": 18,
+        "rule_opposing_direction_related": 0,
+        "threshold": 26
+      }
+    }
+  },
+  "ablations": {
+    "validation": {
+      "full_hisc": {
+        "id": "full_hisc",
+        "name": "Full HISC Baseline (All Rules)",
+        "sampleCount": 80,
+        "accuracy": 1,
+        "macro_f1": 1,
+        "delta_macro_f1": 0,
+        "delta_accuracy": 0,
+        "predicted_distribution": {
+          "duplicate": 24,
+          "related": 28,
+          "independent": 28
+        },
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 1,
+          "independent": 1
+        }
+      },
+      "ablate_rule_1": {
+        "id": "ablate_rule_1",
+        "name": "Ablate Rule 1 (Distant Boundary >3000m)",
+        "sampleCount": 80,
+        "accuracy": 1,
+        "macro_f1": 1,
+        "delta_macro_f1": 0,
+        "delta_accuracy": 0,
+        "predicted_distribution": {
+          "duplicate": 24,
+          "related": 28,
+          "independent": 28
+        },
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 1,
+          "independent": 1
+        }
+      },
+      "ablate_rule_2": {
+        "id": "ablate_rule_2",
+        "name": "Ablate Rule 2 (Temporal Boundary >720h)",
+        "sampleCount": 80,
+        "accuracy": 1,
+        "macro_f1": 1,
+        "delta_macro_f1": 0,
+        "delta_accuracy": 0,
+        "predicted_distribution": {
+          "duplicate": 24,
+          "related": 28,
+          "independent": 28
+        },
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 1,
+          "independent": 1
+        }
+      },
+      "ablate_rule_3": {
+        "id": "ablate_rule_3",
+        "name": "Ablate Rule 3 (Operational Radius >1000m)",
+        "sampleCount": 80,
+        "accuracy": 0.975,
+        "macro_f1": 0.9762,
+        "delta_macro_f1": -0.0238,
+        "delta_accuracy": -0.025,
+        "predicted_distribution": {
+          "duplicate": 24,
+          "related": 30,
+          "independent": 26
+        },
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 0.9655,
+          "independent": 0.963
+        }
+      },
+      "ablate_rule_4": {
+        "id": "ablate_rule_4",
+        "name": "Ablate Rule 4 (Incompatible Categories)",
+        "sampleCount": 80,
+        "accuracy": 1,
+        "macro_f1": 1,
+        "delta_macro_f1": 0,
+        "delta_accuracy": 0,
+        "predicted_distribution": {
+          "duplicate": 24,
+          "related": 28,
+          "independent": 28
+        },
+        "per_class_f1": {
+          "duplicate": 1,
+          "related": 1,
+          "independent": 1
+        }
+      },
+      "ablate_rule_5": {
+        "id": "ablate_rule_5",
+        "name": "Ablate Rule 5 (Duplicate Tight Constraints)",
+        "sampleCount": 80,
+        "accuracy": 0.9875,
+        "macro_f1": 0.9871,
+        "delta_macro_f1": -0.0129,
+        "delta_accuracy": -0.0125,
+        "predicted_distribution": {
+          "duplicate": 25,
+          "related": 27,
+          "independent": 28
+        },
+        "per_class_f1": {
+          "duplicate": 0.9796,
+          "related": 0.9818,
+          "independent": 1
+        }
+      },
+      "ablate_all_rules": {
+        "id": "ablate_all_rules",
+        "name": "Ablate All Rules (Pure Score Thresholds)",
+        "sampleCount": 80,
+        "accuracy": 0.675,
+        "macro_f1": 0.616,
+        "delta_macro_f1": -0.384,
+        "delta_accuracy": -0.325,
+        "predicted_distribution": {
+          "duplicate": 25,
+          "related": 52,
+          "independent": 3
+        },
+        "per_class_f1": {
+          "duplicate": 0.9796,
+          "related": 0.675,
+          "independent": 0.1935
+        }
+      }
+    },
+    "challenge": {
+      "full_hisc": {
+        "id": "full_hisc",
+        "name": "Full HISC Baseline (All Rules)",
+        "sampleCount": 150,
+        "accuracy": 0.84,
+        "macro_f1": 0.8343,
+        "delta_macro_f1": 0,
+        "delta_accuracy": 0,
+        "predicted_distribution": {
+          "duplicate": 55,
+          "related": 44,
+          "independent": 51
+        },
+        "per_class_f1": {
+          "duplicate": 0.9524,
+          "related": 0.7356,
+          "independent": 0.8148
+        }
+      },
+      "ablate_rule_1": {
+        "id": "ablate_rule_1",
+        "name": "Ablate Rule 1 (Distant Boundary >3000m)",
+        "sampleCount": 150,
+        "accuracy": 0.7667,
+        "macro_f1": 0.762,
+        "delta_macro_f1": -0.0723,
+        "delta_accuracy": -0.0733,
+        "predicted_distribution": {
+          "duplicate": 55,
+          "related": 55,
+          "independent": 40
+        },
+        "per_class_f1": {
+          "duplicate": 0.9524,
+          "related": 0.6531,
+          "independent": 0.6804
+        }
+      },
+      "ablate_rule_2": {
+        "id": "ablate_rule_2",
+        "name": "Ablate Rule 2 (Temporal Boundary >720h)",
+        "sampleCount": 150,
+        "accuracy": 0.84,
+        "macro_f1": 0.8371,
+        "delta_macro_f1": 0.0028,
+        "delta_accuracy": 0,
+        "predicted_distribution": {
+          "duplicate": 55,
+          "related": 54,
+          "independent": 41
+        },
+        "per_class_f1": {
+          "duplicate": 0.9524,
+          "related": 0.7629,
+          "independent": 0.7959
+        }
+      },
+      "ablate_rule_3": {
+        "id": "ablate_rule_3",
+        "name": "Ablate Rule 3 (Operational Radius >1000m)",
+        "sampleCount": 150,
+        "accuracy": 0.84,
+        "macro_f1": 0.8351,
+        "delta_macro_f1": 0.0008,
+        "delta_accuracy": 0,
+        "predicted_distribution": {
+          "duplicate": 55,
+          "related": 46,
+          "independent": 49
+        },
+        "per_class_f1": {
+          "duplicate": 0.9524,
+          "related": 0.7416,
+          "independent": 0.8113
+        }
+      },
+      "ablate_rule_4": {
+        "id": "ablate_rule_4",
+        "name": "Ablate Rule 4 (Incompatible Categories)",
+        "sampleCount": 150,
+        "accuracy": 0.7733,
+        "macro_f1": 0.7688,
+        "delta_macro_f1": -0.0655,
+        "delta_accuracy": -0.0667,
+        "predicted_distribution": {
+          "duplicate": 55,
+          "related": 56,
+          "independent": 39
+        },
+        "per_class_f1": {
+          "duplicate": 0.9524,
+          "related": 0.6667,
+          "independent": 0.6875
+        }
+      },
+      "ablate_rule_5": {
+        "id": "ablate_rule_5",
+        "name": "Ablate Rule 5 (Duplicate Tight Constraints)",
+        "sampleCount": 150,
+        "accuracy": 0.7333,
+        "macro_f1": 0.7157,
+        "delta_macro_f1": -0.1186,
+        "delta_accuracy": -0.1067,
+        "predicted_distribution": {
+          "duplicate": 78,
+          "related": 26,
+          "independent": 46
+        },
+        "per_class_f1": {
+          "duplicate": 0.7813,
+          "related": 0.6087,
+          "independent": 0.7573
+        }
+      },
+      "ablate_all_rules": {
+        "id": "ablate_all_rules",
+        "name": "Ablate All Rules (Pure Score Thresholds)",
+        "sampleCount": 150,
+        "accuracy": 0.52,
+        "macro_f1": 0.4198,
+        "delta_macro_f1": -0.4145,
+        "delta_accuracy": -0.32,
+        "predicted_distribution": {
+          "duplicate": 85,
+          "related": 65,
+          "independent": 0
+        },
+        "per_class_f1": {
+          "duplicate": 0.7407,
+          "related": 0.5185,
+          "independent": 0
+        }
+      }
+    }
+  },
+  "scientificStatusNotice": {
+    "validationInterpretation": "Validation ablations represent pre-freeze exploratory attribution.",
+    "challengeInterpretation": "Challenge ablations represent descriptive post-freeze diagnostic analysis. They are NOT unbiased generalization estimates and are NOT used to tune or alter production scorer rules.",
+    "testPartitionPreserved": "The held-out test partition (N = 80) was STRICTLY EXCLUDED from ablation analysis to preserve research integrity."
+  }
+}

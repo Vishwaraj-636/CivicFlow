@@ -4,23 +4,36 @@
    "main": "index.js",
    "type": "module",
    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1",
+      "test": "node --test",
       "dev": "npx nodemon --exec \"cls && node server.js\"",
       "start": "node server.js",
-      "evaluate:incidents": "node src/evaluation/incidentAlgorithmEvaluation.js"
+      "evaluate:incidents": "node src/evaluation/incidentAlgorithmEvaluation.js",
+      "evaluate:embeddings": "node src/evaluation/embeddingEvaluationRunner.js",
+      "benchmark:latency": "node src/evaluation/clusteringLatencyBenchmark.js",
+      "learn:weights": "node src/evaluation/learnHiscWeights.js",
+      "evaluate:freeze": "node src/evaluation/runFinalEvaluationFreeze.js",
+      "results:report": "node src/evaluation/generateResultsReport.js",
+      "seed:demo": "node src/scripts/seedDemo.js",
+      "facts:sheet": "node src/evaluation/generateFactsSheet.js"
    },
    "keywords": [],
    "author": "",
    "license": "ISC",
-   "description": "",
+   "engines": {
+      "node": ">=20"
+   },
    "dependencies": {
       "@imagekit/nodejs": "^7.11.0",
+      "@langchain/core": "^0.3.68",
+      "@langchain/google-genai": "^0.2.16",
       "bcryptjs": "^3.0.3",
       "cookie-parser": "^1.4.7",
       "cors": "^2.8.6",
       "dotenv": "^17.4.2",
       "express": "^5.2.1",
+      "express-rate-limit": "^8.7.1",
       "express-validator": "^7.3.2",
+      "helmet": "^8.3.0",
       "jsonwebtoken": "^9.0.3",
       "mongoose": "^9.9.4",
       "morgan": "^1.12.0",
@@ -28,7 +41,9 @@
       "passport": "^0.7.0",
       "passport-google-oauth20": "^2.0.0",
       "socket.io": "^4.8.1",
-      "@langchain/core": "^0.3.68",
-      "@langchain/google-genai": "^0.2.16"
+      "zod": "^4.6.5"
+   },
+   "optionalDependencies": {
+      "@huggingface/transformers": "^4.3.1"
    }
 }

@@ -126,67 +126,80 @@ export const getStaffRequestById = async (req, res) => {
 
 export const approveStaffRequest = async (req, res) => {
    const adminId = req.user._id;
-   const session = await mongoose.startSession();
 
    try {
-      let approvedRequest;
+      const request = await deptStaffRequestModel.findById(req.params.id);
 
-      await session.withTransaction(async () => {
-         const request = await deptStaffRequestModel.findById(req.params.id).session(session);
+      if (!request) {
+         return res.status(404).json({ message: "Request not found" });
+      }
 
-         if (!request) {
-            throw Object.assign(new Error("Request not found"), { statusCode: 404 });
-         }
+      if (request.status !== 'pending') {
+         return res.status(400).json({
+            message: `Cannot modify request with status: ${request.status}`
+         });
+      }
 
-         if (request.status !== 'pending') {
-            throw Object.assign(
-               new Error(`Cannot modify request with status: ${request.status}`),
-               { statusCode: 400 }
-            );
-         }
+      const department = await Department.findById(request.departmentId);
 
-         const department = await Department.findById(request.departmentId).session(session);
+      if (!department || !department.isActive) {
+         return res.status(400).json({ message: "Active department not found" });
+      }
 
-         if (!department) {
-            throw Object.assign(new Error("Requested department not found"), { statusCode: 400 });
-         }
+      const user = await userModel.findById(request.userId);
 
-         const user = await userModel.findById(request.userId).session(session);
+      if (!user) {
+         return res.status(404).json({ message: "Applicant not found" });
+      }
 
-         if (!user) {
-            throw Object.assign(new Error("Applicant not found"), { statusCode: 404 });
-         }
+      // Snapshot previous user state for compensating rollback if request saving fails
+      const previousState = {
+         role: user.role,
+         departmentId: user.departmentId,
+         profileCompleted: user.profileCompleted,
+         isActive: user.isActive,
+      };
 
-         user.role = 'dept_staff';
-         user.departmentId = department._id;
-         user.profileCompleted = true;
-         user.isActive = true;
-         await user.save({ session });
+      user.role = 'dept_staff';
+      user.departmentId = department._id;
+      user.profileCompleted = true;
+      user.isActive = true;
+      await user.save();
 
+      try {
          request.status = 'approved';
          request.userId = user._id;
          request.reviewedBy = adminId;
          request.reviewedAt = new Date();
-         await request.save({ session });
-         approvedRequest = request;
-      });
+         await request.save();
+      } catch (saveError) {
+         // Compensating rollback for user mutation in standalone MongoDB environments
+         try {
+            user.role = previousState.role;
+            user.departmentId = previousState.departmentId;
+            user.profileCompleted = previousState.profileCompleted;
+            user.isActive = previousState.isActive;
+            await user.save();
+         } catch (rollbackError) {
+            console.error("Critical: Compensating rollback failed for user approval:", rollbackError);
+         }
+         throw saveError;
+      }
 
       res.status(200).json({
          message: "Request approved successfully",
          request: {
-            id: approvedRequest._id,
-            userId: approvedRequest.userId,
-            departmentId: approvedRequest.departmentId,
-            status: approvedRequest.status,
-            reviewedBy: approvedRequest.reviewedBy,
-            reviewedAt: approvedRequest.reviewedAt
+            id: request._id,
+            userId: request.userId,
+            departmentId: request.departmentId,
+            status: request.status,
+            reviewedBy: request.reviewedBy,
+            reviewedAt: request.reviewedAt
          }
       });
    } catch (err) {
       console.log(err);
-      res.status(err.statusCode || 500).json({ message: err.statusCode ? err.message : "Internal server error" });
-   } finally {
-      await session.endSession();
+      res.status(500).json({ message: "Internal server error" });
    }
 };
 
@@ -203,15 +216,21 @@ export const rejectStaffRequest = async (req, res) => {
       if (!request) {
          return res.status(404).json({ message: "Pending request not found" });
       }
-      if (request.userId) {
-         await userModel.findByIdAndDelete(request.userId);
-      }
 
+      // Update request status to rejected FIRST so it can never remain pending with a deleted user
       request.status = 'rejected';
-      request.rejectionReason = rejectionReason.trim();
+      request.rejectionReason = rejectionReason ? rejectionReason.trim() : '';
       request.reviewedBy = adminId;
       request.reviewedAt = new Date();
       await request.save();
+
+      if (request.userId) {
+         try {
+            await userModel.findByIdAndDelete(request.userId);
+         } catch (deleteError) {
+            console.error("Warning: Failed to delete applicant user after request rejection:", deleteError);
+         }
+      }
 
       res.status(200).json({
          message: "Request rejected successfully",

@@ -29,3 +29,26 @@ export const escalateOverdueComplaints = async (now = new Date()) => {
 };
 
 export const openComplaintStatuses = OPEN_STATUSES;
+
+let lastEscalationCheck = 0;
+const ESCALATION_THROTTLE_MS = 60000;
+
+/**
+ * Throttled escalation check running at most once every 60 seconds per process.
+ * Ideal for free-tier hosting where background intervals may sleep.
+ * @param {Date} [now=new Date()]
+ * @param {boolean} [force=false]
+ * @returns {Promise<number>} Number of newly escalated complaints
+ */
+export const lazyEscalateOverdueComplaints = async (now = new Date(), force = false) => {
+   const currentTime = now instanceof Date ? now.getTime() : Date.now();
+   if (!force && currentTime - lastEscalationCheck < ESCALATION_THROTTLE_MS) {
+      return 0;
+   }
+   lastEscalationCheck = currentTime;
+   return escalateOverdueComplaints(now);
+};
+
+export const resetLazyEscalationThrottle = () => {
+   lastEscalationCheck = 0;
+};

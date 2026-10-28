@@ -147,11 +147,34 @@ export const validateComplaintRejection = [
    validateRequest,
 ];
 
+const isValidMediaUrl = (url) => {
+   if (typeof url !== "string" || !url.trim()) return false;
+   try {
+      const parsed = new URL(url);
+      return parsed.protocol === "http:" || parsed.protocol === "https:";
+   } catch {
+      return false;
+   }
+};
+
 export const validateComplaintResolution = [
    body("resolutionDescription")
       .isString().withMessage("Resolution description is required")
       .trim().notEmpty().withMessage("Resolution description is required"),
-   body("resolutionMedia").optional().isArray().withMessage("Resolution media must be an array"),
+   body("resolutionMedia")
+      .optional()
+      .isArray().withMessage("Resolution media must be an array")
+      .bail()
+      .custom((media) => media.every((item) => (
+         item &&
+         typeof item === "object" &&
+         !Array.isArray(item) &&
+         typeof item.fileId === "string" &&
+         item.fileId.trim().length > 0 &&
+         isValidMediaUrl(item.url) &&
+         typeof item.type === "string" &&
+         supportedMediaTypePattern.test(item.type)
+      ))).withMessage("Resolution media must contain { fileId, url, type } with a valid URL and supported image or video type"),
    validateRequest,
 ];
 

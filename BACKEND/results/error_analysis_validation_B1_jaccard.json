@@ -1,0 +1,844 @@
+{
+  "source_evaluation_artifact": "BACKEND/results/t1_validation_baseline_comparison.json",
+  "source_commit_hash": "040d2e78a3c87b8ad31924d0a6d4b2e6115c59eb",
+  "generation_timestamp": "2026-10-11T06:46:41.725Z",
+  "random_seed": null,
+  "randomness_note": "Deterministic enumeration; no stochastic sampling used.",
+  "split_name": "validation",
+  "method_id": "B1_jaccard",
+  "method_name": "B1: Text Jaccard Similarity",
+  "formula": "S = |Tokens_A ∩ Tokens_B| / |Tokens_A ∪ Tokens_B| on normalized alphanumeric word tokens.",
+  "selected_thresholds": {
+    "duplicate": 0.35,
+    "related": 0.2
+  },
+  "sample_count": 80,
+  "misclassified_count": 24,
+  "accuracy": 0.7,
+  "macro_f1": 0.6792,
+  "per_class": {
+    "duplicate": {
+      "true_positive": 10,
+      "false_positive": 0,
+      "false_negative": 14,
+      "true_negative": 56,
+      "support": 24,
+      "precision": 1,
+      "recall": 0.4167,
+      "f1": 0.5882
+    },
+    "related": {
+      "true_positive": 19,
+      "false_positive": 11,
+      "false_negative": 9,
+      "true_negative": 41,
+      "support": 28,
+      "precision": 0.6333,
+      "recall": 0.6786,
+      "f1": 0.6552
+    },
+    "independent": {
+      "true_positive": 27,
+      "false_positive": 13,
+      "false_negative": 1,
+      "true_negative": 39,
+      "support": 28,
+      "precision": 0.675,
+      "recall": 0.9643,
+      "f1": 0.7941
+    }
+  },
+  "confusion_matrix": {
+    "duplicate": {
+      "duplicate": 10,
+      "related": 10,
+      "independent": 4
+    },
+    "related": {
+      "duplicate": 0,
+      "related": 19,
+      "independent": 9
+    },
+    "independent": {
+      "duplicate": 0,
+      "related": 1,
+      "independent": 27
+    }
+  },
+  "misclassified_pairs": [
+    {
+      "pair_id": "P0005",
+      "complaint_a_text": "Water is escaping onto the road from a damaged pipe at Medavakkam Junction.",
+      "complaint_b_text": "Continuous water leakage reported close to Medavakkam Junction.",
+      "category_a": "Water & Utilities",
+      "category_b": "Water & Utilities",
+      "true_label": "duplicate",
+      "predicted_label": "independent",
+      "raw_score": 0.1667,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_duplicate_pred_independent",
+      "distance_meters": 127,
+      "time_difference_hours": 24,
+      "feature_breakdown": {
+        "category": 1,
+        "geographic": 0.8809,
+        "lexical": 0.25,
+        "semantic": 0.2222,
+        "temporal": 0.9672
+      },
+      "evidence": "Observed score = 0.1667 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'duplicate' but model predicted 'independent'. Geographic distance between complaints is 127 meters. Submission timestamps differ by 24 hours. Complaint A category: 'Water & Utilities', Complaint B category: 'Water & Utilities'. HISC scorer component affinities: Category=1.00, Geo=0.88, Lex=0.25, Sem=0.22, Time=0.97.",
+      "likely_cause_hypothesis": "Lexical paraphrase gap: Both complaints report the identical physical incident at the same location, but citizen descriptions use completely non-overlapping vocabulary (e.g. synonym variation or distinct syntactic phrasing). Because B1 relies exclusively on surface unigram Jaccard similarity without synonym mapping or spatial proximity, similarity falls below the related threshold.",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0015",
+      "complaint_a_text": "Water is leaking from a pipe near Medavakkam Junction.",
+      "complaint_b_text": "Continuous water leakage reported close to Medavakkam Junction.",
+      "category_a": "Water & Utilities",
+      "category_b": "Water & Utilities",
+      "true_label": "duplicate",
+      "predicted_label": "related",
+      "raw_score": 0.2143,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_duplicate_pred_related",
+      "distance_meters": 26,
+      "time_difference_hours": 21,
+      "feature_breakdown": {
+        "category": 1,
+        "geographic": 0.9739,
+        "lexical": 0.3333,
+        "semantic": 0.4286,
+        "temporal": 0.9713
+      },
+      "evidence": "Observed score = 0.2143 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'duplicate' but model predicted 'related'. Geographic distance between complaints is 26 meters. Submission timestamps differ by 21 hours. Complaint A category: 'Water & Utilities', Complaint B category: 'Water & Utilities'. HISC scorer component affinities: Category=1.00, Geo=0.97, Lex=0.33, Sem=0.43, Time=0.97.",
+      "likely_cause_hypothesis": "Sub-threshold surface lexical overlap: The pair shares some common words (e.g. location or defect terms) allowing it to cross the related threshold, but insufficient identical tokens prevent it from reaching the duplicate threshold (0.35).",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0016",
+      "complaint_a_text": "Garbage has been dumped near GST Road.",
+      "complaint_b_text": "The public bin is overflowing near GST Road.",
+      "category_a": "Waste & Cleanliness",
+      "category_b": "Waste & Cleanliness",
+      "true_label": "duplicate",
+      "predicted_label": "related",
+      "raw_score": 0.25,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_duplicate_pred_related",
+      "distance_meters": 114,
+      "time_difference_hours": 34,
+      "feature_breakdown": {
+        "category": 1,
+        "geographic": 0.8923,
+        "lexical": 0.1667,
+        "semantic": 0.3333,
+        "temporal": 0.9539
+      },
+      "evidence": "Observed score = 0.2500 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'duplicate' but model predicted 'related'. Geographic distance between complaints is 114 meters. Submission timestamps differ by 34 hours. Complaint A category: 'Waste & Cleanliness', Complaint B category: 'Waste & Cleanliness'. HISC scorer component affinities: Category=1.00, Geo=0.89, Lex=0.17, Sem=0.33, Time=0.95.",
+      "likely_cause_hypothesis": "Sub-threshold surface lexical overlap: The pair shares some common words (e.g. location or defect terms) allowing it to cross the related threshold, but insufficient identical tokens prevent it from reaching the duplicate threshold (0.35).",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0017",
+      "complaint_a_text": "Uncollected waste is causing a cleanliness issue near GST Road.",
+      "complaint_b_text": "Garbage has been dumped near GST Road.",
+      "category_a": "Waste & Cleanliness",
+      "category_b": "Waste & Cleanliness",
+      "true_label": "duplicate",
+      "predicted_label": "related",
+      "raw_score": 0.2143,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_duplicate_pred_related",
+      "distance_meters": 33,
+      "time_difference_hours": 22,
+      "feature_breakdown": {
+        "category": 1,
+        "geographic": 0.9673,
+        "lexical": 0.1429,
+        "semantic": 0.2857,
+        "temporal": 0.9699
+      },
+      "evidence": "Observed score = 0.2143 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'duplicate' but model predicted 'related'. Geographic distance between complaints is 33 meters. Submission timestamps differ by 22 hours. Complaint A category: 'Waste & Cleanliness', Complaint B category: 'Waste & Cleanliness'. HISC scorer component affinities: Category=1.00, Geo=0.97, Lex=0.14, Sem=0.29, Time=0.97.",
+      "likely_cause_hypothesis": "Sub-threshold surface lexical overlap: The pair shares some common words (e.g. location or defect terms) allowing it to cross the related threshold, but insufficient identical tokens prevent it from reaching the duplicate threshold (0.35).",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0018",
+      "complaint_a_text": "Road surface has broken badly close to Pallavaram Market.",
+      "complaint_b_text": "Large pothole reported near Pallavaram Market.",
+      "category_a": "Roads & Transport",
+      "category_b": "Roads & Transport",
+      "true_label": "duplicate",
+      "predicted_label": "independent",
+      "raw_score": 0.1538,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_duplicate_pred_independent",
+      "distance_meters": 138,
+      "time_difference_hours": 48,
+      "feature_breakdown": {
+        "category": 1,
+        "geographic": 0.8708,
+        "lexical": 0.1667,
+        "semantic": 0.2857,
+        "temporal": 0.9355
+      },
+      "evidence": "Observed score = 0.1538 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'duplicate' but model predicted 'independent'. Geographic distance between complaints is 138 meters. Submission timestamps differ by 48 hours. Complaint A category: 'Roads & Transport', Complaint B category: 'Roads & Transport'. HISC scorer component affinities: Category=1.00, Geo=0.87, Lex=0.17, Sem=0.29, Time=0.94.",
+      "likely_cause_hypothesis": "Lexical paraphrase gap: Both complaints report the identical physical incident at the same location, but citizen descriptions use completely non-overlapping vocabulary (e.g. synonym variation or distinct syntactic phrasing). Because B1 relies exclusively on surface unigram Jaccard similarity without synonym mapping or spatial proximity, similarity falls below the related threshold.",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0020",
+      "complaint_a_text": "A large pile of rubbish is present at Velachery Main Road.",
+      "complaint_b_text": "The public bin is overflowing near Velachery Main Road.",
+      "category_a": "Waste & Cleanliness",
+      "category_b": "Waste & Cleanliness",
+      "true_label": "duplicate",
+      "predicted_label": "related",
+      "raw_score": 0.25,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_duplicate_pred_related",
+      "distance_meters": 21,
+      "time_difference_hours": 2,
+      "feature_breakdown": {
+        "category": 1,
+        "geographic": 0.9788,
+        "lexical": 0.125,
+        "semantic": 0.2222,
+        "temporal": 0.9972
+      },
+      "evidence": "Observed score = 0.2500 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'duplicate' but model predicted 'related'. Geographic distance between complaints is 21 meters. Submission timestamps differ by 2 hours. Complaint A category: 'Waste & Cleanliness', Complaint B category: 'Waste & Cleanliness'. HISC scorer component affinities: Category=1.00, Geo=0.98, Lex=0.13, Sem=0.22, Time=1.00.",
+      "likely_cause_hypothesis": "Sub-threshold surface lexical overlap: The pair shares some common words (e.g. location or defect terms) allowing it to cross the related threshold, but insufficient identical tokens prevent it from reaching the duplicate threshold (0.35).",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0038",
+      "complaint_a_text": "A burst pipe is causing water loss near GST Road.",
+      "complaint_b_text": "Continuous water leakage reported close to GST Road.",
+      "category_a": "Water & Utilities",
+      "category_b": "Water & Utilities",
+      "true_label": "duplicate",
+      "predicted_label": "related",
+      "raw_score": 0.2,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_duplicate_pred_related",
+      "distance_meters": 176,
+      "time_difference_hours": 27,
+      "feature_breakdown": {
+        "category": 1,
+        "geographic": 0.8387,
+        "lexical": 0.25,
+        "semantic": 0.3333,
+        "temporal": 0.9632
+      },
+      "evidence": "Observed score = 0.2000 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'duplicate' but model predicted 'related'. Geographic distance between complaints is 176 meters. Submission timestamps differ by 27 hours. Complaint A category: 'Water & Utilities', Complaint B category: 'Water & Utilities'. HISC scorer component affinities: Category=1.00, Geo=0.84, Lex=0.25, Sem=0.33, Time=0.96.",
+      "likely_cause_hypothesis": "Sub-threshold surface lexical overlap: The pair shares some common words (e.g. location or defect terms) allowing it to cross the related threshold, but insufficient identical tokens prevent it from reaching the duplicate threshold (0.35).",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0039",
+      "complaint_a_text": "Water is leaking from a pipe near VIT Main Gate.",
+      "complaint_b_text": "Continuous water leakage reported close to VIT Main Gate.",
+      "category_a": "Water & Utilities",
+      "category_b": "Water & Utilities",
+      "true_label": "duplicate",
+      "predicted_label": "related",
+      "raw_score": 0.2667,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_duplicate_pred_related",
+      "distance_meters": 101,
+      "time_difference_hours": 53,
+      "feature_breakdown": {
+        "category": 1,
+        "geographic": 0.9041,
+        "lexical": 0.4286,
+        "semantic": 0.5,
+        "temporal": 0.929
+      },
+      "evidence": "Observed score = 0.2667 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'duplicate' but model predicted 'related'. Geographic distance between complaints is 101 meters. Submission timestamps differ by 53 hours. Complaint A category: 'Water & Utilities', Complaint B category: 'Water & Utilities'. HISC scorer component affinities: Category=1.00, Geo=0.90, Lex=0.43, Sem=0.50, Time=0.93.",
+      "likely_cause_hypothesis": "Sub-threshold surface lexical overlap: The pair shares some common words (e.g. location or defect terms) allowing it to cross the related threshold, but insufficient identical tokens prevent it from reaching the duplicate threshold (0.35).",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0043",
+      "complaint_a_text": "Waste is accumulating around Chromepet Bus Stand.",
+      "complaint_b_text": "A large pile of rubbish is present at Chromepet Bus Stand.",
+      "category_a": "Waste & Cleanliness",
+      "category_b": "Waste & Cleanliness",
+      "true_label": "duplicate",
+      "predicted_label": "related",
+      "raw_score": 0.2857,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_duplicate_pred_related",
+      "distance_meters": 176,
+      "time_difference_hours": 24,
+      "feature_breakdown": {
+        "category": 1,
+        "geographic": 0.8385,
+        "lexical": 0.3333,
+        "semantic": 0.4,
+        "temporal": 0.9672
+      },
+      "evidence": "Observed score = 0.2857 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'duplicate' but model predicted 'related'. Geographic distance between complaints is 176 meters. Submission timestamps differ by 24 hours. Complaint A category: 'Waste & Cleanliness', Complaint B category: 'Waste & Cleanliness'. HISC scorer component affinities: Category=1.00, Geo=0.84, Lex=0.33, Sem=0.40, Time=0.97.",
+      "likely_cause_hypothesis": "Sub-threshold surface lexical overlap: The pair shares some common words (e.g. location or defect terms) allowing it to cross the related threshold, but insufficient identical tokens prevent it from reaching the duplicate threshold (0.35).",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0046",
+      "complaint_a_text": "Damaged section of road near Velachery Main Road needs repair.",
+      "complaint_b_text": "Road surface has broken badly close to Velachery Main Road.",
+      "category_a": "Roads & Transport",
+      "category_b": "Roads & Transport",
+      "true_label": "duplicate",
+      "predicted_label": "related",
+      "raw_score": 0.2,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_duplicate_pred_related",
+      "distance_meters": 160,
+      "time_difference_hours": 4,
+      "feature_breakdown": {
+        "category": 1,
+        "geographic": 0.8522,
+        "lexical": 0.2,
+        "semantic": 0.1667,
+        "temporal": 0.9945
+      },
+      "evidence": "Observed score = 0.2000 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'duplicate' but model predicted 'related'. Geographic distance between complaints is 160 meters. Submission timestamps differ by 4 hours. Complaint A category: 'Roads & Transport', Complaint B category: 'Roads & Transport'. HISC scorer component affinities: Category=1.00, Geo=0.85, Lex=0.20, Sem=0.17, Time=0.99.",
+      "likely_cause_hypothesis": "Sub-threshold surface lexical overlap: The pair shares some common words (e.g. location or defect terms) allowing it to cross the related threshold, but insufficient identical tokens prevent it from reaching the duplicate threshold (0.35).",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0049",
+      "complaint_a_text": "Water is overflowing from the drain at GST Road.",
+      "complaint_b_text": "Blocked drainage is causing waterlogging around GST Road.",
+      "category_a": "Drainage & Flooding",
+      "category_b": "Drainage & Flooding",
+      "true_label": "duplicate",
+      "predicted_label": "related",
+      "raw_score": 0.2143,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_duplicate_pred_related",
+      "distance_meters": 148,
+      "time_difference_hours": 25,
+      "feature_breakdown": {
+        "category": 1,
+        "geographic": 0.8627,
+        "lexical": 0.125,
+        "semantic": 0.25,
+        "temporal": 0.9659
+      },
+      "evidence": "Observed score = 0.2143 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'duplicate' but model predicted 'related'. Geographic distance between complaints is 148 meters. Submission timestamps differ by 25 hours. Complaint A category: 'Drainage & Flooding', Complaint B category: 'Drainage & Flooding'. HISC scorer component affinities: Category=1.00, Geo=0.86, Lex=0.13, Sem=0.25, Time=0.97.",
+      "likely_cause_hypothesis": "Sub-threshold surface lexical overlap: The pair shares some common words (e.g. location or defect terms) allowing it to cross the related threshold, but insufficient identical tokens prevent it from reaching the duplicate threshold (0.35).",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0057",
+      "complaint_a_text": "Deep road crater causing problems for vehicles at Sholinganallur Junction.",
+      "complaint_b_text": "Vehicles are struggling because of a pothole around Sholinganallur Junction.",
+      "category_a": "Roads & Transport",
+      "category_b": "Roads & Transport",
+      "true_label": "duplicate",
+      "predicted_label": "independent",
+      "raw_score": 0.1765,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_duplicate_pred_independent",
+      "distance_meters": 168,
+      "time_difference_hours": 28,
+      "feature_breakdown": {
+        "category": 1,
+        "geographic": 0.8452,
+        "lexical": 0.2,
+        "semantic": 0.2727,
+        "temporal": 0.9619
+      },
+      "evidence": "Observed score = 0.1765 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'duplicate' but model predicted 'independent'. Geographic distance between complaints is 168 meters. Submission timestamps differ by 28 hours. Complaint A category: 'Roads & Transport', Complaint B category: 'Roads & Transport'. HISC scorer component affinities: Category=1.00, Geo=0.85, Lex=0.20, Sem=0.27, Time=0.96.",
+      "likely_cause_hypothesis": "Lexical paraphrase gap: Both complaints report the identical physical incident at the same location, but citizen descriptions use completely non-overlapping vocabulary (e.g. synonym variation or distinct syntactic phrasing). Because B1 relies exclusively on surface unigram Jaccard similarity without synonym mapping or spatial proximity, similarity falls below the related threshold.",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0075",
+      "complaint_a_text": "Blocked drainage is causing waterlogging around Velachery Main Road.",
+      "complaint_b_text": "Water is overflowing from the drain at Velachery Main Road.",
+      "category_a": "Drainage & Flooding",
+      "category_b": "Drainage & Flooding",
+      "true_label": "duplicate",
+      "predicted_label": "related",
+      "raw_score": 0.2667,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_duplicate_pred_related",
+      "distance_meters": 174,
+      "time_difference_hours": 30,
+      "feature_breakdown": {
+        "category": 1,
+        "geographic": 0.8404,
+        "lexical": 0.125,
+        "semantic": 0.25,
+        "temporal": 0.9592
+      },
+      "evidence": "Observed score = 0.2667 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'duplicate' but model predicted 'related'. Geographic distance between complaints is 174 meters. Submission timestamps differ by 30 hours. Complaint A category: 'Drainage & Flooding', Complaint B category: 'Drainage & Flooding'. HISC scorer component affinities: Category=1.00, Geo=0.84, Lex=0.13, Sem=0.25, Time=0.96.",
+      "likely_cause_hypothesis": "Sub-threshold surface lexical overlap: The pair shares some common words (e.g. location or defect terms) allowing it to cross the related threshold, but insufficient identical tokens prevent it from reaching the duplicate threshold (0.35).",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0109",
+      "complaint_a_text": "Large pothole reported near Sholinganallur Junction.",
+      "complaint_b_text": "Road surface has broken badly close to Sholinganallur Junction.",
+      "category_a": "Roads & Transport",
+      "category_b": "Roads & Transport",
+      "true_label": "duplicate",
+      "predicted_label": "independent",
+      "raw_score": 0.1538,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_duplicate_pred_independent",
+      "distance_meters": 209,
+      "time_difference_hours": 44,
+      "feature_breakdown": {
+        "category": 1,
+        "geographic": 0.8116,
+        "lexical": 0.1667,
+        "semantic": 0.2857,
+        "temporal": 0.9407
+      },
+      "evidence": "Observed score = 0.1538 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'duplicate' but model predicted 'independent'. Geographic distance between complaints is 209 meters. Submission timestamps differ by 44 hours. Complaint A category: 'Roads & Transport', Complaint B category: 'Roads & Transport'. HISC scorer component affinities: Category=1.00, Geo=0.81, Lex=0.17, Sem=0.29, Time=0.94.",
+      "likely_cause_hypothesis": "Lexical paraphrase gap: Both complaints report the identical physical incident at the same location, but citizen descriptions use completely non-overlapping vocabulary (e.g. synonym variation or distinct syntactic phrasing). Because B1 relies exclusively on surface unigram Jaccard similarity without synonym mapping or spatial proximity, similarity falls below the related threshold.",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0151",
+      "complaint_a_text": "Vehicles are struggling because of a pothole around Velachery Main Road.",
+      "complaint_b_text": "The roadside drain is clogged near Velachery Main Road.",
+      "category_a": "Roads & Transport",
+      "category_b": "Drainage & Flooding",
+      "true_label": "related",
+      "predicted_label": "independent",
+      "raw_score": 0.1765,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_related_pred_independent",
+      "distance_meters": 23,
+      "time_difference_hours": 52,
+      "feature_breakdown": {
+        "category": 0.4,
+        "geographic": 0.9769,
+        "lexical": 0.1111,
+        "semantic": 0.0909,
+        "temporal": 0.9303
+      },
+      "evidence": "Observed score = 0.1765 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'related' but model predicted 'independent'. Geographic distance between complaints is 23 meters. Submission timestamps differ by 52 hours. Complaint A category: 'Roads & Transport', Complaint B category: 'Drainage & Flooding'. HISC scorer component affinities: Category=0.40, Geo=0.98, Lex=0.11, Sem=0.09, Time=0.93.",
+      "likely_cause_hypothesis": "Cross-defect vocabulary disparity: The complaints represent causally or geographically related infrastructure defects (e.g. blocked drain and water leak), but text descriptions share no common terms, causing unigram Jaccard similarity to fall below the related threshold.",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0153",
+      "complaint_a_text": "Vehicles are struggling because of a pothole around Pallavaram Market.",
+      "complaint_b_text": "Drain overflow reported close to Pallavaram Market after rainfall.",
+      "category_a": "Roads & Transport",
+      "category_b": "Drainage & Flooding",
+      "true_label": "related",
+      "predicted_label": "independent",
+      "raw_score": 0.1176,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_related_pred_independent",
+      "distance_meters": 212,
+      "time_difference_hours": 442,
+      "feature_breakdown": {
+        "category": 0.4,
+        "geographic": 0.8087,
+        "lexical": 0.1111,
+        "semantic": 0.0909,
+        "temporal": 0.5412
+      },
+      "evidence": "Observed score = 0.1176 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'related' but model predicted 'independent'. Geographic distance between complaints is 212 meters. Submission timestamps differ by 442 hours. Complaint A category: 'Roads & Transport', Complaint B category: 'Drainage & Flooding'. HISC scorer component affinities: Category=0.40, Geo=0.81, Lex=0.11, Sem=0.09, Time=0.54.",
+      "likely_cause_hypothesis": "Cross-defect vocabulary disparity: The complaints represent causally or geographically related infrastructure defects (e.g. blocked drain and water leak), but text descriptions share no common terms, causing unigram Jaccard similarity to fall below the related threshold.",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0156",
+      "complaint_a_text": "Road surface has broken badly close to Medavakkam Junction.",
+      "complaint_b_text": "The roadside drain is clogged near Medavakkam Junction.",
+      "category_a": "Roads & Transport",
+      "category_b": "Drainage & Flooding",
+      "true_label": "related",
+      "predicted_label": "independent",
+      "raw_score": 0.1333,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_related_pred_independent",
+      "distance_meters": 87,
+      "time_difference_hours": 91,
+      "feature_breakdown": {
+        "category": 0.4,
+        "geographic": 0.9168,
+        "lexical": 0.1429,
+        "semantic": 0.1111,
+        "temporal": 0.8813
+      },
+      "evidence": "Observed score = 0.1333 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'related' but model predicted 'independent'. Geographic distance between complaints is 87 meters. Submission timestamps differ by 91 hours. Complaint A category: 'Roads & Transport', Complaint B category: 'Drainage & Flooding'. HISC scorer component affinities: Category=0.40, Geo=0.92, Lex=0.14, Sem=0.11, Time=0.88.",
+      "likely_cause_hypothesis": "Cross-defect vocabulary disparity: The complaints represent causally or geographically related infrastructure defects (e.g. blocked drain and water leak), but text descriptions share no common terms, causing unigram Jaccard similarity to fall below the related threshold.",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0157",
+      "complaint_a_text": "Deep road crater causing problems for vehicles at Medavakkam Junction.",
+      "complaint_b_text": "Drain overflow reported close to Medavakkam Junction after rainfall.",
+      "category_a": "Roads & Transport",
+      "category_b": "Drainage & Flooding",
+      "true_label": "related",
+      "predicted_label": "independent",
+      "raw_score": 0.1176,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_related_pred_independent",
+      "distance_meters": 76,
+      "time_difference_hours": 209,
+      "feature_breakdown": {
+        "category": 0.4,
+        "geographic": 0.9271,
+        "lexical": 0.1111,
+        "semantic": 0.0909,
+        "temporal": 0.7481
+      },
+      "evidence": "Observed score = 0.1176 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'related' but model predicted 'independent'. Geographic distance between complaints is 76 meters. Submission timestamps differ by 209 hours. Complaint A category: 'Roads & Transport', Complaint B category: 'Drainage & Flooding'. HISC scorer component affinities: Category=0.40, Geo=0.93, Lex=0.11, Sem=0.09, Time=0.75.",
+      "likely_cause_hypothesis": "Cross-defect vocabulary disparity: The complaints represent causally or geographically related infrastructure defects (e.g. blocked drain and water leak), but text descriptions share no common terms, causing unigram Jaccard similarity to fall below the related threshold.",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0165",
+      "complaint_a_text": "Road surface has broken badly close to Sholinganallur Junction.",
+      "complaint_b_text": "Water is overflowing from the drain at Sholinganallur Junction.",
+      "category_a": "Roads & Transport",
+      "category_b": "Drainage & Flooding",
+      "true_label": "related",
+      "predicted_label": "independent",
+      "raw_score": 0.125,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_related_pred_independent",
+      "distance_meters": 72,
+      "time_difference_hours": 78,
+      "feature_breakdown": {
+        "category": 0.4,
+        "geographic": 0.9305,
+        "lexical": 0.1429,
+        "semantic": 0.1111,
+        "temporal": 0.8973
+      },
+      "evidence": "Observed score = 0.1250 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'related' but model predicted 'independent'. Geographic distance between complaints is 72 meters. Submission timestamps differ by 78 hours. Complaint A category: 'Roads & Transport', Complaint B category: 'Drainage & Flooding'. HISC scorer component affinities: Category=0.40, Geo=0.93, Lex=0.14, Sem=0.11, Time=0.90.",
+      "likely_cause_hypothesis": "Cross-defect vocabulary disparity: The complaints represent causally or geographically related infrastructure defects (e.g. blocked drain and water leak), but text descriptions share no common terms, causing unigram Jaccard similarity to fall below the related threshold.",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0173",
+      "complaint_a_text": "The light pole near VIT Main Gate is damaged and the light is off.",
+      "complaint_b_text": "Road surface has broken badly close to VIT Main Gate.",
+      "category_a": "Street Infrastructure",
+      "category_b": "Roads & Transport",
+      "true_label": "related",
+      "predicted_label": "independent",
+      "raw_score": 0.1667,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_related_pred_independent",
+      "distance_meters": 155,
+      "time_difference_hours": 2,
+      "feature_breakdown": {
+        "category": 0.6,
+        "geographic": 0.8561,
+        "lexical": 0.2222,
+        "semantic": 0.1818,
+        "temporal": 0.9972
+      },
+      "evidence": "Observed score = 0.1667 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'related' but model predicted 'independent'. Geographic distance between complaints is 155 meters. Submission timestamps differ by 2 hours. Complaint A category: 'Street Infrastructure', Complaint B category: 'Roads & Transport'. HISC scorer component affinities: Category=0.60, Geo=0.86, Lex=0.22, Sem=0.18, Time=1.00.",
+      "likely_cause_hypothesis": "Cross-defect vocabulary disparity: The complaints represent causally or geographically related infrastructure defects (e.g. blocked drain and water leak), but text descriptions share no common terms, causing unigram Jaccard similarity to fall below the related threshold.",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0215",
+      "complaint_a_text": "Road surface has broken badly close to Medavakkam Junction.",
+      "complaint_b_text": "A faulty streetlight is causing poor visibility near Medavakkam Junction.",
+      "category_a": "Roads & Transport",
+      "category_b": "Street Infrastructure",
+      "true_label": "related",
+      "predicted_label": "independent",
+      "raw_score": 0.1176,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_related_pred_independent",
+      "distance_meters": 187,
+      "time_difference_hours": 116,
+      "feature_breakdown": {
+        "category": 0.6,
+        "geographic": 0.8294,
+        "lexical": 0.1111,
+        "semantic": 0.1,
+        "temporal": 0.8512
+      },
+      "evidence": "Observed score = 0.1176 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'related' but model predicted 'independent'. Geographic distance between complaints is 187 meters. Submission timestamps differ by 116 hours. Complaint A category: 'Roads & Transport', Complaint B category: 'Street Infrastructure'. HISC scorer component affinities: Category=0.60, Geo=0.83, Lex=0.11, Sem=0.10, Time=0.85.",
+      "likely_cause_hypothesis": "Cross-defect vocabulary disparity: The complaints represent causally or geographically related infrastructure defects (e.g. blocked drain and water leak), but text descriptions share no common terms, causing unigram Jaccard similarity to fall below the related threshold.",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0219",
+      "complaint_a_text": "Vehicles are struggling because of a pothole around Velachery Main Road.",
+      "complaint_b_text": "Drain overflow reported close to Velachery Main Road after rainfall.",
+      "category_a": "Roads & Transport",
+      "category_b": "Drainage & Flooding",
+      "true_label": "related",
+      "predicted_label": "independent",
+      "raw_score": 0.1667,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_related_pred_independent",
+      "distance_meters": 164,
+      "time_difference_hours": 152,
+      "feature_breakdown": {
+        "category": 0.4,
+        "geographic": 0.8484,
+        "lexical": 0.1111,
+        "semantic": 0.0909,
+        "temporal": 0.8097
+      },
+      "evidence": "Observed score = 0.1667 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'related' but model predicted 'independent'. Geographic distance between complaints is 164 meters. Submission timestamps differ by 152 hours. Complaint A category: 'Roads & Transport', Complaint B category: 'Drainage & Flooding'. HISC scorer component affinities: Category=0.40, Geo=0.85, Lex=0.11, Sem=0.09, Time=0.81.",
+      "likely_cause_hypothesis": "Cross-defect vocabulary disparity: The complaints represent causally or geographically related infrastructure defects (e.g. blocked drain and water leak), but text descriptions share no common terms, causing unigram Jaccard similarity to fall below the related threshold.",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0252",
+      "complaint_a_text": "Road surface has broken badly close to Medavakkam Junction.",
+      "complaint_b_text": "There is no working street lighting around Medavakkam Junction.",
+      "category_a": "Roads & Transport",
+      "category_b": "Street Infrastructure",
+      "true_label": "related",
+      "predicted_label": "independent",
+      "raw_score": 0.125,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_related_pred_independent",
+      "distance_meters": 192,
+      "time_difference_hours": 65,
+      "feature_breakdown": {
+        "category": 0.6,
+        "geographic": 0.8254,
+        "lexical": 0.1667,
+        "semantic": 0.125,
+        "temporal": 0.9137
+      },
+      "evidence": "Observed score = 0.1250 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'related' but model predicted 'independent'. Geographic distance between complaints is 192 meters. Submission timestamps differ by 65 hours. Complaint A category: 'Roads & Transport', Complaint B category: 'Street Infrastructure'. HISC scorer component affinities: Category=0.60, Geo=0.83, Lex=0.17, Sem=0.13, Time=0.91.",
+      "likely_cause_hypothesis": "Cross-defect vocabulary disparity: The complaints represent causally or geographically related infrastructure defects (e.g. blocked drain and water leak), but text descriptions share no common terms, causing unigram Jaccard similarity to fall below the related threshold.",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    },
+    {
+      "pair_id": "P0320",
+      "complaint_a_text": "A burst pipe is causing water loss near Chromepet Bus Stand.",
+      "complaint_b_text": "Uncollected waste is causing a cleanliness issue near Medavakkam Junction.",
+      "category_a": "Water & Utilities",
+      "category_b": "Waste & Cleanliness",
+      "true_label": "independent",
+      "predicted_label": "related",
+      "raw_score": 0.2353,
+      "selected_thresholds": {
+        "duplicate": 0.35,
+        "related": 0.2
+      },
+      "confusion_category": "actual_independent_pred_related",
+      "distance_meters": 5977,
+      "time_difference_hours": 227,
+      "feature_breakdown": {
+        "category": 0,
+        "geographic": 0.0025,
+        "lexical": 0.0833,
+        "semantic": 0.0714,
+        "temporal": 0.7296
+      },
+      "evidence": "Observed score = 0.2353 against tuned decision thresholds (duplicate: 0.35, related: 0.20). True label is 'independent' but model predicted 'related'. Geographic distance between complaints is 5977 meters. Submission timestamps differ by 227 hours. Complaint A category: 'Water & Utilities', Complaint B category: 'Waste & Cleanliness'. HISC scorer component affinities: Category=0.00, Geo=0.00, Lex=0.08, Sem=0.07, Time=0.73.",
+      "likely_cause_hypothesis": "Spurious lexical token sharing: Unrelated complaints describe distinct problems in different areas, but coincidentally share generic vocabulary tokens, falsely elevating Jaccard similarity above the related threshold (0.20).",
+      "missing_fields_or_unavailable_explanations": [
+        "geographic_distance_unmodeled",
+        "temporal_proximity_unmodeled",
+        "category_compatibility_unmodeled",
+        "semantic_expansion_embeddings_unmodeled"
+      ]
+    }
+  ],
+  "missing_fields_or_unavailable_explanations": [
+    "geographic_distance_unmodeled",
+    "temporal_proximity_unmodeled",
+    "category_compatibility_unmodeled",
+    "semantic_expansion_embeddings_unmodeled"
+  ]
+}

@@ -1,0 +1,258 @@
+{
+  "metadata": {
+    "evaluation_phase": "T4 — Clustering Latency and Spatial-Index Benchmark",
+    "timestamp": "2026-10-11T07:27:05.911Z",
+    "git_commit": "84d191ea",
+    "seed": 42,
+    "database_uri": "mongodb://127.0.0.1:27017/civicflow_latency_benchmark",
+    "database_version": "8.3.11",
+    "workload_sizes": [
+      1000,
+      10000,
+      50000
+    ],
+    "centroid": {
+      "lng": 80.2707,
+      "lat": 13.0827
+    },
+    "safety_declarations": {
+      "isolated_database_used": true,
+      "production_database_untouched": true,
+      "held_out_evaluations_omitted": true
+    }
+  },
+  "spatial_index_experiment": [
+    {
+      "workload_size": 1000,
+      "insert_time_ms": 56.73,
+      "index_build_time_ms": 33.39,
+      "unindexed": {
+        "stage": "LIMIT",
+        "total_docs_examined": 999,
+        "total_keys_examined": 1000,
+        "avg_returned": 22.7,
+        "latency": {
+          "count": 10,
+          "mean": 4.858,
+          "p50": 4.388,
+          "p95": 5.161,
+          "min": 3.944,
+          "max": 7.392
+        }
+      },
+      "indexed_2dsphere": {
+        "stage": "LIMIT",
+        "total_docs_examined": 41,
+        "total_keys_examined": 122,
+        "avg_returned": 22.7,
+        "latency": {
+          "count": 10,
+          "mean": 3.705,
+          "p50": 2.947,
+          "p95": 4.089,
+          "min": 1.882,
+          "max": 10.394
+        }
+      },
+      "speedup_ratio": 1.49
+    },
+    {
+      "workload_size": 10000,
+      "insert_time_ms": 135.07,
+      "index_build_time_ms": 57.83,
+      "unindexed": {
+        "stage": "LIMIT",
+        "total_docs_examined": 2485,
+        "total_keys_examined": 2486,
+        "avg_returned": 38.2,
+        "latency": {
+          "count": 10,
+          "mean": 9.919,
+          "p50": 5.989,
+          "p95": 24.941,
+          "min": 3.742,
+          "max": 25.39
+        }
+      },
+      "indexed_2dsphere": {
+        "stage": "LIMIT",
+        "total_docs_examined": 225,
+        "total_keys_examined": 317,
+        "avg_returned": 38.2,
+        "latency": {
+          "count": 10,
+          "mean": 3.742,
+          "p50": 2.866,
+          "p95": 3.318,
+          "min": 2.399,
+          "max": 11.639
+        }
+      },
+      "speedup_ratio": 2.09
+    },
+    {
+      "workload_size": 50000,
+      "insert_time_ms": 556.21,
+      "index_build_time_ms": 219.06,
+      "unindexed": {
+        "stage": "LIMIT",
+        "total_docs_examined": 2485,
+        "total_keys_examined": 2486,
+        "avg_returned": 40,
+        "latency": {
+          "count": 10,
+          "mean": 11.811,
+          "p50": 6.255,
+          "p95": 31.303,
+          "min": 3.642,
+          "max": 40.162
+        }
+      },
+      "indexed_2dsphere": {
+        "stage": "LIMIT",
+        "total_docs_examined": 303,
+        "total_keys_examined": 396,
+        "avg_returned": 40,
+        "latency": {
+          "count": 10,
+          "mean": 3.785,
+          "p50": 2.869,
+          "p95": 3.723,
+          "min": 2.452,
+          "max": 11.178
+        }
+      },
+      "speedup_ratio": 2.18
+    }
+  ],
+  "candidate_caps_experiment": {
+    "cap_10": {
+      "requested_cap": 10,
+      "avg_candidates_returned": 10,
+      "query_latency": {
+        "count": 15,
+        "mean": 2.508,
+        "p50": 2.104,
+        "p95": 2.407,
+        "min": 1.62,
+        "max": 9.242
+      },
+      "upsert_latency": {
+        "count": 15,
+        "mean": 3.248,
+        "p50": 3.041,
+        "p95": 3.196,
+        "min": 2.792,
+        "max": 6.654
+      }
+    },
+    "cap_20": {
+      "requested_cap": 20,
+      "avg_candidates_returned": 20,
+      "query_latency": {
+        "count": 15,
+        "mean": 2.394,
+        "p50": 2.309,
+        "p95": 2.762,
+        "min": 1.916,
+        "max": 3.762
+      },
+      "upsert_latency": {
+        "count": 15,
+        "mean": 5.219,
+        "p50": 5.067,
+        "p95": 5.882,
+        "min": 4.686,
+        "max": 6.983
+      }
+    },
+    "cap_40": {
+      "requested_cap": 40,
+      "avg_candidates_returned": 36.6,
+      "query_latency": {
+        "count": 15,
+        "mean": 2.846,
+        "p50": 2.861,
+        "p95": 3.23,
+        "min": 2.417,
+        "max": 3.275
+      },
+      "upsert_latency": {
+        "count": 15,
+        "mean": 8.321,
+        "p50": 8.736,
+        "p95": 9.266,
+        "min": 6.357,
+        "max": 9.29
+      }
+    },
+    "cap_80": {
+      "requested_cap": 80,
+      "avg_candidates_returned": 63.3,
+      "query_latency": {
+        "count": 15,
+        "mean": 3.223,
+        "p50": 3.106,
+        "p95": 3.927,
+        "min": 2.436,
+        "max": 4.202
+      },
+      "upsert_latency": {
+        "count": 15,
+        "mean": 13.271,
+        "p50": 15.944,
+        "p95": 17.626,
+        "min": 6.087,
+        "max": 17.716
+      }
+    }
+  },
+  "embedding_comparison": {
+    "embedding_disabled": {
+      "mode": "synonym_dictionary",
+      "provider": "none",
+      "query_latency": {
+        "count": 15,
+        "mean": 3.341,
+        "p50": 2.744,
+        "p95": 3.746,
+        "min": 2.434,
+        "max": 10.634
+      },
+      "upsert_latency": {
+        "count": 15,
+        "mean": 8.092,
+        "p50": 8.609,
+        "p95": 8.995,
+        "min": 6.31,
+        "max": 9.12
+      }
+    },
+    "embedding_enabled": {
+      "mode": "local_minilm_quantized",
+      "provider": "local",
+      "model_id": "Xenova/all-MiniLM-L6-v2",
+      "cold_start_load_ms": 461.34,
+      "cache_stats": {
+        "hits": 23,
+        "misses": 541
+      },
+      "query_latency": {
+        "count": 15,
+        "mean": 7.321,
+        "p50": 6.426,
+        "p95": 12.349,
+        "min": 4.243,
+        "max": 13.233
+      },
+      "upsert_latency": {
+        "count": 15,
+        "mean": 3046.711,
+        "p50": 3186.149,
+        "p95": 4053.491,
+        "min": 539.771,
+        "max": 4151.707
+      }
+    }
+  }
+}

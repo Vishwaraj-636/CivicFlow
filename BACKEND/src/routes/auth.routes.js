@@ -5,6 +5,8 @@ import {
    validateLogin,
    validateGoogleProfileCompletion
 } from '../validator/auth.validator.js';
+import { validateZod } from '../middleware/zodValidation.middleware.js';
+import { registerSchema, loginSchema } from '../validator/zodSchemas.js';
 
 import {
    register,
@@ -29,7 +31,7 @@ const router = express.Router();
  * @desc Register a new user
  * @access Public
  */
-router.post('/register', validateRegister, register);
+router.post('/register', validateZod(registerSchema), validateRegister, register);
 
 
 /**
@@ -37,7 +39,7 @@ router.post('/register', validateRegister, register);
  * @desc Login a user
  * @access Public
  */
-router.post('/login', validateLogin, login);
+router.post('/login', validateZod(loginSchema), validateLogin, login);
 
 
 /**
@@ -54,7 +56,7 @@ router.get('/google/url', googleLogin);
 router.get('/google/callback',
    passport.authenticate('google', {
       session: false,
-      failureRedirect: config.NODE_ENV === 'development' ? 'http://localhost:5173/login' : '/login',
+      failureRedirect: `${(config.ALLOWED_ORIGINS && config.ALLOWED_ORIGINS[0]) || 'http://localhost:5173'}/login`,
    }),
    googleCallback
 )

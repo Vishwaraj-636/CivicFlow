@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { API_BASE_URL } from "../../../config/api.config.js";
 
-const api = axios.create({ baseURL: "http://localhost:3000/api", withCredentials: true });
+const api = axios.create({ baseURL: API_BASE_URL, withCredentials: true });
 
 const IncidentIntelligence = () => {
    const [incidents, setIncidents] = useState([]);
